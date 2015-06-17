@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-18T00:07:29+08:00</updated>
+  <updated>2015-06-18T00:10:27+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -12,6 +12,102 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[异步机制]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi/"/>
+    <updated>2015-06-18T00:02:06+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi</id>
+    <content type="html"><![CDATA[<h1 id="section">异步机制</h1>
+<blockquote>
+  <ol>
+    <li>及时响应用户</li>
+    <li>实现多核调度</li>
+  </ol>
+</blockquote>
+
+<h3 id="nsoperation">NSOperation</h3>
+<ol>
+  <li>封装了大部分异步相关的逻辑，基础类，使用的时候要继承它创建我们自己的子类；</li>
+  <li>系统实现的具体的类：NSInvocationOperation，NSBlockOperation；</li>
+  <li>Dependency，Completion block，KVO，Priority，Cancel</li>
+  <li>non-concurrent
+    <ul>
+      <li>重写main()</li>
+      <li>autoreleasepool</li>
+      <li>不需要自己维护状态</li>
+    </ul>
+  </li>
+  <li>concurrent
+    <ul>
+      <li>实现start()</li>
+      <li>实现异步操作</li>
+      <li>自己维护isFinished，isExcuting，isCancelled（manual KVO）</li>
+    </ul>
+  </li>
+  <li>判断是否cancel
+    <ul>
+      <li>main/start</li>
+      <li>循环开始处</li>
+      <li>逻辑区分点</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="dispatch-queue">dispatch queue</h3>
+<ol>
+  <li>将业务逻辑写在block里
+    <ul>
+      <li>
+        <p>定义：</p>
+
+        <pre><code>  ^return type(params){expression}	
+  typedef return type(^name)(params)
+</code></pre>
+      </li>
+      <li>
+        <p>声明：</p>
+
+        <pre><code>  self.block = ^(params){expression};
+</code></pre>
+      </li>
+      <li>
+        <p>方法中定义的block在stack上，当调用copy时，会copy到heap上</p>
+      </li>
+    </ul>
+  </li>
+  <li>finalizer</li>
+  <li>Serial(private dispatch queue)
+    <ul>
+      <li>block间顺序执行</li>
+      <li>dispatch_queue_create()</li>
+      <li>
+        <p>需要自己维护reference count:</p>
+
+        <pre><code>  dispatch_release()
+</code></pre>
+      </li>
+    </ul>
+  </li>
+  <li>Concurrent(global dispatch queue)
+    <ul>
+      <li>block间并发执行</li>
+      <li>dispatch_get_global_queue()</li>
+      <li>normal, low, high</li>
+      <li>系统维护reference count</li>
+    </ul>
+  </li>
+  <li>main dispatch queue
+    <ul>
+      <li>在主线程run loop执行</li>
+      <li>更新UI/主线程作为同步</li>
+    </ul>
+  </li>
+  <li>dispatch queue维护自己的autoreleasepool</li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[First Post]]></title>
