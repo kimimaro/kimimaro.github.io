@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://kimimaro.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Ios | My Octopress Blog]]></title>
+  <link href="http://kimimaro.github.io/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://kimimaro.github.io/"/>
   <updated>2015-06-17T23:41:08+08:00</updated>
   <id>http://kimimaro.github.io/</id>
