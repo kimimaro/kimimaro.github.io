@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://kimimaro.github.io/sitemap.xml 
+Sitemap: http://blog.oneboxapp.com/sitemap.xml 

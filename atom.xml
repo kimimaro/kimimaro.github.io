@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://kimimaro.github.io/atom.xml" rel="self"/>
-  <link href="http://kimimaro.github.io/"/>
-  <updated>2015-06-17T23:41:08+08:00</updated>
-  <id>http://kimimaro.github.io/</id>
+  <title><![CDATA[402]]></title>
+  <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
+  <link href="http://blog.oneboxapp.com/"/>
+  <updated>2015-06-17T23:57:22+08:00</updated>
+  <id>http://blog.oneboxapp.com/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Kimimaro]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[First Post]]></title>
-    <link href="http://kimimaro.github.io/blog/2015/06/17/first-post/"/>
+    <link href="http://blog.oneboxapp.com/blog/20150617/first-post/"/>
     <updated>2015-06-17T23:37:54+08:00</updated>
-    <id>http://kimimaro.github.io/blog/2015/06/17/first-post</id>
+    <id>http://blog.oneboxapp.com/blog/20150617/first-post</id>
     <content type="html"><![CDATA[<h3>First Post</h3>
 ]]></content>
   </entry>
