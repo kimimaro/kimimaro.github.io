@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-18T00:20:20+08:00</updated>
+  <updated>2015-06-18T00:21:24+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -21,11 +21,9 @@
     <content type="html"><![CDATA[<blockquote>
   <ol>
     <li>及时响应用户</li>
-    <li>实现多核调度</li>
+    <li>实现多核调度_</li>
   </ol>
 </blockquote>
-
-<p>_,</p>
 
 <h3 id="nsoperation">NSOperation</h3>
 <ol>
