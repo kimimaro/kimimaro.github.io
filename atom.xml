@@ -4,7 +4,7 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-17T23:57:22+08:00</updated>
+  <updated>2015-06-18T00:07:29+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -14,11 +14,20 @@
 
   
   <entry>
+    <title type="html"><![CDATA[异步机制]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi/"/>
+    <updated>2015-06-18T00:02:06+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[First Post]]></title>
     <link href="http://blog.oneboxapp.com/blog/20150617/first-post/"/>
     <updated>2015-06-17T23:37:54+08:00</updated>
     <id>http://blog.oneboxapp.com/blog/20150617/first-post</id>
-    <content type="html"><![CDATA[<h3>First Post</h3>
+    <content type="html"><![CDATA[<h3 id="first-post">First Post</h3>
 ]]></content>
   </entry>
   
