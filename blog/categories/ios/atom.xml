@@ -4,11 +4,7 @@
   <title><![CDATA[分类：ios | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-<<<<<<< HEAD
-  <updated>2015-06-18T21:14:26+08:00</updated>
-=======
-  <updated>2015-06-18T00:25:34+08:00</updated>
->>>>>>> 5374a8a968bebc074228f93d1166233bc5beb6c5
+  <updated>2015-06-18T21:18:19+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -18,7 +14,6 @@
 
   
   <entry>
-<<<<<<< HEAD
     <title type="html"><![CDATA[JSPatch与Wax对比分析]]></title>
     <link href="http://blog.oneboxapp.com/blog/20150618/jspatchdui-bi/"/>
     <updated>2015-06-18T19:19:06+08:00</updated>
@@ -114,8 +109,6 @@
   </entry>
   
   <entry>
-=======
->>>>>>> 5374a8a968bebc074228f93d1166233bc5beb6c5
     <title type="html"><![CDATA[异步机制]]></title>
     <link href="http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi/"/>
     <updated>2015-06-18T00:02:06+08:00</updated>
