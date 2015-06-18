@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-18T21:18:19+08:00</updated>
+  <updated>2015-06-18T21:25:48+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -27,44 +27,43 @@
   <li>JSPatch相比于Wax的劣势</li>
 </ol>
 
-<p>–</p>
+<hr />
 
 <h1 id="jspatchwax">JSPatch相比于Wax的优势</h1>
-<p>内存管理
-—
-* JSPatch中JSValue负责维护被引用OC对象的生命周期，如果JS有变量引用时，这个OC对象引用计数就加1 ，JS变量的引用释放了就减1，如果OC上没别的持有者，这个OC对象的生命周期就跟着JS走了，会在JS进行垃圾回收时释放。
-* Wax在引用OC对象需要打上waxRetain标记，然后跑一个定时的GC查看这个对象的retainCount，当发现一个不再需要引用的对象retainCount大于1并且waxRetain为YES时（实际上的判断逻辑要复杂一些），就释放这个对象。依赖于retainCount，苹果官方是不推荐的，也不安全。</p>
 
-<h2 id="section">类型转换</h2>
+<h2 id="section">内存管理</h2>
+<ul>
+  <li>JSPatch中JSValue负责维护被引用OC对象的生命周期，如果JS有变量引用时，这个OC对象引用计数就加1 ，JS变量的引用释放了就减1，如果OC上没别的持有者，这个OC对象的生命周期就跟着JS走了，会在JS进行垃圾回收时释放。</li>
+  <li>Wax在引用OC对象需要打上waxRetain标记，然后跑一个定时的GC查看这个对象的retainCount，当发现一个不再需要引用的对象retainCount大于1并且waxRetain为YES时（实际上的判断逻辑要复杂一些），就释放这个对象。依赖于retainCount，苹果官方是不推荐的，也不安全。</li>
+</ul>
+
+<h2 id="section-1">类型转换</h2>
 <ul>
   <li>
     <p>JSPatch使用的是系统提供的类型转换，JSValue类内部可以看到完整的JS类型与OC的映射关系，同时支持NSArray和NSDictionary等类型的嵌套解析;</p>
 
-    <pre>
-@textblock
- Objective-C type  |   JavaScript type
- --------------------+---------------------
-       nil         |     undefined
-      NSNull       |        null
-     NSString      |       string
-     NSNumber      |   number, boolean
-   NSDictionary    |   Object object
-     NSArray       |    Array object
-      NSDate       |     Date object
-     NSBlock (1)   |   Function object (1)
-        id (2)     |   Wrapper object (2)
-      Class (3)    | Constructor object (3)
-@/textblock
-</pre>
+    <pre><code>  @textblock
+     Objective-C type  |   JavaScript type
+   --------------------+---------------------
+           nil         |     undefined
+          NSNull       |        null
+         NSString      |       string
+         NSNumber      |   number, boolean
+       NSDictionary    |   Object object
+         NSArray       |    Array object
+          NSDate       |     Date object
+         NSBlock (1)   |   Function object (1)
+            id (2)     |   Wrapper object (2)
+          Class (3)    | Constructor object (3)
+  @/textblock
+</code></pre>
+  </li>
+  <li>
+    <p>Lua中调用OC对象需要使用toobjc方法，否则会Crash，还有一个问题是NSDictionary、NSArray使用时是被copy的，也就是说你无法直接更改OC内存中的那个对象。</p>
   </li>
 </ul>
-<p>&lt;/pre&gt;</p>
 
-<ul>
-  <li>Lua中调用OC对象需要使用toobjc方法，否则会Crash，还有一个问题是NSDictionary、NSArray使用时是被copy的，也就是说你无法直接更改OC内存中的那个对象。</li>
-</ul>
-
-<h2 id="section-1">多线程</h2>
+<h2 id="section-2">多线程</h2>
 <ul>
   <li>由于JSCore的支持，JS脚本实现的方法在多线程中调用没有任何问题，同时JSPatch也针对GCD提供了封装；</li>
   <li>Lua语言本身是不支持多线程的，多个线程同时调用Lua就等于同时操作同一张Lua元表，可能出问题；同时Wax调用异步的话只能依赖performSelectorInBackground:了。</li>
@@ -76,13 +75,13 @@
   <li>个人认为Wax最受诟病的一点，无法支持Block使得方法替换和扩展都受到很大限制。</li>
 </ul>
 
-<h2 id="section-2">类型扩展</h2>
+<h2 id="section-3">类型扩展</h2>
 <ul>
   <li>JSPatch提供了CGRect、CGPoint、NSRange支持</li>
   <li>Lua调用OC对象时需要toobjc，NSDictionary、NSArray只支持copy，不支持retain</li>
 </ul>
 
-<h2 id="section-3">参数传递</h2>
+<h2 id="section-4">参数传递</h2>
 <blockquote>
   <p>为了替换方法实现，将方法传递到脚本语言的实现过程中必须知道当前方法的参数类型列表，传统的方法是用va_list得到，但是arm64上va_list的实现更改无法根据内存位置取出参数，对于这个坑也是困了好久才解决。但是个人认为bang牛给了一个更好的解法。</p>
 </blockquote>
@@ -94,7 +93,7 @@
 
 <h1 id="jspatchwax-1">JSPatch相比于Wax的劣势</h1>
 
-<h2 id="section-4">消息转发</h2>
+<h2 id="section-5">消息转发</h2>
 <ul>
   <li>JS语言不支持消息转发，对于一个对象如果不响应方法就直接崩溃了，所以bang牛用正则替换了方法调用，然后通过桥接方法 __c() 来实现；</li>
   <li>Lua解析后的方法、变量都放到元表中，支持消息转发，算是一个非常好的特性。</li>
