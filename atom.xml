@@ -4,11 +4,11 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-18T21:25:48+08:00</updated>
+  <updated>2015-06-19T10:58:16+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
-    
+    <email><![CDATA[kimirius@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
