@@ -104,3 +104,7 @@ facebook_like: false
 #Gravatar
 email_md5: 'c56d402092b54cba7b9c5c4927ea123d'
 
+#sofreshandsogreen
+default_asides: []
+sidebar: collapse
+portrait: true
