@@ -10,9 +10,10 @@ categories: iOS
 1. JSPatch相比于Wax的优势
 2. JSPatch相比于Wax的劣势
 
---
+---
 
 #JSPatch相比于Wax的优势
+
 内存管理
 ---
 * JSPatch中JSValue负责维护被引用OC对象的生命周期，如果JS有变量引用时，这个OC对象引用计数就加1 ，JS变量的引用释放了就减1，如果OC上没别的持有者，这个OC对象的生命周期就跟着JS走了，会在JS进行垃圾回收时释放。
@@ -22,22 +23,20 @@ categories: iOS
 ---
 * JSPatch使用的是系统提供的类型转换，JSValue类内部可以看到完整的JS类型与OC的映射关系，同时支持NSArray和NSDictionary等类型的嵌套解析;
 
-	<pre>
-@textblock
-   Objective-C type  |   JavaScript type
- --------------------+---------------------
-         nil         |     undefined
-        NSNull       |        null
-       NSString      |       string
-       NSNumber      |   number, boolean
-     NSDictionary    |   Object object
-       NSArray       |    Array object
-        NSDate       |     Date object
-       NSBlock (1)   |   Function object (1)
-          id (2)     |   Wrapper object (2)
-        Class (3)    | Constructor object (3)
-@/textblock
-</pre>
+        @textblock
+           Objective-C type  |   JavaScript type
+         --------------------+---------------------
+                 nil         |     undefined
+                NSNull       |        null
+               NSString      |       string
+               NSNumber      |   number, boolean
+             NSDictionary    |   Object object
+               NSArray       |    Array object
+                NSDate       |     Date object
+               NSBlock (1)   |   Function object (1)
+                  id (2)     |   Wrapper object (2)
+                Class (3)    | Constructor object (3)
+        @/textblock
 
 * Lua中调用OC对象需要使用toobjc方法，否则会Crash，还有一个问题是NSDictionary、NSArray使用时是被copy的，也就是说你无法直接更改OC内存中的那个对象。
 

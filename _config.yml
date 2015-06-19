@@ -19,7 +19,7 @@ date_format: "ordinal"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: "kimirius@gmail.com"
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -100,3 +100,7 @@ google_analytics_tracking_id:
 
 # Facebook Like
 facebook_like: false
+
+#Gravatar
+email_md5: 'c56d402092b54cba7b9c5c4927ea123d'
+
