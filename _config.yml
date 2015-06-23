@@ -21,6 +21,13 @@ subscribe_email:
 # RSS feeds can list your email address if you like
 email: "kimirius@gmail.com"
 
+# Owner/author information
+owner:
+  name:           Tianhang Yu
+  avatar:         avatar.jpg
+  bio:            "Your bio goes here. It shouldn't be super long but a good two sentences or two should suffice."
+  email:          "kimirius@gmail.com"
+
 # ----------------------- #
 #    Jekyll & Plugins     #
 # ----------------------- #
