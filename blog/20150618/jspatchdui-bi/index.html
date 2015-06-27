@@ -1,0 +1,239 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>JSPatch与Wax对比分析 - 402</title>
+	<meta name="author" content="Kimimaro">
+
+	
+	<meta name="description" content="JSPatch与Wax对比分析 JSPatch与Wax作为iOS平台上两大热更新框架使用不同的语言、基于相同的原理（ObjC动态绑定）一直备受iOS开发者的青睐，Wax出现较早且已经不再维护，但是也有了各种各样的分支版本； &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150618/jspatchdui-bi/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+  <!-- Fuck GFW, use local image -->
+	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
+  <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:kimirius@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/kimirius" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/kimimaro" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">JSPatch与Wax对比分析</h1>
+	<div class="entry-content" itemprop="articleBody"><blockquote>
+  <p><a href="https://github.com/bang590/JSPatch">JSPatch</a>与<a href="https://github.com/probablycorey/wax">Wax</a>作为iOS平台上两大热更新框架使用不同的语言、基于相同的原理（ObjC动态绑定）一直备受iOS开发者的青睐，Wax出现较早且已经不再维护，但是也有了各种各样的分支版本；JSPatch作为后起之秀得益于iOS7苹果开放了JavascriptCore.framework的API，相比以前的Wax框架有了很多更新，下面就根据以往的开发经验简单比较一下二者的优势劣势，如果想对两个框架有更多的了解，请移步上文的官方网站和相关文档。</p>
+</blockquote>
+
+<ol>
+  <li>JSPatch相比于Wax的优势</li>
+  <li>JSPatch相比于Wax的劣势</li>
+</ol>
+
+<hr />
+
+<h1 id="jspatchwax">JSPatch相比于Wax的优势</h1>
+
+<h2 id="section">内存管理</h2>
+<ul>
+  <li>JSPatch中JSValue负责维护被引用OC对象的生命周期，如果JS有变量引用时，这个OC对象引用计数就加1 ，JS变量的引用释放了就减1，如果OC上没别的持有者，这个OC对象的生命周期就跟着JS走了，会在JS进行垃圾回收时释放。</li>
+  <li>Wax在引用OC对象需要打上waxRetain标记，然后跑一个定时的GC查看这个对象的retainCount，当发现一个不再需要引用的对象retainCount大于1并且waxRetain为YES时（实际上的判断逻辑要复杂一些），就释放这个对象。依赖于retainCount，苹果官方是不推荐的，也不安全。</li>
+</ul>
+
+<h2 id="section-1">类型转换</h2>
+<ul>
+  <li>
+    <p>JSPatch使用的是系统提供的类型转换，JSValue类内部可以看到完整的JS类型与OC的映射关系，同时支持NSArray和NSDictionary等类型的嵌套解析;</p>
+
+    <pre><code>  @textblock
+     Objective-C type  |   JavaScript type
+   --------------------+---------------------
+           nil         |     undefined
+          NSNull       |        null
+         NSString      |       string
+         NSNumber      |   number, boolean
+       NSDictionary    |   Object object
+         NSArray       |    Array object
+          NSDate       |     Date object
+         NSBlock (1)   |   Function object (1)
+            id (2)     |   Wrapper object (2)
+          Class (3)    | Constructor object (3)
+  @/textblock
+</code></pre>
+  </li>
+  <li>
+    <p>Lua中调用OC对象需要使用toobjc方法，否则会Crash，还有一个问题是NSDictionary、NSArray使用时是被copy的，也就是说你无法直接更改OC内存中的那个对象。</p>
+  </li>
+</ul>
+
+<h2 id="section-2">多线程</h2>
+<ul>
+  <li>由于JSCore的支持，JS脚本实现的方法在多线程中调用没有任何问题，同时JSPatch也针对GCD提供了封装；</li>
+  <li>Lua语言本身是不支持多线程的，多个线程同时调用Lua就等于同时操作同一张Lua元表，可能出问题；同时Wax调用异步的话只能依赖performSelectorInBackground:了。</li>
+</ul>
+
+<h2 id="block">Block</h2>
+<ul>
+  <li>JSPatch：天然支持，JS的Function类型会对应转换成NSBlock执行；</li>
+  <li>个人认为Wax最受诟病的一点，无法支持Block使得方法替换和扩展都受到很大限制。</li>
+</ul>
+
+<h2 id="section-3">类型扩展</h2>
+<ul>
+  <li>JSPatch提供了CGRect、CGPoint、NSRange支持</li>
+  <li>Lua调用OC对象时需要toobjc，NSDictionary、NSArray只支持copy，不支持retain</li>
+</ul>
+
+<h2 id="section-4">参数传递</h2>
+<blockquote>
+  <p>为了替换方法实现，将方法传递到脚本语言的实现过程中必须知道当前方法的参数类型列表，传统的方法是用va_list得到，但是arm64上va_list的实现更改无法根据内存位置取出参数，对于这个坑也是困了好久才解决。但是个人认为bang牛给了一个更好的解法。</p>
+</blockquote>
+
+<ul>
+  <li>JSPatch为了解决arm64上va_list拿不到参数的问题，使用forwardInvocation方式，支持各种类型参数枚举；</li>
+  <li>Wax框架维护期间还没有出现arm64所以也就一直平静的使用va_list，当然现在升级的话也可以使用JSPatch的这种方式；</li>
+</ul>
+
+<h1 id="jspatchwax-1">JSPatch相比于Wax的劣势</h1>
+
+<h2 id="section-5">消息转发</h2>
+<ul>
+  <li>JS语言不支持消息转发，对于一个对象如果不响应方法就直接崩溃了，所以bang牛用正则替换了方法调用，然后通过桥接方法 __c() 来实现；</li>
+  <li>Lua解析后的方法、变量都放到元表中，支持消息转发，算是一个非常好的特性。</li>
+</ul>
+
+<h2 id="ios6">iOS6支持</h2>
+<ul>
+  <li>JSPatch基于JSCore，仅支持iOS7+</li>
+  <li>Wax理论上支持所有iOS版本。</li>
+</ul>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Kimimaro
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	<script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'kimimaro';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150618/jspatchdui-bi/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150618/jspatchdui-bi/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类：ios | 402]]></title>
+  <link href="http://blog.oneboxapp.com/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://blog.oneboxapp.com/"/>
+  <updated>2015-06-23T15:54:42+08:00</updated>
+  <id>http://blog.oneboxapp.com/</id>
+  <author>
+    <name><![CDATA[Kimimaro]]></name>
+    <email><![CDATA[kimirius@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[JSPatch与Wax对比分析]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150618/jspatchdui-bi/"/>
+    <updated>2015-06-18T19:19:06+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150618/jspatchdui-bi</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p><a href="https://github.com/bang590/JSPatch">JSPatch</a>与<a href="https://github.com/probablycorey/wax">Wax</a>作为iOS平台上两大热更新框架使用不同的语言、基于相同的原理（ObjC动态绑定）一直备受iOS开发者的青睐，Wax出现较早且已经不再维护，但是也有了各种各样的分支版本；JSPatch作为后起之秀得益于iOS7苹果开放了JavascriptCore.framework的API，相比以前的Wax框架有了很多更新，下面就根据以往的开发经验简单比较一下二者的优势劣势，如果想对两个框架有更多的了解，请移步上文的官方网站和相关文档。</p>
+</blockquote>
+
+<ol>
+  <li>JSPatch相比于Wax的优势</li>
+  <li>JSPatch相比于Wax的劣势</li>
+</ol>
+
+<hr />
+
+<h1 id="jspatchwax">JSPatch相比于Wax的优势</h1>
+
+<h2 id="section">内存管理</h2>
+<ul>
+  <li>JSPatch中JSValue负责维护被引用OC对象的生命周期，如果JS有变量引用时，这个OC对象引用计数就加1 ，JS变量的引用释放了就减1，如果OC上没别的持有者，这个OC对象的生命周期就跟着JS走了，会在JS进行垃圾回收时释放。</li>
+  <li>Wax在引用OC对象需要打上waxRetain标记，然后跑一个定时的GC查看这个对象的retainCount，当发现一个不再需要引用的对象retainCount大于1并且waxRetain为YES时（实际上的判断逻辑要复杂一些），就释放这个对象。依赖于retainCount，苹果官方是不推荐的，也不安全。</li>
+</ul>
+
+<h2 id="section-1">类型转换</h2>
+<ul>
+  <li>
+    <p>JSPatch使用的是系统提供的类型转换，JSValue类内部可以看到完整的JS类型与OC的映射关系，同时支持NSArray和NSDictionary等类型的嵌套解析;</p>
+
+    <pre><code>  @textblock
+     Objective-C type  |   JavaScript type
+   --------------------+---------------------
+           nil         |     undefined
+          NSNull       |        null
+         NSString      |       string
+         NSNumber      |   number, boolean
+       NSDictionary    |   Object object
+         NSArray       |    Array object
+          NSDate       |     Date object
+         NSBlock (1)   |   Function object (1)
+            id (2)     |   Wrapper object (2)
+          Class (3)    | Constructor object (3)
+  @/textblock
+</code></pre>
+  </li>
+  <li>
+    <p>Lua中调用OC对象需要使用toobjc方法，否则会Crash，还有一个问题是NSDictionary、NSArray使用时是被copy的，也就是说你无法直接更改OC内存中的那个对象。</p>
+  </li>
+</ul>
+
+<h2 id="section-2">多线程</h2>
+<ul>
+  <li>由于JSCore的支持，JS脚本实现的方法在多线程中调用没有任何问题，同时JSPatch也针对GCD提供了封装；</li>
+  <li>Lua语言本身是不支持多线程的，多个线程同时调用Lua就等于同时操作同一张Lua元表，可能出问题；同时Wax调用异步的话只能依赖performSelectorInBackground:了。</li>
+</ul>
+
+<h2 id="block">Block</h2>
+<ul>
+  <li>JSPatch：天然支持，JS的Function类型会对应转换成NSBlock执行；</li>
+  <li>个人认为Wax最受诟病的一点，无法支持Block使得方法替换和扩展都受到很大限制。</li>
+</ul>
+
+<h2 id="section-3">类型扩展</h2>
+<ul>
+  <li>JSPatch提供了CGRect、CGPoint、NSRange支持</li>
+  <li>Lua调用OC对象时需要toobjc，NSDictionary、NSArray只支持copy，不支持retain</li>
+</ul>
+
+<h2 id="section-4">参数传递</h2>
+<blockquote>
+  <p>为了替换方法实现，将方法传递到脚本语言的实现过程中必须知道当前方法的参数类型列表，传统的方法是用va_list得到，但是arm64上va_list的实现更改无法根据内存位置取出参数，对于这个坑也是困了好久才解决。但是个人认为bang牛给了一个更好的解法。</p>
+</blockquote>
+
+<ul>
+  <li>JSPatch为了解决arm64上va_list拿不到参数的问题，使用forwardInvocation方式，支持各种类型参数枚举；</li>
+  <li>Wax框架维护期间还没有出现arm64所以也就一直平静的使用va_list，当然现在升级的话也可以使用JSPatch的这种方式；</li>
+</ul>
+
+<h1 id="jspatchwax-1">JSPatch相比于Wax的劣势</h1>
+
+<h2 id="section-5">消息转发</h2>
+<ul>
+  <li>JS语言不支持消息转发，对于一个对象如果不响应方法就直接崩溃了，所以bang牛用正则替换了方法调用，然后通过桥接方法 __c() 来实现；</li>
+  <li>Lua解析后的方法、变量都放到元表中，支持消息转发，算是一个非常好的特性。</li>
+</ul>
+
+<h2 id="ios6">iOS6支持</h2>
+<ul>
+  <li>JSPatch基于JSCore，仅支持iOS7+</li>
+  <li>Wax理论上支持所有iOS版本。</li>
+</ul>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[异步机制]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi/"/>
+    <updated>2015-06-18T00:02:06+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi</id>
+    <content type="html"><![CDATA[<blockquote>
+  <ol>
+    <li>及时响应用户</li>
+    <li>实现多核调度</li>
+  </ol>
+</blockquote>
+
+<h3 id="nsoperation">NSOperation</h3>
+<ol>
+  <li>封装了大部分异步相关的逻辑，基础类，使用的时候要继承它创建我们自己的子类；</li>
+  <li>系统实现的具体的类：NSInvocationOperation，NSBlockOperation；</li>
+  <li>Dependency，Completion block，KVO，Priority，Cancel</li>
+  <li>non-concurrent
+    <ul>
+      <li>重写main()</li>
+      <li>autoreleasepool</li>
+      <li>不需要自己维护状态</li>
+    </ul>
+  </li>
+  <li>concurrent
+    <ul>
+      <li>实现start()</li>
+      <li>实现异步操作</li>
+      <li>自己维护isFinished，isExcuting，isCancelled（manual KVO）</li>
+    </ul>
+  </li>
+  <li>判断是否cancel
+    <ul>
+      <li>main/start</li>
+      <li>循环开始处</li>
+      <li>逻辑区分点</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="dispatch-queue">dispatch queue</h3>
+<ol>
+  <li>将业务逻辑写在block里
+    <ul>
+      <li>
+        <p>定义：</p>
+
+        <pre><code>  ^return type(params){expression}	
+  typedef return type(^name)(params)
+</code></pre>
+      </li>
+      <li>
+        <p>声明：</p>
+
+        <pre><code>  self.block = ^(params){expression};
+</code></pre>
+      </li>
+      <li>
+        <p>方法中定义的block在stack上，当调用copy时，会copy到heap上</p>
+      </li>
+    </ul>
+  </li>
+  <li>finalizer</li>
+  <li>Serial(private dispatch queue)
+    <ul>
+      <li>block间顺序执行</li>
+      <li>dispatch_queue_create()</li>
+      <li>
+        <p>需要自己维护reference count:</p>
+
+        <pre><code>  dispatch_release()
+</code></pre>
+      </li>
+    </ul>
+  </li>
+  <li>Concurrent(global dispatch queue)
+    <ul>
+      <li>block间并发执行</li>
+      <li>dispatch_get_global_queue()</li>
+      <li>normal, low, high</li>
+      <li>系统维护reference count</li>
+    </ul>
+  </li>
+  <li>main dispatch queue
+    <ul>
+      <li>在主线程run loop执行</li>
+      <li>更新UI/主线程作为同步</li>
+    </ul>
+  </li>
+  <li>dispatch queue维护自己的autoreleasepool</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[First Post]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150617/first-post/"/>
+    <updated>2015-06-17T23:37:54+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150617/first-post</id>
+    <content type="html"><![CDATA[<h3 id="first-post">First Post</h3>
+]]></content>
+  </entry>
+  
+</feed>
