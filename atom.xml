@@ -4,7 +4,7 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-23T15:54:42+08:00</updated>
+  <updated>2015-06-27T11:19:33+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -12,6 +12,170 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[APNs实现小记]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/apnsshi-xian-xiao-ji/"/>
+    <updated>2015-06-27T11:07:51+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/apnsshi-xian-xiao-ji</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p>转自己以前写的博客，很早时候的学习笔记了，不过下面几个连接貌似都失效了。。。囧</p>
+</blockquote>
+
+<p>推荐如下链接，前两个介绍APNs的设置流程，已经很详尽，虽然很详尽但是个人感觉有些晦涩难懂，把简单的流程搞的复杂。我下面的内容是我设置APNs的过：</p>
+
+<p>[iPhone消息推送服务实现 - vber的专栏 - 博客频道 - CSDN.NET]</p>
+
+<p>[apple push notification service apple与Python结合推送 - iOS开发讨论区 - Tiny4Cocoa]</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[编写push notification之获取device token</td>
+      <td>Marshal’s Blog]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><a href="http://slj.me/2010/02/iphone-push-notification/">偷窥iPhone Push Notification的幕后 - SLJ.me - 申力军</a></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[iPhone的Push(推送通知)功能原理浅析 - iPhone/iPad 进阶讨论区 - 悦Phone论坛 iPhone</td>
+      <td>iPad开发者、苹果开发者]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p> 第一次接触APNs，鼓捣了一下午终于有了点眉目。</p>
+
+<p> 链接1,2的流程介绍都是从最基础的入门级介绍，其实在你开发一款iOS app时，你需要做的是申请开发者帐号，设置Apple ID，生成provisioning file导入到Xcode，而APNs只是在设置Apple ID的时候多选择了一个选项，即Apple ID 的configure页面的 Enable for Apple Push Notification service选项，勾选它，然后根据你的需要生成dev或者release版本的SSL证书（证书生成的过程apple已经给了详尽的提示）。这里要注意的是，勾选了enable for apns之后，其实你的provisioning file已经改变，所以要重新下载新的导入Xcode。</p>
+
+<hr />
+<p>此时，你的app已经支持apns了。</p>
+
+<p> 之后需要做的是两个方面：</p>
+
+<ol>
+  <li>
+    <p>客户端 在appDelegate中编写代码，为了阅读方便就把上面链接中的代码重新贴一次：</p>
+
+    <ul>
+      <li>(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {<br />
+[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];<br />
+ }</li>
+      <li>(void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {<br />
+[self alertNotice:@”” withMSG:[NSString stringWithFormat:@”Error in registration. Error: %@”, err] cancleButtonTitle:@”Ok” otherButtonTitle:@””];<br />
+ }</li>
+      <li>(void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {<br />
+NSLog(@”devToken=%@”,deviceToken);<br />
+[self alertNotice:@”” withMSG:[NSString stringWithFormat:@”devToken=%@”,deviceToken] cancleButtonTitle:@”Ok” otherButtonTitle:@””];<br />
+ }</li>
+    </ul>
+  </li>
+</ol>
+
+<p> 其实就是在appDidFinishLaunch的时候注册（register）apns，然后通过didRegisterForRemoteNotificationsWithDeviceToken得到DeviceToken。</p>
+
+<p>接受服务器消息并改变客户端本地状态（如在app图表显示带数字的小红圈）的代码如下：</p>
+
+<p>－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {</p>
+
+<pre><code>for (id key in userInfo) {
+    NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
+}     }
+</code></pre>
+
+<p> 到此为止，当你在真机上运行你的app时就会出现：是否允许app显示push notification的提示框。</p>
+
+<ol>
+  <li>服务器端 服务器端可以用PHP，Python等实现，网上也有一些现成的库如开源库APNSWrapper。现在你会发现我理解的思路跟链接1,2的介绍流程稍有不同，同时你会发现我还没有使用Enable for Apple Push Notification service时生成的证书文件，现在回到Apple ID configure页面下载生成的 Development (or Production) Push SSL Certificate 文件，关于这个文件要多说几句：</li>
+</ol>
+
+<blockquote>
+  <p>这个文件的作用是让apple的APNs服务器确认服务器端具有push notification的权限。将这个证书作一定的处理（＊至于是什么处理为了不影响文章的连贯性会在下面介绍），生成一个ck.pem文件（这个名字可以自定义）。</p>
+</blockquote>
+
+<p> 然后就要涉及到APNs的工作机制，我的总结如下：当一个device（苹果设备）启用apns功能（就是通知功能）的时候会和apple的APNs服务器建立TLS连接，APNs服务器根据device的UDID和加密密钥新建一个DeviceToken（它的作用是让服务器端指定device，唯一）返回给device，然后device会把device token给你的app客户端，这时会调用刚才写的didRegisterForRemoteNotificationsWithDeviceToken方法，你可以在这个方法中将device token返回给服务器端。此后，如果服务器端push了一个notification给客户端，需要将这个device token和之前处理的ck.pem文件同时发送给APNs服务器，APNs服务器会验证你的ck.pem文件然后根据device token指定的设备推送消息给客户端）。当客户端接受到push的通知时调用didReceiveRemoteNotification方法，你可以在这个方法中放入你需要的操作。</p>
+
+<blockquote>
+  <p>现在再回到Apple ID configure页面下载生成的 Development (or Production) Push SSL Certificate 文件，对它的处理链接1,2都有介绍，就是：</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>选择“我的证书”, 选定推送服务证书(Apple Development Push Services*),导出到桌面,保存为Certificates.p12。</p>
+  </li>
+  <li>
+    <p>在终端中运行如下命令:</p>
+
+ 	openssl pkcs12 -clcerts -nokeys -out cert.pem -in Certificates.p12<br />
+ 	openssl pkcs12 -nocerts -out key.pem -in Certificates.p12<br />
+ 	openssl rsa -in key.pem -out key.unencrypted.pem<br />
+    <pre><code> 	cat cert.pem key.unencrypted.pem &gt; ck.pem  
+
+ ck.pem文件则是PHP推送消息时所使用的证书文件。
+</code></pre>
+  </li>
+</ol>
+
+<p> 你剩下的任务就是编写服务器端的代码，push notification，这部分只要记住发送device token和证书文件就可以了。</p>
+
+<p>（以上就是我理解学习APNs的过程，许多理解都不深入，所以描述也不准确，包涵～）</p>
+
+<h2 id="section">更新：</h2>
+
+<p><strong>开发中遇到的问题汇总</strong>：</p>
+
+<ol>
+  <li>
+    <p>正常的iPhone刷系统之后，是没有设备证书和密钥的。这就是为什么iPhone会需要连接到 iTunes上进行激活——激活过程中，Apple会分配给每台iPhone独一无二的设备证书(device certificate)和密钥(key)。(如果没有意识到这个会一直收到 “未找到应用程序的”aps-environment” 的权利字符串)</p>
+  </li>
+  <li>
+    <p>如果生成appleID的时候没有enable aps，那么enable之后一定要删掉原来的dev和rc证书重新生成，这样才能保证开启新功能，否则仅仅是刷新这张证书仍然会没有aps，提示（ “未找到应用程序的”aps-environment” 的权利字符串）</p>
+  </li>
+  <li>
+    <p>APNs证书如果是系统证书那么最好拷贝到登陆证书中，这样可以直接导出成p12</p>
+  </li>
+</ol>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[SIGABRT错误的调试办法]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/sigabrtcuo-wu-de-diao-shi-ban-fa/"/>
+    <updated>2015-06-27T10:50:39+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/sigabrtcuo-wu-de-diao-shi-ban-fa</id>
+    <content type="html"><![CDATA[<p>iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法：</p>
+
+<p><a href="http://stackoverflow.com/questions/9782621/i-have-an-error-in-main-m-thread-1-signal-sigabrt-how-can-i-fix-this">原文链接</a></p>
+
+<p>重点就是 <strong>Set an exception breakpoint.</strong></p>
+
+<p>之前我们遇到的在main函数上的那个崩溃信息，如果想要调试就加入一个 an exception breakpoint ，它会在exception 被 cathc 的时候停下来，这样就可以追踪到造成 exception 的代码了。</p>
+
+<p>加入一个exception breakpoint的方法就是：在navigator的断点页面，点击左下角的加号就能看到 exception breakpoint；</p>
+
+<p>加入的时候可以设置，默认是 all，也可以选择针对 oc 还是 c 的断点。</p>
+
+<blockquote>
+  <p>原文：</p>
+
+  <p>When you get SIGABRT on that line of main, it means that your program is raising an exception. The stack trace shows where the exception is being caught, &gt;not where it’s being raised. Usually this is not helpful. To debug the problem, you can do two things:</p>
+
+  <ol>
+    <li>
+      <p>Click the “Continue Program Execution” button in the debugger control bar, or choose Program &gt; Debug &gt; Continue from the menu bar. This will let the program continue the exception-raising process. It will print a message to the debugger console that will help you understand what’s wrong. (You may have &gt;to continue execution a couple of times before it actually prints messages.) Read the messages carefully! They usually continue helpful information.</p>
+    </li>
+    <li>
+      <p>Set an exception breakpoint. This will make Xcode stop your program at the point where the exception is being raised, so you can see the code and the stack trace that is causing the problem.</p>
+    </li>
+  </ol>
+</blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JSPatch与Wax对比分析]]></title>

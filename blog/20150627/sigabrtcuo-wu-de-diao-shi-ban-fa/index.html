@@ -5,11 +5,11 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Blog Archive - 402</title>
+	<title>SIGABRT错误的调试办法 - 402</title>
 	<meta name="author" content="Kimimaro">
 
 	
-	<meta name="description" content=" 2015 Jun 27 APNs实现小记 Jun 27 SIGABRT错误的调试办法 Jun 18 ios JSPatch与Wax对比分析 Jun 18 JSPatch初探 Jun 18 ios 异步机制 Jun 17 ios First Post ">
+	<meta name="description" content="SIGABRT错误的调试办法 iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法： 原文链接 重点就是 Set an exception breakpoint. &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
 
 	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
 	
-	<link rel="canonical" href="http://blog.oneboxapp.com/archives/">
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150627/sigabrtcuo-wu-de-diao-shi-ban-fa/">
 	<link href="/favicon.png" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -86,143 +86,36 @@
 				
 			
 			<div class="mid-col-container">
-				<div id="content" class="inner"><article class="page">
-    
-    <h1 class="title">Blog Archive</h1>
-    
-    <div class="entry-content"><div id="blog-archives">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">SIGABRT错误的调试办法</h1>
+	<div class="entry-content" itemprop="articleBody"><p>iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法：</p>
 
+<p><a href="http://stackoverflow.com/questions/9782621/i-have-an-error-in-main-m-thread-1-signal-sigabrt-how-can-i-fix-this">原文链接</a></p>
 
+<p>重点就是 <strong>Set an exception breakpoint.</strong></p>
 
-  
-  <h2>2015</h2>
+<p>之前我们遇到的在main函数上的那个崩溃信息，如果想要调试就加入一个 an exception breakpoint ，它会在exception 被 cathc 的时候停下来，这样就可以追踪到造成 exception 的代码了。</p>
 
-<article>
-  
+<p>加入一个exception breakpoint的方法就是：在navigator的断点页面，点击左下角的加号就能看到 exception breakpoint；</p>
 
+<p>加入的时候可以设置，默认是 all，也可以选择针对 oc 还是 c 的断点。</p>
 
-<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<span class="date"><time datetime="2015-06-27T11:07:51+08:00" itemprop="datePublished">Jun 27</time></span>
-		<br>
-		<span class="tags">
+<blockquote>
+  <p>原文：</p>
 
-</span>
-	    
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/apnsshi-xian-xiao-ji/">APNs实现小记</a></h1>
-</article>
-</article>
+  <p>When you get SIGABRT on that line of main, it means that your program is raising an exception. The stack trace shows where the exception is being caught, &gt;not where it’s being raised. Usually this is not helpful. To debug the problem, you can do two things:</p>
 
-
-
-<article>
-  
-
-
-<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<span class="date"><time datetime="2015-06-27T10:50:39+08:00" itemprop="datePublished">Jun 27</time></span>
-		<br>
-		<span class="tags">
-
-</span>
-	    
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/sigabrtcuo-wu-de-diao-shi-ban-fa/">SIGABRT错误的调试办法</a></h1>
-</article>
-</article>
-
-
-
-<article>
-  
-
-
-<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<span class="date"><time datetime="2015-06-18T19:19:06+08:00" itemprop="datePublished">Jun 18</time></span>
-		<br>
-		<span class="tags">
-
-
-	<a class='category' href='/blog/categories/ios/'>ios</a>
-
-
-</span>
-	    
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150618/jspatchdui-bi/">JSPatch与Wax对比分析</a></h1>
-</article>
-</article>
-
-
-
-<article>
-  
-
-
-<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<span class="date"><time datetime="2015-06-18T11:56:50+08:00" itemprop="datePublished">Jun 18</time></span>
-		<br>
-		<span class="tags">
-
-</span>
-	    
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150618/jspatchchu-tan/">JSPatch初探</a></h1>
-</article>
-</article>
-
-
-
-<article>
-  
-
-
-<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<span class="date"><time datetime="2015-06-18T00:02:06+08:00" itemprop="datePublished">Jun 18</time></span>
-		<br>
-		<span class="tags">
-
-
-	<a class='category' href='/blog/categories/ios/'>ios</a>
-
-
-</span>
-	    
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150618/yi-bu-ji-zhi/">异步机制</a></h1>
-</article>
-</article>
-
-
-
-<article>
-  
-
-
-<article itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<span class="date"><time datetime="2015-06-17T23:37:54+08:00" itemprop="datePublished">Jun 17</time></span>
-		<br>
-		<span class="tags">
-
-
-	<a class='category' href='/blog/categories/ios/'>ios</a>
-
-
-</span>
-	    
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150617/first-post/">First Post</a></h1>
-</article>
-</article>
-
+  <ol>
+    <li>
+      <p>Click the “Continue Program Execution” button in the debugger control bar, or choose Program &gt; Debug &gt; Continue from the menu bar. This will let the program continue the exception-raising process. It will print a message to the debugger console that will help you understand what’s wrong. (You may have &gt;to continue execution a couple of times before it actually prints messages.) Read the messages carefully! They usually continue helpful information.</p>
+    </li>
+    <li>
+      <p>Set an exception breakpoint. This will make Xcode stop your program at the point where the exception is being raised, so you can see the code and the stack trace that is causing the problem.</p>
+    </li>
+  </ol>
+</blockquote>
 </div>
-</div>
+
 </article>
 
 	<div class="share">
@@ -239,6 +132,11 @@
 
 
 
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
 </div>
 			</div>
 			<footer id="footer" class="inner">Copyright &copy; 2015
@@ -262,7 +160,10 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       var disqus_shortname = 'kimimaro';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150627/sigabrtcuo-wu-de-diao-shi-ban-fa/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150627/sigabrtcuo-wu-de-diao-shi-ban-fa/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
