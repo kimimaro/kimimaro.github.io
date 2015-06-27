@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://blog.oneboxapp.com/blog/20150627/htc-g14-sensation-z710e-shua-ji-zong-jie/</loc>
+    <lastmod>2015-06-27T12:20:35+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/</loc>
     <lastmod>2015-06-27T12:15:00+08:00</lastmod>
   </url>
@@ -85,8 +89,5 @@
   </url>
   <url>
     <loc>http://blog.oneboxapp.com/blog/categories/ios/</loc>
-  </url>
-  <url>
-    <loc>http://blog.oneboxapp.com/posts/2/</loc>
   </url>
 </urlset>
