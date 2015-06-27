@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类：ios,jspatch | 402]]></title>
+  <link href="http://blog.oneboxapp.com/blog/categories/ios-jspatch/atom.xml" rel="self"/>
+  <link href="http://blog.oneboxapp.com/"/>
+  <updated>2015-06-27T12:31:04+08:00</updated>
+  <id>http://blog.oneboxapp.com/</id>
+  <author>
+    <name><![CDATA[Kimimaro]]></name>
+    <email><![CDATA[kimirius@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[JSPatch初探]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150618/jspatchchu-tan/"/>
+    <updated>2015-06-18T11:56:50+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150618/jspatchchu-tan</id>
+    <content type="html"><![CDATA[<hr />
+<ol>
+  <li>JSPatch是什么？</li>
+  <li>Objective-C动态绑定机制</li>
+  <li>JSPatch原理</li>
+  <li>JSPatch实用举例</li>
+  <li>与现有方案（Wax）的对比</li>
+</ol>
+
+<hr />
+
+<blockquote>
+  <p><a href="http://blog.cnbang.net/tech/2808/">JSPatch实现原理详解</a></p>
+</blockquote>
+
+<h2 id="jspatch">一、JSPatch介绍</h2>
+<blockquote>
+  <p>最直观的介绍莫过于官方文档</p>
+</blockquote>
+
+<ul>
+  <li><a href="https://github.com/bang590/JSPatch">bang590/JSPatch</a></li>
+  <li>利用OC Runtime桥接Objective-C和JavaScript</li>
+  <li>用处：
+    <ul>
+      <li>添加模块</li>
+      <li>修复线上Bug</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="oc">二、OC动态绑定机制</h2>
+<blockquote>
+  <p>一切iOS平台上实现动态BugFix和新增模块的技术都基于ObjC的动态绑定、动态加载、消息转发</p>
+</blockquote>
+
+<ul>
+  <li>所谓动态绑定就是利用OC Runtime可以做如下几件事情：
+    <ul>
+      <li>给已有类增加方法</li>
+      <li>替换现有类的方法指针，指向新的方法实现</li>
+      <li>动态创建一个类</li>
+    </ul>
+  </li>
+  <li>
+    <p>【类对象】动态绑定机制源于OC的动态类实现</p>
+
+    <pre><code>      #import &lt;objc/runtime.h&gt;
+</code></pre>
+
+    <ul>
+      <li>除基本类型外所有OC类都继承于NSObject类</li>
+      <li>NSObject对象有一个指向该实例所属类的isa指针</li>
+      <li>OC中的类也是一个对象的概念，因此我们可以动态的创建一个类对象</li>
+      <li>objc_allocateClassPair</li>
+      <li>class_addMethod</li>
+      <li>objc_registerClassPair</li>
+    </ul>
+  </li>
+  <li>【消息】方法替换和新增源于消息转发机制
+    <ul>
+      <li>OC中方法调用起始是一个对象响应消息的过程</li>
+      <li>可响应消息列表存在于对象isa指针所指向的类对象上</li>
+      <li>objc_msgSend</li>
+      <li>forwardInvocation:</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="jspatch-1">三、JSPatch原理</h2>
+<blockquote>
+  <p>通过forwardInvocation方法，将</p>
+</blockquote>
+
+]]></content>
+  </entry>
+  
+</feed>

@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-27T12:24:29+08:00</updated>
+  <updated>2015-06-27T12:31:04+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -199,15 +199,6 @@
   <li>dispatch queue维护自己的autoreleasepool</li>
 </ol>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[First Post]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150617/first-post/"/>
-    <updated>2015-06-17T23:37:54+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150617/first-post</id>
-    <content type="html"><![CDATA[<h3 id="first-post">First Post</h3>
 ]]></content>
   </entry>
   

@@ -88,6 +88,12 @@
     <loc>http://blog.oneboxapp.com/search.html</loc>
   </url>
   <url>
+    <loc>http://blog.oneboxapp.com/blog/categories/test/</loc>
+  </url>
+  <url>
     <loc>http://blog.oneboxapp.com/blog/categories/ios/</loc>
+  </url>
+  <url>
+    <loc>http://blog.oneboxapp.com/blog/categories/ios-jspatch/</loc>
   </url>
 </urlset>

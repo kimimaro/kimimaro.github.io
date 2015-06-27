@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类：test | 402]]></title>
+  <link href="http://blog.oneboxapp.com/blog/categories/test/atom.xml" rel="self"/>
+  <link href="http://blog.oneboxapp.com/"/>
+  <updated>2015-06-27T12:31:04+08:00</updated>
+  <id>http://blog.oneboxapp.com/</id>
+  <author>
+    <name><![CDATA[Kimimaro]]></name>
+    <email><![CDATA[kimirius@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[First Post]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150617/first-post/"/>
+    <updated>2015-06-17T23:37:54+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150617/first-post</id>
+    <content type="html"><![CDATA[<h3 id="first-post">First Post</h3>
+]]></content>
+  </entry>
+  
+</feed>
