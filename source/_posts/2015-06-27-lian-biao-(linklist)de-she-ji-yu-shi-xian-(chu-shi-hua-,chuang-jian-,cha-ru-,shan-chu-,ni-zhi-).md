@@ -3,7 +3,7 @@ layout: post
 title: "链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置）"
 date: 2015-06-27 12:08:20 +0800
 comments: true
-categories: 
+categories: algorithm
 ---
 
 只是为了自己学习留作记录，需要的朋友可以看看。

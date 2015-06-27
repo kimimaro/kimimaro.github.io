@@ -3,7 +3,7 @@ layout: post
 title: "APNs实现小记"
 date: 2015-06-27 11:07:51 +0800
 comments: true
-categories: 
+categories: iOS
 ---
 
 > 转自己以前写的博客，很早时候的学习笔记了，不过下面几个连接貌似都失效了。。。囧

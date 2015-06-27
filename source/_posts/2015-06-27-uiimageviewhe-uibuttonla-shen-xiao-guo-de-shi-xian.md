@@ -3,7 +3,7 @@ layout: post
 title: "UIImageView和UIButton拉伸效果的实现"
 date: 2015-06-27 11:49:22 +0800
 comments: true
-categories: 
+categories: iOS
 ---
 
 UIImageView中Image拉伸效果的实现：

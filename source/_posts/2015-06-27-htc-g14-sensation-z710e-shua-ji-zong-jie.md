@@ -3,7 +3,7 @@ layout: post
 title: "HTC G14 Sensation Z710e 刷机总结"
 date: 2015-06-27 12:20:35 +0800
 comments: true
-categories: 
+categories: Android
 ---
 
 

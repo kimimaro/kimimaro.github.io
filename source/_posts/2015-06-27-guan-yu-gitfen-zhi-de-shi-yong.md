@@ -3,7 +3,7 @@ layout: post
 title: "关于git分支的使用"
 date: 2015-06-27 11:48:12 +0800
 comments: true
-categories: 
+categories: Git
 ---
 学习记录，不正确的地方望指正！
 

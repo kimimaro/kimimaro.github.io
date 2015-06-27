@@ -3,7 +3,7 @@ layout: post
 title: "有符号定点数的表示方法"
 date: 2015-06-27 11:54:10 +0800
 comments: true
-categories: 
+categories: algorithm
 ---
 
 &emsp;有符号定点数用首位0表示正，1表示负，正数与负数的补码求法不同。

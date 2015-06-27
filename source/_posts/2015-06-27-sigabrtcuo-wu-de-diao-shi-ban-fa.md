@@ -3,7 +3,7 @@ layout: post
 title: "SIGABRT错误的调试办法"
 date: 2015-06-27 10:50:39 +0800
 comments: true
-categories: 
+categories: iOS,Debug
 ---
 
 iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法：

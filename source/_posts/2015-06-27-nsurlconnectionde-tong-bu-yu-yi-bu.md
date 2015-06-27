@@ -3,7 +3,7 @@ layout: post
 title: "NSURLConnection的同步与异步"
 date: 2015-06-27 12:15:00 +0800
 comments: true
-categories: 
+categories: iOS
 ---
 
 从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/
