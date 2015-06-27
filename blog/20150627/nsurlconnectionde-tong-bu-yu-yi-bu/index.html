@@ -1,0 +1,181 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>NSURLConnection的同步与异步 - 402</title>
+	<meta name="author" content="Kimimaro">
+
+	
+	<meta name="description" content="NSURLConnection的同步与异步 从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/ 写下体会：（时间所限，比较杂乱，见谅！） &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+  <!-- Fuck GFW, use local image -->
+	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
+  <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:kimirius@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/kimirius" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/kimimaro" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">NSURLConnection的同步与异步</h1>
+	<div class="entry-content" itemprop="articleBody"><p>从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/</p>
+
+<p>写下体会：（时间所限，比较杂乱，见谅！）</p>
+
+<hr />
+<p>NSURLConnection的同步发送就不用说了，很简单，上面链接也说了，</p>
+
+<p>异步在iOS5之前都是作为一个非正式的协议出现的，默认initWithRequestxxx方法发送的就是异步请求，然后通过delegate中的方法可以操作，之前我一直错误在发送异步请求的时候也开一个新的线程，看了文章之后才想明白这真的是没有必要，在其他线程跑conn的原因就是为了避免阻塞主UI线程，而现在cocoa使用了delegate帮助你避免了这个问题，所以根本不需要再开一个新的线程去请求，直接请求然后在delegate中handleData就可以了。</p>
+
+<p>而回到对同步conn的使用，同步conn使用我认为是一定要在新线程中，这样避免了阻塞主线程的缺点（如文中所说），但是相比与aSync conn，sync还有其他缺点，如不能在请求同时操作数据，不能cancel等等，所以还是aSync要好用。</p>
+
+<hr />
+
+<p>iOS4之前如果想在新的线程使用异步发送的conn，最好的方法应该就是文中教的trick，而</p>
+
+<p>iOS5之后添加了 NSURLConnectionDataDelegate 把之前非正式协议的一部分拿了过来变成了正是协议（formal protocol），里面包括了数据处理等代理方法，还增加了在线程中发送异步请求的方法：</p>
+
+<pre><code>+ (void)sendAsynchronousRequest:(NSURLRequest *)request
+
+                          queue:(NSOperationQueue*) queue
+
+              completionHandler:(void (^)(NSURLResponse*, NSData*, NSError*)) handler NS_AVAILABLE(10_7, 5_0);
+</code></pre>
+
+<p>这样我认为就不需要像上文作者那样trick了吧？</p>
+
+<p>***)
+另外还加入了NSURLConnectionDownloadDelegate，主要作用就是讲数据直接存入文件中，缓存的时候估计有用吧？</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Kimimaro
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	<script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'kimimaro';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>
