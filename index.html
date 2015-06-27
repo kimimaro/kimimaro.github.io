@@ -9,8 +9,7 @@
 	<meta name="author" content="Kimimaro">
 
 	
-	<meta name="description" content="有符号定点数的表示方法  有符号定点数用首位0表示正，1表示负，正数与负数的补码求法不同。 正数的原码，反码，补码相同（这条要首先牢记，之后才能记住负数反码，补码的求法）； 负数的反码是除原码符号为外按位求反，负数的补码是对原码按位求反之后加1。
-反码的作用不大，主要要记住反码的作用。 &hellip;">
+	<meta name="description" content="链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置） 只是为了自己学习留作记录，需要的朋友可以看看。 修改日志： version1.1:2011-3-26 1.在尾插法中增加p-&gt;next = NULL;2.将类似于p==NULL改为NULL==p(示范性改正，没有全改 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -89,6 +88,474 @@
 			<div class="mid-col-container">
 				<div id="content" class="inner">
 <div itemscope itemtype="http://schema.org/Blog">
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-27T12:08:20+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150627/lian-biao-(linklist)de-she-ji-yu-shi-xian-(chu-shi-hua-,chuang-jian-,cha-ru-,shan-chu-,ni-zhi-)/" itemprop="url">链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置）</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>只是为了自己学习留作记录，需要的朋友可以看看。</p>
+
+<p>修改日志：</p>
+
+<p>version1.1:2011-3-26 1.在尾插法中增加p-&gt;next = NULL;2.将类似于p==NULL改为NULL==p(示范性改正，没有全改);</p>
+
+<pre><code>//////////////////////////////////////
+//单链表的表示与实现                //
+//Author:YuTianhang               //
+//Date:2011.3.23                    //
+
+//Version:1.0                        //
+//////////////////////////////////////
+
+#include "stdafx.h"
+
+typedef int ElemType;
+
+//定义单链表的结点类型
+
+typedef struct LNode
+{
+    ElemType data;
+    struct LNode *next;
+}LNode,*LinkList;
+
+////////////////////////////////////////////////
+
+//单链表的初始化
+
+int InitList(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));    //申请结点空间
+
+    if(NULL == L) printf("申请结点空间失败！\n");    //判断是否有足够的内存空间
+
+    L-&gt;next = NULL;
+
+    return 1;
+}
+
+///////////////////////////////////////////////
+
+//头插法创建带头结点的单链表
+
+int CreatList_H(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));    //申请头结点空间
+    L-&gt;next = NULL;    //初始化一个空链表
+
+    ElemType e;
+
+    printf("Input:!\n");
+
+    while(scanf("%d",&amp;e) != EOF)
+    {
+        LNode *p;
+        p = (LNode *)malloc(sizeof(LNode));    //建立一个新结点
+        p-&gt;data = e;
+
+        p-&gt;next = L-&gt;next;    //头插法插入结点p
+        L-&gt;next = p;
+    }
+
+    //int i = 5;
+
+    //while(i &gt; 0)
+    //{
+    //    scanf("%d",&amp;e);
+    //   
+    //    LNode *p;
+    //    p = (LNode *)malloc(sizeof(LNode));    //建立一个新结点
+    //    p-&gt;data = e;
+
+    //    p-&gt;next = L-&gt;next;    //头插法插入结点p
+    //    L-&gt;next = p;
+
+    //    i--;
+    //}
+
+    return 1;
+}
+
+////////////////////////////////////////////////////////
+
+//尾插法创建带头结点的链表
+
+int CreatList_T(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));
+    L-&gt;next = NULL;
+
+    ElemType e;
+    LNode *r;
+    r = L;
+    while(scanf("%d",&amp;e) != EOF)
+    {
+        LNode *p;
+        p = (LNode *)malloc(sizeof(LNode));
+        p-&gt;data = e;
+
+        p-&gt;next = NULL;    //第一次没有付空值，导致输出的时候p的next指针无法确定
+
+        r-&gt;next = p;    //尾插法插入结点p
+        r = p;
+    }
+
+    return 1;
+}
+
+///////////////////////////////////////////////////////
+
+//在单链表的第i个位置插入元素e
+
+int ListInsert(LinkList &amp;L,int i,ElemType e)
+{
+    LNode *pre;        //pre为i位置的前驱结点
+    pre = L;
+    while(i &gt; 0)    //查找i位置的前驱结点
+    {
+        pre = pre-&gt;next;
+        --i;
+    }
+
+    LNode *p;
+    p = (LNode *)malloc(sizeof(LNode));
+    p-&gt;data = e;
+
+    p-&gt;next = pre-&gt;next;    //将p结点插入到第i个位置
+    pre-&gt;next = p;
+
+    return 1;
+}
+
+/////////////////////////////////////////////////////////////
+
+//在单链表中删除第i个结点并用e返回其结点值
+
+int ListDelete(LinkList &amp;L,int i,ElemType &amp;e)
+{
+    LNode *pre;
+    pre = L;
+
+    while(i &gt; 0)
+    {
+        pre = pre-&gt;next;
+        --i;
+    }
+
+    LNode *p;
+    p = pre-&gt;next;
+    e = p-&gt;data;
+
+    pre-&gt;next = p-&gt;next;    //删除第i个位置的结点p
+    free(p);
+
+    return 1;
+}
+
+/////////////////////////////////////////////////////
+
+//输入单链表的各项
+
+int OutputList(LinkList L)
+{
+    if(L == NULL) printf("Error!\n");
+    LNode *p;
+    p = L-&gt;next;
+
+    printf("Kimimaro:\n");
+    do
+    {
+        if(p != L-&gt;next) printf(",");
+
+        printf("%d",p-&gt;data);
+        p = p-&gt;next;
+    }while(p != NULL);
+
+    printf("\n");
+
+    return 1;
+}
+
+//////////////////////////////////////////////////
+
+//单链表的逆置
+
+int InvertList(LinkList &amp;L)
+{
+    LNode *p,*q,*r;
+    p = L-&gt;next-&gt;next;
+    q = p-&gt;next;
+
+    r = L-&gt;next;
+    r-&gt;next = NULL;
+
+    while(p-&gt;next != NULL)
+    {
+        p-&gt;next = r;    //头插法插入结点p
+        r = p;
+        p = q;
+        q = p-&gt;next;
+    }
+
+    p-&gt;next = r;    //最后一个结点的处理
+    L-&gt;next = p;
+
+    //while(p != NULL)                            //错误代码，导致最后两个结点循环？
+    //{
+    //    p-&gt;next = L-&gt;next;    //头插法插入结点p
+    //    L-&gt;next = p;
+    //    p = q;
+    //    q = p-&gt;next;
+    //}
+
+    //p-&gt;next = L-&gt;next;    //最后一个结点的处理
+    //L-&gt;next = p;
+
+    return 1;
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+    LinkList L;
+
+    CreatList_H(L);
+
+    OutputList(L);
+
+    int i = 3;
+    ElemType e = 22;
+    ListInsert(L,i,e);
+
+    OutputList(L);
+
+    /*ListDelete(L,i,e);
+
+    OutputList(L);*/
+
+    InvertList(L);
+
+    OutputList(L);
+
+    char ch;
+    ch = getchar();
+    return 0;
+}
+</code></pre>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-27T12:07:27+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150627/er-fen-fa-cha-zhao-de-shi-xian-(di-gui-and-xun-huan-)/" itemprop="url">二分法查找的实现（递归&amp;循环）</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<pre><code>	#include "stdafx.h"
+	
+	//////////////////////////////////////////
+	//二分查找                            //
+	//Author:Kimimaro                    //
+	//Date:2010-3-28                    //
+	/////////////////////////////////////////
+	
+	typedef int KeyType;    //定义关键字类型
+	
+	//typedef struct        //定义数据元素结构
+	//{
+	//    KeyType key;    //关键字域
+	//}SElemType;
+	
+	//宏定义关键字比较操作
+	
+	#define EQ(a,b) ((a) == (b))
+	#define LT(a,b) ((a) &lt;  (b))
+	#define LQ(a,b) ((a) &lt;= (b))
+	
+	//定义表长
+	
+	#define MAX 5
+	
+	//----------------静态查找表的顺序存储结构-------------------
+	
+	typedef struct
+	{
+	    KeyType *elem;
+	    int length;
+	}SSTable;
+	
+	//创建指定长度的静态查找表
+	
+	int CreatSST(SSTable &amp;S,int n)
+	{
+	    S.length = n;
+	    S.elem = (KeyType*)malloc(S.length*sizeof(KeyType));
+	
+	    int i = 1;
+	
+	    while(scanf("%d",&amp;(S.elem[i])) != EOF)
+	    {
+	        i++;
+	    }
+	   
+	    return 0;
+	}
+	
+	//递归二分查找
+	
+	int binarySearch(SSTable S,KeyType key,int low,int high)
+	{
+	    if(low &gt; high) return -1;
+	
+	    int mid = (low + high) / 2;
+	
+	    if(EQ(key, S.elem[mid])) return mid;
+	    else if(LT(key, S.elem[mid])) binarySearch(S,key,low,mid - 1);
+	    else binarySearch(S,key,mid + 1,high);
+	}
+	
+	//循环二分查找
+	
+	//int binarySearch(SSTable S,KeyType key)
+	//{
+	//    int low = 1,high = S.length,mid;
+	//
+	//    while(low &lt;= high)
+	//    {
+	//        mid = (low + high) / 2;
+	//
+	//        if(EQ(key,mid)) return mid;
+	//        else if(LT(key,mid)) high = mid - 1;
+	//        else low = mid + 1;
+	//    }
+	//
+	//    return -1;
+	//}
+	
+	int _tmain(int argc, _TCHAR *argv[])
+	{
+	    SSTable S;
+	    CreatSST(S,MAX);
+	
+	    for(int i = 1;i &lt;= S.length;i++)
+	    {
+	        printf("%d ",S.elem[i]);
+	        if(i == S.length) printf("\n");
+	    }
+	
+	    int key;
+	    printf("Which number do you want to search?\n");
+	    scanf("%d",&amp;key);
+	
+	    int location;
+	//    location = binarySearch(S,key);        //循环二分查找
+	    location = binarySearch(S,key,1,S.length);        //递归二分查找
+	    char chs = getchar();
+	    printf("The elem is S.elem[%d].\n",location);
+	
+	    char ch = getchar();
+	   
+	    return 0;
+	}
+</code></pre>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-27T12:05:57+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)/" itemprop="url">Java统计程序运行时间（转）</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>代码如下：
+第一种是以毫秒为单位计算的。</p>
+
+<pre><code>long startTime = System.currentTimeMillis();    //获取开始时间
+
+doSomething();    //测试的代码段
+
+long endTime = System.currentTimeMillis();    //获取结束时间
+
+System.out.println("程序运行时间：" + (endTime - startTime) + "ms");    //输出程序运行时间
+</code></pre>
+
+<p>第二种是以纳秒为单位计算的。</p>
+
+<pre><code>long startTime=System.nanoTime();   //获取开始时间  
+
+doSomeThing(); //测试的代码段  
+
+long endTime=System.nanoTime(); //获取结束时间  
+
+System.out.println("程序运行时间： "+(endTime-startTime)+"ns"); 
+</code></pre>
+
+
+		
+		
+	</div>
+
+</article>
 
 
     <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
@@ -667,269 +1134,11 @@ strechTest.frame = frame;
 
 </article>
 
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-18T11:56:50+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150618/jspatchchu-tan/" itemprop="url">JSPatch初探</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<hr />
-<ol>
-  <li>JSPatch是什么？</li>
-  <li>Objective-C动态绑定机制</li>
-  <li>JSPatch原理</li>
-  <li>JSPatch实用举例</li>
-  <li>与现有方案（Wax）的对比</li>
-</ol>
-
-<hr />
-
-<blockquote>
-  <p><a href="http://blog.cnbang.net/tech/2808/">JSPatch实现原理详解</a></p>
-</blockquote>
-
-<h2 id="jspatch">一、JSPatch介绍</h2>
-<blockquote>
-  <p>最直观的介绍莫过于官方文档</p>
-</blockquote>
-
-<ul>
-  <li><a href="https://github.com/bang590/JSPatch">bang590/JSPatch</a></li>
-  <li>利用OC Runtime桥接Objective-C和JavaScript</li>
-  <li>用处：
-    <ul>
-      <li>添加模块</li>
-      <li>修复线上Bug</li>
-    </ul>
-  </li>
-</ul>
-
-<h2 id="oc">二、OC动态绑定机制</h2>
-<blockquote>
-  <p>一切iOS平台上实现动态BugFix和新增模块的技术都基于ObjC的动态绑定、动态加载、消息转发</p>
-</blockquote>
-
-<ul>
-  <li>所谓动态绑定就是利用OC Runtime可以做如下几件事情：
-    <ul>
-      <li>给已有类增加方法</li>
-      <li>替换现有类的方法指针，指向新的方法实现</li>
-      <li>动态创建一个类</li>
-    </ul>
-  </li>
-  <li>
-    <p>【类对象】动态绑定机制源于OC的动态类实现</p>
-
-    <pre><code>      #import &lt;objc/runtime.h&gt;
-</code></pre>
-
-    <ul>
-      <li>除基本类型外所有OC类都继承于NSObject类</li>
-      <li>NSObject对象有一个指向该实例所属类的isa指针</li>
-      <li>OC中的类也是一个对象的概念，因此我们可以动态的创建一个类对象</li>
-      <li>objc_allocateClassPair</li>
-      <li>class_addMethod</li>
-      <li>objc_registerClassPair</li>
-    </ul>
-  </li>
-  <li>【消息】方法替换和新增源于消息转发机制
-    <ul>
-      <li>OC中方法调用起始是一个对象响应消息的过程</li>
-      <li>可响应消息列表存在于对象isa指针所指向的类对象上</li>
-      <li>objc_msgSend</li>
-      <li>forwardInvocation:</li>
-    </ul>
-  </li>
-</ul>
-
-<h2 id="jspatch-1">三、JSPatch原理</h2>
-<blockquote>
-  <p>通过forwardInvocation方法，将</p>
-</blockquote>
-
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-18T00:02:06+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ios/'>ios</a>
-
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150618/yi-bu-ji-zhi/" itemprop="url">异步机制</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<blockquote>
-  <ol>
-    <li>及时响应用户</li>
-    <li>实现多核调度</li>
-  </ol>
-</blockquote>
-
-<h3 id="nsoperation">NSOperation</h3>
-<ol>
-  <li>封装了大部分异步相关的逻辑，基础类，使用的时候要继承它创建我们自己的子类；</li>
-  <li>系统实现的具体的类：NSInvocationOperation，NSBlockOperation；</li>
-  <li>Dependency，Completion block，KVO，Priority，Cancel</li>
-  <li>non-concurrent
-    <ul>
-      <li>重写main()</li>
-      <li>autoreleasepool</li>
-      <li>不需要自己维护状态</li>
-    </ul>
-  </li>
-  <li>concurrent
-    <ul>
-      <li>实现start()</li>
-      <li>实现异步操作</li>
-      <li>自己维护isFinished，isExcuting，isCancelled（manual KVO）</li>
-    </ul>
-  </li>
-  <li>判断是否cancel
-    <ul>
-      <li>main/start</li>
-      <li>循环开始处</li>
-      <li>逻辑区分点</li>
-    </ul>
-  </li>
-</ol>
-
-<h3 id="dispatch-queue">dispatch queue</h3>
-<ol>
-  <li>将业务逻辑写在block里
-    <ul>
-      <li>
-        <p>定义：</p>
-
-        <pre><code>  ^return type(params){expression}	
-  typedef return type(^name)(params)
-</code></pre>
-      </li>
-      <li>
-        <p>声明：</p>
-
-        <pre><code>  self.block = ^(params){expression};
-</code></pre>
-      </li>
-      <li>
-        <p>方法中定义的block在stack上，当调用copy时，会copy到heap上</p>
-      </li>
-    </ul>
-  </li>
-  <li>finalizer</li>
-  <li>Serial(private dispatch queue)
-    <ul>
-      <li>block间顺序执行</li>
-      <li>dispatch_queue_create()</li>
-      <li>
-        <p>需要自己维护reference count:</p>
-
-        <pre><code>  dispatch_release()
-</code></pre>
-      </li>
-    </ul>
-  </li>
-  <li>Concurrent(global dispatch queue)
-    <ul>
-      <li>block间并发执行</li>
-      <li>dispatch_get_global_queue()</li>
-      <li>normal, low, high</li>
-      <li>系统维护reference count</li>
-    </ul>
-  </li>
-  <li>main dispatch queue
-    <ul>
-      <li>在主线程run loop执行</li>
-      <li>更新UI/主线程作为同步</li>
-    </ul>
-  </li>
-  <li>dispatch queue维护自己的autoreleasepool</li>
-</ol>
-
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-17T23:37:54+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ios/'>ios</a>
-
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150617/first-post/" itemprop="url">First Post</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<h3 id="first-post">First Post</h3>
-
-		
-		
-	</div>
-
-</article>
-
 </div>
 <nav id="pagenavi">
     
+    
+        <a href="2" class="next">Next</a>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>

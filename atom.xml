@@ -4,7 +4,7 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-27T12:02:48+08:00</updated>
+  <updated>2015-06-27T12:09:36+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -12,6 +12,408 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置）]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/lian-biao-(linklist)de-she-ji-yu-shi-xian-(chu-shi-hua-,chuang-jian-,cha-ru-,shan-chu-,ni-zhi-)/"/>
+    <updated>2015-06-27T12:08:20+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/lian-biao-(linklist)de-she-ji-yu-shi-xian-(chu-shi-hua-,chuang-jian-,cha-ru-,shan-chu-,ni-zhi-)</id>
+    <content type="html"><![CDATA[<p>只是为了自己学习留作记录，需要的朋友可以看看。</p>
+
+<p>修改日志：</p>
+
+<p>version1.1:2011-3-26 1.在尾插法中增加p-&gt;next = NULL;2.将类似于p==NULL改为NULL==p(示范性改正，没有全改);</p>
+
+<pre><code>//////////////////////////////////////
+//单链表的表示与实现                //
+//Author:YuTianhang               //
+//Date:2011.3.23                    //
+
+//Version:1.0                        //
+//////////////////////////////////////
+
+#include "stdafx.h"
+
+typedef int ElemType;
+
+//定义单链表的结点类型
+
+typedef struct LNode
+{
+    ElemType data;
+    struct LNode *next;
+}LNode,*LinkList;
+
+////////////////////////////////////////////////
+
+//单链表的初始化
+
+int InitList(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));    //申请结点空间
+
+    if(NULL == L) printf("申请结点空间失败！\n");    //判断是否有足够的内存空间
+
+    L-&gt;next = NULL;
+
+    return 1;
+}
+
+///////////////////////////////////////////////
+
+//头插法创建带头结点的单链表
+
+int CreatList_H(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));    //申请头结点空间
+    L-&gt;next = NULL;    //初始化一个空链表
+
+    ElemType e;
+
+    printf("Input:!\n");
+
+    while(scanf("%d",&amp;e) != EOF)
+    {
+        LNode *p;
+        p = (LNode *)malloc(sizeof(LNode));    //建立一个新结点
+        p-&gt;data = e;
+
+        p-&gt;next = L-&gt;next;    //头插法插入结点p
+        L-&gt;next = p;
+    }
+
+    //int i = 5;
+
+    //while(i &gt; 0)
+    //{
+    //    scanf("%d",&amp;e);
+    //   
+    //    LNode *p;
+    //    p = (LNode *)malloc(sizeof(LNode));    //建立一个新结点
+    //    p-&gt;data = e;
+
+    //    p-&gt;next = L-&gt;next;    //头插法插入结点p
+    //    L-&gt;next = p;
+
+    //    i--;
+    //}
+
+    return 1;
+}
+
+////////////////////////////////////////////////////////
+
+//尾插法创建带头结点的链表
+
+int CreatList_T(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));
+    L-&gt;next = NULL;
+
+    ElemType e;
+    LNode *r;
+    r = L;
+    while(scanf("%d",&amp;e) != EOF)
+    {
+        LNode *p;
+        p = (LNode *)malloc(sizeof(LNode));
+        p-&gt;data = e;
+
+        p-&gt;next = NULL;    //第一次没有付空值，导致输出的时候p的next指针无法确定
+
+        r-&gt;next = p;    //尾插法插入结点p
+        r = p;
+    }
+
+    return 1;
+}
+
+///////////////////////////////////////////////////////
+
+//在单链表的第i个位置插入元素e
+
+int ListInsert(LinkList &amp;L,int i,ElemType e)
+{
+    LNode *pre;        //pre为i位置的前驱结点
+    pre = L;
+    while(i &gt; 0)    //查找i位置的前驱结点
+    {
+        pre = pre-&gt;next;
+        --i;
+    }
+
+    LNode *p;
+    p = (LNode *)malloc(sizeof(LNode));
+    p-&gt;data = e;
+
+    p-&gt;next = pre-&gt;next;    //将p结点插入到第i个位置
+    pre-&gt;next = p;
+
+    return 1;
+}
+
+/////////////////////////////////////////////////////////////
+
+//在单链表中删除第i个结点并用e返回其结点值
+
+int ListDelete(LinkList &amp;L,int i,ElemType &amp;e)
+{
+    LNode *pre;
+    pre = L;
+
+    while(i &gt; 0)
+    {
+        pre = pre-&gt;next;
+        --i;
+    }
+
+    LNode *p;
+    p = pre-&gt;next;
+    e = p-&gt;data;
+
+    pre-&gt;next = p-&gt;next;    //删除第i个位置的结点p
+    free(p);
+
+    return 1;
+}
+
+/////////////////////////////////////////////////////
+
+//输入单链表的各项
+
+int OutputList(LinkList L)
+{
+    if(L == NULL) printf("Error!\n");
+    LNode *p;
+    p = L-&gt;next;
+
+    printf("Kimimaro:\n");
+    do
+    {
+        if(p != L-&gt;next) printf(",");
+
+        printf("%d",p-&gt;data);
+        p = p-&gt;next;
+    }while(p != NULL);
+
+    printf("\n");
+
+    return 1;
+}
+
+//////////////////////////////////////////////////
+
+//单链表的逆置
+
+int InvertList(LinkList &amp;L)
+{
+    LNode *p,*q,*r;
+    p = L-&gt;next-&gt;next;
+    q = p-&gt;next;
+
+    r = L-&gt;next;
+    r-&gt;next = NULL;
+
+    while(p-&gt;next != NULL)
+    {
+        p-&gt;next = r;    //头插法插入结点p
+        r = p;
+        p = q;
+        q = p-&gt;next;
+    }
+
+    p-&gt;next = r;    //最后一个结点的处理
+    L-&gt;next = p;
+
+    //while(p != NULL)                            //错误代码，导致最后两个结点循环？
+    //{
+    //    p-&gt;next = L-&gt;next;    //头插法插入结点p
+    //    L-&gt;next = p;
+    //    p = q;
+    //    q = p-&gt;next;
+    //}
+
+    //p-&gt;next = L-&gt;next;    //最后一个结点的处理
+    //L-&gt;next = p;
+
+    return 1;
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+    LinkList L;
+
+    CreatList_H(L);
+
+    OutputList(L);
+
+    int i = 3;
+    ElemType e = 22;
+    ListInsert(L,i,e);
+
+    OutputList(L);
+
+    /*ListDelete(L,i,e);
+
+    OutputList(L);*/
+
+    InvertList(L);
+
+    OutputList(L);
+
+    char ch;
+    ch = getchar();
+    return 0;
+}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[二分法查找的实现（递归&amp;循环）]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/er-fen-fa-cha-zhao-de-shi-xian-(di-gui-and-xun-huan-)/"/>
+    <updated>2015-06-27T12:07:27+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/er-fen-fa-cha-zhao-de-shi-xian-(di-gui-and-xun-huan-)</id>
+    <content type="html"><![CDATA[<pre><code>	#include "stdafx.h"
+	
+	//////////////////////////////////////////
+	//二分查找                            //
+	//Author:Kimimaro                    //
+	//Date:2010-3-28                    //
+	/////////////////////////////////////////
+	
+	typedef int KeyType;    //定义关键字类型
+	
+	//typedef struct        //定义数据元素结构
+	//{
+	//    KeyType key;    //关键字域
+	//}SElemType;
+	
+	//宏定义关键字比较操作
+	
+	#define EQ(a,b) ((a) == (b))
+	#define LT(a,b) ((a) &lt;  (b))
+	#define LQ(a,b) ((a) &lt;= (b))
+	
+	//定义表长
+	
+	#define MAX 5
+	
+	//----------------静态查找表的顺序存储结构-------------------
+	
+	typedef struct
+	{
+	    KeyType *elem;
+	    int length;
+	}SSTable;
+	
+	//创建指定长度的静态查找表
+	
+	int CreatSST(SSTable &amp;S,int n)
+	{
+	    S.length = n;
+	    S.elem = (KeyType*)malloc(S.length*sizeof(KeyType));
+	
+	    int i = 1;
+	
+	    while(scanf("%d",&amp;(S.elem[i])) != EOF)
+	    {
+	        i++;
+	    }
+	   
+	    return 0;
+	}
+	
+	//递归二分查找
+	
+	int binarySearch(SSTable S,KeyType key,int low,int high)
+	{
+	    if(low &gt; high) return -1;
+	
+	    int mid = (low + high) / 2;
+	
+	    if(EQ(key, S.elem[mid])) return mid;
+	    else if(LT(key, S.elem[mid])) binarySearch(S,key,low,mid - 1);
+	    else binarySearch(S,key,mid + 1,high);
+	}
+	
+	//循环二分查找
+	
+	//int binarySearch(SSTable S,KeyType key)
+	//{
+	//    int low = 1,high = S.length,mid;
+	//
+	//    while(low &lt;= high)
+	//    {
+	//        mid = (low + high) / 2;
+	//
+	//        if(EQ(key,mid)) return mid;
+	//        else if(LT(key,mid)) high = mid - 1;
+	//        else low = mid + 1;
+	//    }
+	//
+	//    return -1;
+	//}
+	
+	int _tmain(int argc, _TCHAR *argv[])
+	{
+	    SSTable S;
+	    CreatSST(S,MAX);
+	
+	    for(int i = 1;i &lt;= S.length;i++)
+	    {
+	        printf("%d ",S.elem[i]);
+	        if(i == S.length) printf("\n");
+	    }
+	
+	    int key;
+	    printf("Which number do you want to search?\n");
+	    scanf("%d",&amp;key);
+	
+	    int location;
+	//    location = binarySearch(S,key);        //循环二分查找
+	    location = binarySearch(S,key,1,S.length);        //递归二分查找
+	    char chs = getchar();
+	    printf("The elem is S.elem[%d].\n",location);
+	
+	    char ch = getchar();
+	   
+	    return 0;
+	}
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Java统计程序运行时间（转）]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)/"/>
+    <updated>2015-06-27T12:05:57+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)</id>
+    <content type="html"><![CDATA[<p>代码如下：
+第一种是以毫秒为单位计算的。</p>
+
+<pre><code>long startTime = System.currentTimeMillis();    //获取开始时间
+
+doSomething();    //测试的代码段
+
+long endTime = System.currentTimeMillis();    //获取结束时间
+
+System.out.println("程序运行时间：" + (endTime - startTime) + "ms");    //输出程序运行时间
+</code></pre>
+
+<p>第二种是以纳秒为单位计算的。</p>
+
+<pre><code>long startTime=System.nanoTime();   //获取开始时间  
+
+doSomeThing(); //测试的代码段  
+
+long endTime=System.nanoTime(); //获取结束时间  
+
+System.out.println("程序运行时间： "+(endTime-startTime)+"ns"); 
+</code></pre>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[有符号定点数的表示方法]]></title>

@@ -1,0 +1,401 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置） - 402</title>
+	<meta name="author" content="Kimimaro">
+
+	
+	<meta name="description" content="链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置） 只是为了自己学习留作记录，需要的朋友可以看看。 修改日志： version1.1:2011-3-26 1.在尾插法中增加p-&gt;next = NULL;2.将类似于p==NULL改为NULL==p(示范性改正，没有全改 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150627/lian-biao-(linklist)de-she-ji-yu-shi-xian-(chu-shi-hua-,chuang-jian-,cha-ru-,shan-chu-,ni-zhi-)/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+  <!-- Fuck GFW, use local image -->
+	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
+  <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:kimirius@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/kimirius" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/kimimaro" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置）</h1>
+	<div class="entry-content" itemprop="articleBody"><p>只是为了自己学习留作记录，需要的朋友可以看看。</p>
+
+<p>修改日志：</p>
+
+<p>version1.1:2011-3-26 1.在尾插法中增加p-&gt;next = NULL;2.将类似于p==NULL改为NULL==p(示范性改正，没有全改);</p>
+
+<pre><code>//////////////////////////////////////
+//单链表的表示与实现                //
+//Author:YuTianhang               //
+//Date:2011.3.23                    //
+
+//Version:1.0                        //
+//////////////////////////////////////
+
+#include "stdafx.h"
+
+typedef int ElemType;
+
+//定义单链表的结点类型
+
+typedef struct LNode
+{
+    ElemType data;
+    struct LNode *next;
+}LNode,*LinkList;
+
+////////////////////////////////////////////////
+
+//单链表的初始化
+
+int InitList(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));    //申请结点空间
+
+    if(NULL == L) printf("申请结点空间失败！\n");    //判断是否有足够的内存空间
+
+    L-&gt;next = NULL;
+
+    return 1;
+}
+
+///////////////////////////////////////////////
+
+//头插法创建带头结点的单链表
+
+int CreatList_H(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));    //申请头结点空间
+    L-&gt;next = NULL;    //初始化一个空链表
+
+    ElemType e;
+
+    printf("Input:!\n");
+
+    while(scanf("%d",&amp;e) != EOF)
+    {
+        LNode *p;
+        p = (LNode *)malloc(sizeof(LNode));    //建立一个新结点
+        p-&gt;data = e;
+
+        p-&gt;next = L-&gt;next;    //头插法插入结点p
+        L-&gt;next = p;
+    }
+
+    //int i = 5;
+
+    //while(i &gt; 0)
+    //{
+    //    scanf("%d",&amp;e);
+    //   
+    //    LNode *p;
+    //    p = (LNode *)malloc(sizeof(LNode));    //建立一个新结点
+    //    p-&gt;data = e;
+
+    //    p-&gt;next = L-&gt;next;    //头插法插入结点p
+    //    L-&gt;next = p;
+
+    //    i--;
+    //}
+
+    return 1;
+}
+
+////////////////////////////////////////////////////////
+
+//尾插法创建带头结点的链表
+
+int CreatList_T(LinkList &amp;L)
+{
+    L = (LinkList)malloc(sizeof(LNode));
+    L-&gt;next = NULL;
+
+    ElemType e;
+    LNode *r;
+    r = L;
+    while(scanf("%d",&amp;e) != EOF)
+    {
+        LNode *p;
+        p = (LNode *)malloc(sizeof(LNode));
+        p-&gt;data = e;
+
+        p-&gt;next = NULL;    //第一次没有付空值，导致输出的时候p的next指针无法确定
+
+        r-&gt;next = p;    //尾插法插入结点p
+        r = p;
+    }
+
+    return 1;
+}
+
+///////////////////////////////////////////////////////
+
+//在单链表的第i个位置插入元素e
+
+int ListInsert(LinkList &amp;L,int i,ElemType e)
+{
+    LNode *pre;        //pre为i位置的前驱结点
+    pre = L;
+    while(i &gt; 0)    //查找i位置的前驱结点
+    {
+        pre = pre-&gt;next;
+        --i;
+    }
+
+    LNode *p;
+    p = (LNode *)malloc(sizeof(LNode));
+    p-&gt;data = e;
+
+    p-&gt;next = pre-&gt;next;    //将p结点插入到第i个位置
+    pre-&gt;next = p;
+
+    return 1;
+}
+
+/////////////////////////////////////////////////////////////
+
+//在单链表中删除第i个结点并用e返回其结点值
+
+int ListDelete(LinkList &amp;L,int i,ElemType &amp;e)
+{
+    LNode *pre;
+    pre = L;
+
+    while(i &gt; 0)
+    {
+        pre = pre-&gt;next;
+        --i;
+    }
+
+    LNode *p;
+    p = pre-&gt;next;
+    e = p-&gt;data;
+
+    pre-&gt;next = p-&gt;next;    //删除第i个位置的结点p
+    free(p);
+
+    return 1;
+}
+
+/////////////////////////////////////////////////////
+
+//输入单链表的各项
+
+int OutputList(LinkList L)
+{
+    if(L == NULL) printf("Error!\n");
+    LNode *p;
+    p = L-&gt;next;
+
+    printf("Kimimaro:\n");
+    do
+    {
+        if(p != L-&gt;next) printf(",");
+
+        printf("%d",p-&gt;data);
+        p = p-&gt;next;
+    }while(p != NULL);
+
+    printf("\n");
+
+    return 1;
+}
+
+//////////////////////////////////////////////////
+
+//单链表的逆置
+
+int InvertList(LinkList &amp;L)
+{
+    LNode *p,*q,*r;
+    p = L-&gt;next-&gt;next;
+    q = p-&gt;next;
+
+    r = L-&gt;next;
+    r-&gt;next = NULL;
+
+    while(p-&gt;next != NULL)
+    {
+        p-&gt;next = r;    //头插法插入结点p
+        r = p;
+        p = q;
+        q = p-&gt;next;
+    }
+
+    p-&gt;next = r;    //最后一个结点的处理
+    L-&gt;next = p;
+
+    //while(p != NULL)                            //错误代码，导致最后两个结点循环？
+    //{
+    //    p-&gt;next = L-&gt;next;    //头插法插入结点p
+    //    L-&gt;next = p;
+    //    p = q;
+    //    q = p-&gt;next;
+    //}
+
+    //p-&gt;next = L-&gt;next;    //最后一个结点的处理
+    //L-&gt;next = p;
+
+    return 1;
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+    LinkList L;
+
+    CreatList_H(L);
+
+    OutputList(L);
+
+    int i = 3;
+    ElemType e = 22;
+    ListInsert(L,i,e);
+
+    OutputList(L);
+
+    /*ListDelete(L,i,e);
+
+    OutputList(L);*/
+
+    InvertList(L);
+
+    OutputList(L);
+
+    char ch;
+    ch = getchar();
+    return 0;
+}
+</code></pre>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Kimimaro
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	<script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'kimimaro';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150627/lian-biao-(linklist)de-she-ji-yu-shi-xian-(chu-shi-hua-,chuang-jian-,cha-ru-,shan-chu-,ni-zhi-)/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150627/lian-biao-(linklist)de-she-ji-yu-shi-xian-(chu-shi-hua-,chuang-jian-,cha-ru-,shan-chu-,ni-zhi-)/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>
