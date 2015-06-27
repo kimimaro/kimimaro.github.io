@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类：git | 402]]></title>
+  <link href="http://blog.oneboxapp.com/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://blog.oneboxapp.com/"/>
+  <updated>2015-06-27T12:34:33+08:00</updated>
+  <id>http://blog.oneboxapp.com/</id>
+  <author>
+    <name><![CDATA[Kimimaro]]></name>
+    <email><![CDATA[kimirius@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[关于git分支的使用]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong/"/>
+    <updated>2015-06-27T11:48:12+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong</id>
+    <content type="html"><![CDATA[<p>学习记录，不正确的地方望指正！</p>
+
+<p>git branch 显示的是本地分支</p>
+
+<p>git pull origin aRemoteBranch</p>
+
+<p>git push origin aRemoteBranch</p>
+
+<p>git commit 是提交到当前的本地分支</p>
+
+<p>git remote显示远程服务器</p>
+
+<p>git remote show aRemote显示指定的远程服务器（origin）上的远程分支</p>
+
+<p>git checkout –track -b aLocalBranch aRemote/aRemoteBranch 创建一个新本地分支追踪远程分支（也可以直接 git checkout aRemoteBranch）</p>
+
+<p>远程分支不可见，只能通过新建本地分支来追踪远程分支，本地分支和远程分支是两个不同的东西，也可以不同名。</p>
+
+<p>checkout的时候会先检查本地分支，如果有则checkout到这个本地分支（不论它track哪个远程分支），如果没有则查看远程分支，如果有同名远程分支则新建一个本地同名分支并追踪（track）远程分支</p>
+
+<p>git branch -d aLocalBranch  删除本地分支</p>
+
+<p>git push ARemote :aRemoteBranch 删除远程分支</p>
+
+<p>-d -&gt; -D 强制删除</p>
+
+<p>vim .git/config</p>
+
+<p>可以查看当前的remote和已经track了remote分支的本地分支</p>
+
+<p>可以建多个本地分支track同一个远程分支，删除本地分支对远程分支没有影响。</p>
+]]></content>
+  </entry>
+  
+</feed>

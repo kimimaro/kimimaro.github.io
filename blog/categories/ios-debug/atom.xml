@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类：ios,debug | 402]]></title>
+  <link href="http://blog.oneboxapp.com/blog/categories/ios-debug/atom.xml" rel="self"/>
+  <link href="http://blog.oneboxapp.com/"/>
+  <updated>2015-06-27T12:34:33+08:00</updated>
+  <id>http://blog.oneboxapp.com/</id>
+  <author>
+    <name><![CDATA[Kimimaro]]></name>
+    <email><![CDATA[kimirius@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[SIGABRT错误的调试办法]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/sigabrtcuo-wu-de-diao-shi-ban-fa/"/>
+    <updated>2015-06-27T10:50:39+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/sigabrtcuo-wu-de-diao-shi-ban-fa</id>
+    <content type="html"><![CDATA[<p>iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法：</p>
+
+<p><a href="http://stackoverflow.com/questions/9782621/i-have-an-error-in-main-m-thread-1-signal-sigabrt-how-can-i-fix-this">原文链接</a></p>
+
+<p>重点就是 <strong>Set an exception breakpoint.</strong></p>
+
+<p>之前我们遇到的在main函数上的那个崩溃信息，如果想要调试就加入一个 an exception breakpoint ，它会在exception 被 cathc 的时候停下来，这样就可以追踪到造成 exception 的代码了。</p>
+
+<p>加入一个exception breakpoint的方法就是：在navigator的断点页面，点击左下角的加号就能看到 exception breakpoint；</p>
+
+<p>加入的时候可以设置，默认是 all，也可以选择针对 oc 还是 c 的断点。</p>
+
+<blockquote>
+  <p>原文：</p>
+
+  <p>When you get SIGABRT on that line of main, it means that your program is raising an exception. The stack trace shows where the exception is being caught, &gt;not where it’s being raised. Usually this is not helpful. To debug the problem, you can do two things:</p>
+
+  <ol>
+    <li>
+      <p>Click the “Continue Program Execution” button in the debugger control bar, or choose Program &gt; Debug &gt; Continue from the menu bar. This will let the program continue the exception-raising process. It will print a message to the debugger console that will help you understand what’s wrong. (You may have &gt;to continue execution a couple of times before it actually prints messages.) Read the messages carefully! They usually continue helpful information.</p>
+    </li>
+    <li>
+      <p>Set an exception breakpoint. This will make Xcode stop your program at the point where the exception is being raised, so you can see the code and the stack trace that is causing the problem.</p>
+    </li>
+  </ol>
+</blockquote>
+]]></content>
+  </entry>
+  
+</feed>

@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-27T12:31:04+08:00</updated>
+  <updated>2015-06-27T12:34:33+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -14,96 +14,223 @@
 
   
   <entry>
-    <title type="html"><![CDATA[JSPatch与Wax对比分析]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150618/jspatchdui-bi/"/>
-    <updated>2015-06-18T19:19:06+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150618/jspatchdui-bi</id>
-    <content type="html"><![CDATA[<blockquote>
-  <p><a href="https://github.com/bang590/JSPatch">JSPatch</a>与<a href="https://github.com/probablycorey/wax">Wax</a>作为iOS平台上两大热更新框架使用不同的语言、基于相同的原理（ObjC动态绑定）一直备受iOS开发者的青睐，Wax出现较早且已经不再维护，但是也有了各种各样的分支版本；JSPatch作为后起之秀得益于iOS7苹果开放了JavascriptCore.framework的API，相比以前的Wax框架有了很多更新，下面就根据以往的开发经验简单比较一下二者的优势劣势，如果想对两个框架有更多的了解，请移步上文的官方网站和相关文档。</p>
-</blockquote>
+    <title type="html"><![CDATA[NSURLConnection的同步与异步]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/"/>
+    <updated>2015-06-27T12:15:00+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu</id>
+    <content type="html"><![CDATA[<p>从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/</p>
 
-<ol>
-  <li>JSPatch相比于Wax的优势</li>
-  <li>JSPatch相比于Wax的劣势</li>
-</ol>
+<p>写下体会：（时间所限，比较杂乱，见谅！）</p>
+
+<hr />
+<p>NSURLConnection的同步发送就不用说了，很简单，上面链接也说了，</p>
+
+<p>异步在iOS5之前都是作为一个非正式的协议出现的，默认initWithRequestxxx方法发送的就是异步请求，然后通过delegate中的方法可以操作，之前我一直错误在发送异步请求的时候也开一个新的线程，看了文章之后才想明白这真的是没有必要，在其他线程跑conn的原因就是为了避免阻塞主UI线程，而现在cocoa使用了delegate帮助你避免了这个问题，所以根本不需要再开一个新的线程去请求，直接请求然后在delegate中handleData就可以了。</p>
+
+<p>而回到对同步conn的使用，同步conn使用我认为是一定要在新线程中，这样避免了阻塞主线程的缺点（如文中所说），但是相比与aSync conn，sync还有其他缺点，如不能在请求同时操作数据，不能cancel等等，所以还是aSync要好用。</p>
 
 <hr />
 
-<h1 id="jspatchwax">JSPatch相比于Wax的优势</h1>
+<p>iOS4之前如果想在新的线程使用异步发送的conn，最好的方法应该就是文中教的trick，而</p>
 
-<h2 id="section">内存管理</h2>
-<ul>
-  <li>JSPatch中JSValue负责维护被引用OC对象的生命周期，如果JS有变量引用时，这个OC对象引用计数就加1 ，JS变量的引用释放了就减1，如果OC上没别的持有者，这个OC对象的生命周期就跟着JS走了，会在JS进行垃圾回收时释放。</li>
-  <li>Wax在引用OC对象需要打上waxRetain标记，然后跑一个定时的GC查看这个对象的retainCount，当发现一个不再需要引用的对象retainCount大于1并且waxRetain为YES时（实际上的判断逻辑要复杂一些），就释放这个对象。依赖于retainCount，苹果官方是不推荐的，也不安全。</li>
-</ul>
+<p>iOS5之后添加了 NSURLConnectionDataDelegate 把之前非正式协议的一部分拿了过来变成了正是协议（formal protocol），里面包括了数据处理等代理方法，还增加了在线程中发送异步请求的方法：</p>
 
-<h2 id="section-1">类型转换</h2>
-<ul>
-  <li>
-    <p>JSPatch使用的是系统提供的类型转换，JSValue类内部可以看到完整的JS类型与OC的映射关系，同时支持NSArray和NSDictionary等类型的嵌套解析;</p>
+<pre><code>+ (void)sendAsynchronousRequest:(NSURLRequest *)request
 
-    <pre><code>  @textblock
-     Objective-C type  |   JavaScript type
-   --------------------+---------------------
-           nil         |     undefined
-          NSNull       |        null
-         NSString      |       string
-         NSNumber      |   number, boolean
-       NSDictionary    |   Object object
-         NSArray       |    Array object
-          NSDate       |     Date object
-         NSBlock (1)   |   Function object (1)
-            id (2)     |   Wrapper object (2)
-          Class (3)    | Constructor object (3)
-  @/textblock
+                          queue:(NSOperationQueue*) queue
+
+              completionHandler:(void (^)(NSURLResponse*, NSData*, NSError*)) handler NS_AVAILABLE(10_7, 5_0);
 </code></pre>
-  </li>
-  <li>
-    <p>Lua中调用OC对象需要使用toobjc方法，否则会Crash，还有一个问题是NSDictionary、NSArray使用时是被copy的，也就是说你无法直接更改OC内存中的那个对象。</p>
-  </li>
-</ul>
 
-<h2 id="section-2">多线程</h2>
-<ul>
-  <li>由于JSCore的支持，JS脚本实现的方法在多线程中调用没有任何问题，同时JSPatch也针对GCD提供了封装；</li>
-  <li>Lua语言本身是不支持多线程的，多个线程同时调用Lua就等于同时操作同一张Lua元表，可能出问题；同时Wax调用异步的话只能依赖performSelectorInBackground:了。</li>
-</ul>
+<p>这样我认为就不需要像上文作者那样trick了吧？</p>
 
-<h2 id="block">Block</h2>
-<ul>
-  <li>JSPatch：天然支持，JS的Function类型会对应转换成NSBlock执行；</li>
-  <li>个人认为Wax最受诟病的一点，无法支持Block使得方法替换和扩展都受到很大限制。</li>
-</ul>
+<p>***)
+另外还加入了NSURLConnectionDownloadDelegate，主要作用就是讲数据直接存入文件中，缓存的时候估计有用吧？</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[UIImageView和UIButton拉伸效果的实现]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/"/>
+    <updated>2015-06-27T11:49:22+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian</id>
+    <content type="html"><![CDATA[<p>UIImageView中Image拉伸效果的实现：</p>
 
-<h2 id="section-3">类型扩展</h2>
-<ul>
-  <li>JSPatch提供了CGRect、CGPoint、NSRange支持</li>
-  <li>Lua调用OC对象时需要toobjc，NSDictionary、NSArray只支持copy，不支持retain</li>
-</ul>
+<pre><code>UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
+[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
+CGRect frame = strechTest.frame;
+frame.size.width += 100;
+strechTest.frame = frame;
+</code></pre>
 
-<h2 id="section-4">参数传递</h2>
-<blockquote>
-  <p>为了替换方法实现，将方法传递到脚本语言的实现过程中必须知道当前方法的参数类型列表，传统的方法是用va_list得到，但是arm64上va_list的实现更改无法根据内存位置取出参数，对于这个坑也是困了好久才解决。但是个人认为bang牛给了一个更好的解法。</p>
+<p>但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。</p>
+
+<p>因此UIButton实现背景拉伸，即图片两端不拉伸中间拉伸的办法有如下两种：</p>
+
+<p>第一种方法很简单而且使用性更广。做法就是直接拉伸想要setBackgroundImage的image，代码如下：</p>
+
+<pre><code>UIImage*image =[UIImage imageNamed:@"image.png"];
+
+image = [image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+
+image =[image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+</code></pre>
+
+<p>设置了左端帽之后，rightCapWidth = image.size.width - (image.leftCapWidth + 1); 也就是说图片中间的一像素用来拉伸。垂直方向同上。</p>
+
+<p>设置之后无论把image放到什么控件中都可以自动拉伸了。</p>
+
+<p>第二种方法是在UIButton中加入一个UIImageView，拉伸imageView，然后将button的背景设为clearColor等等。把imageView放入button中，并且sendToBack，得到效果。</p>
+
+<p>代码如下：</p>
+
+<pre><code>//刚才imageView拉伸的代码
+
+UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
+[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
+CGRect frame = strechTest.frame;
+frame.size.width += 100;
+strechTest.frame = frame;
+
+//把imageView放入button中，并设置为back
+
+
+[temp_button addSubview:backgroundImageView];
+[temp_button sendSubviewToBack:backgroundImageView];
+[temp_button setBackgroundColor:[UIColor clearColor]];
+</code></pre>
+
+<p>button不能设置背景图片，这样就可以实现拉伸的图片作为背景并且背景上可以放置title。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[APNs实现小记]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150627/apnsshi-xian-xiao-ji/"/>
+    <updated>2015-06-27T11:07:51+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150627/apnsshi-xian-xiao-ji</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p>转自己以前写的博客，很早时候的学习笔记了，不过下面几个连接貌似都失效了。。。囧</p>
 </blockquote>
 
-<ul>
-  <li>JSPatch为了解决arm64上va_list拿不到参数的问题，使用forwardInvocation方式，支持各种类型参数枚举；</li>
-  <li>Wax框架维护期间还没有出现arm64所以也就一直平静的使用va_list，当然现在升级的话也可以使用JSPatch的这种方式；</li>
-</ul>
+<p>推荐如下链接，前两个介绍APNs的设置流程，已经很详尽，虽然很详尽但是个人感觉有些晦涩难懂，把简单的流程搞的复杂。我下面的内容是我设置APNs的过：</p>
 
-<h1 id="jspatchwax-1">JSPatch相比于Wax的劣势</h1>
+<p>[iPhone消息推送服务实现 - vber的专栏 - 博客频道 - CSDN.NET]</p>
 
-<h2 id="section-5">消息转发</h2>
-<ul>
-  <li>JS语言不支持消息转发，对于一个对象如果不响应方法就直接崩溃了，所以bang牛用正则替换了方法调用，然后通过桥接方法 __c() 来实现；</li>
-  <li>Lua解析后的方法、变量都放到元表中，支持消息转发，算是一个非常好的特性。</li>
-</ul>
+<p>[apple push notification service apple与Python结合推送 - iOS开发讨论区 - Tiny4Cocoa]</p>
 
-<h2 id="ios6">iOS6支持</h2>
-<ul>
-  <li>JSPatch基于JSCore，仅支持iOS7+</li>
-  <li>Wax理论上支持所有iOS版本。</li>
-</ul>
+<table>
+  <tbody>
+    <tr>
+      <td>[编写push notification之获取device token</td>
+      <td>Marshal’s Blog]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><a href="http://slj.me/2010/02/iphone-push-notification/">偷窥iPhone Push Notification的幕后 - SLJ.me - 申力军</a></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>[iPhone的Push(推送通知)功能原理浅析 - iPhone/iPad 进阶讨论区 - 悦Phone论坛 iPhone</td>
+      <td>iPad开发者、苹果开发者]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p> 第一次接触APNs，鼓捣了一下午终于有了点眉目。</p>
+
+<p> 链接1,2的流程介绍都是从最基础的入门级介绍，其实在你开发一款iOS app时，你需要做的是申请开发者帐号，设置Apple ID，生成provisioning file导入到Xcode，而APNs只是在设置Apple ID的时候多选择了一个选项，即Apple ID 的configure页面的 Enable for Apple Push Notification service选项，勾选它，然后根据你的需要生成dev或者release版本的SSL证书（证书生成的过程apple已经给了详尽的提示）。这里要注意的是，勾选了enable for apns之后，其实你的provisioning file已经改变，所以要重新下载新的导入Xcode。</p>
+
+<hr />
+<p>此时，你的app已经支持apns了。</p>
+
+<p> 之后需要做的是两个方面：</p>
+
+<ol>
+  <li>
+    <p>客户端 在appDelegate中编写代码，为了阅读方便就把上面链接中的代码重新贴一次：</p>
+
+    <pre><code> - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {  
+   [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];  
+ }  
+ - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {  
+   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"Error in registration. Error: %@", err] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
+ }  
+ - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {  
+   NSLog(@"devToken=%@",deviceToken);  
+   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"devToken=%@",deviceToken] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
+ } 
+</code></pre>
+  </li>
+</ol>
+
+<p> 其实就是在appDidFinishLaunch的时候注册（register）apns，然后通过didRegisterForRemoteNotificationsWithDeviceToken得到DeviceToken。</p>
+
+<p>接受服务器消息并改变客户端本地状态（如在app图表显示带数字的小红圈）的代码如下：</p>
+
+<pre><code>	－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	
+	    for (id key in userInfo) {
+	        NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
+	    }    
+	}
+</code></pre>
+
+<p> 到此为止，当你在真机上运行你的app时就会出现：是否允许app显示push notification的提示框。</p>
+
+<ol>
+  <li>服务器端 服务器端可以用PHP，Python等实现，网上也有一些现成的库如开源库APNSWrapper。现在你会发现我理解的思路跟链接1,2的介绍流程稍有不同，同时你会发现我还没有使用Enable for Apple Push Notification service时生成的证书文件，现在回到Apple ID configure页面下载生成的 Development (or Production) Push SSL Certificate 文件，关于这个文件要多说几句：</li>
+</ol>
+
+<blockquote>
+  <p>这个文件的作用是让apple的APNs服务器确认服务器端具有push notification的权限。将这个证书作一定的处理（＊至于是什么处理为了不影响文章的连贯性会在下面介绍），生成一个ck.pem文件（这个名字可以自定义）。</p>
+</blockquote>
+
+<p> 然后就要涉及到APNs的工作机制，我的总结如下：当一个device（苹果设备）启用apns功能（就是通知功能）的时候会和apple的APNs服务器建立TLS连接，APNs服务器根据device的UDID和加密密钥新建一个DeviceToken（它的作用是让服务器端指定device，唯一）返回给device，然后device会把device token给你的app客户端，这时会调用刚才写的didRegisterForRemoteNotificationsWithDeviceToken方法，你可以在这个方法中将device token返回给服务器端。此后，如果服务器端push了一个notification给客户端，需要将这个device token和之前处理的ck.pem文件同时发送给APNs服务器，APNs服务器会验证你的ck.pem文件然后根据device token指定的设备推送消息给客户端）。当客户端接受到push的通知时调用didReceiveRemoteNotification方法，你可以在这个方法中放入你需要的操作。</p>
+
+<blockquote>
+  <p>现在再回到Apple ID configure页面下载生成的 Development (or Production) Push SSL Certificate 文件，对它的处理链接1,2都有介绍，就是：</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>选择“我的证书”, 选定推送服务证书(Apple Development Push Services*),导出到桌面,保存为Certificates.p12。</p>
+  </li>
+  <li>
+    <p>在终端中运行如下命令:</p>
+
+ 	openssl pkcs12 -clcerts -nokeys -out cert.pem -in Certificates.p12<br />
+ 	openssl pkcs12 -nocerts -out key.pem -in Certificates.p12<br />
+ 	openssl rsa -in key.pem -out key.unencrypted.pem<br />
+    <pre><code> 	cat cert.pem key.unencrypted.pem &gt; ck.pem  
+
+ ck.pem文件则是PHP推送消息时所使用的证书文件。
+</code></pre>
+  </li>
+</ol>
+
+<p> 你剩下的任务就是编写服务器端的代码，push notification，这部分只要记住发送device token和证书文件就可以了。</p>
+
+<p>（以上就是我理解学习APNs的过程，许多理解都不深入，所以描述也不准确，包涵～）</p>
+
+<h2 id="section">更新：</h2>
+
+<p><strong>开发中遇到的问题汇总</strong>：</p>
+
+<ol>
+  <li>
+    <p>正常的iPhone刷系统之后，是没有设备证书和密钥的。这就是为什么iPhone会需要连接到 iTunes上进行激活——激活过程中，Apple会分配给每台iPhone独一无二的设备证书(device certificate)和密钥(key)。(如果没有意识到这个会一直收到 “未找到应用程序的”aps-environment” 的权利字符串)</p>
+  </li>
+  <li>
+    <p>如果生成appleID的时候没有enable aps，那么enable之后一定要删掉原来的dev和rc证书重新生成，这样才能保证开启新功能，否则仅仅是刷新这张证书仍然会没有aps，提示（ “未找到应用程序的”aps-environment” 的权利字符串）</p>
+  </li>
+  <li>
+    <p>APNs证书如果是系统证书那么最好拷贝到登陆证书中，这样可以直接导出成p12</p>
+  </li>
+</ol>
+
 ]]></content>
   </entry>
   
