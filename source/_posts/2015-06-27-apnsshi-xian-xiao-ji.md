@@ -32,27 +32,27 @@ categories:
 
 1. 客户端 在appDelegate中编写代码，为了阅读方便就把上面链接中的代码重新贴一次：
 
-    - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {  
-      [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];  
-    }  
-    - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {  
-      [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"Error in registration. Error: %@", err] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
-    }  
-    - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {  
-      NSLog(@"devToken=%@",deviceToken);  
-      [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"devToken=%@",deviceToken] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
-    } 
+	    - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {  
+	      [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];  
+	    }  
+	    - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {  
+	      [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"Error in registration. Error: %@", err] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
+	    }  
+	    - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {  
+	      NSLog(@"devToken=%@",deviceToken);  
+	      [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"devToken=%@",deviceToken] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
+	    } 
 
 &emsp;其实就是在appDidFinishLaunch的时候注册（register）apns，然后通过didRegisterForRemoteNotificationsWithDeviceToken得到DeviceToken。
 
 接受服务器消息并改变客户端本地状态（如在app图表显示带数字的小红圈）的代码如下：
 
-－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-
-    for (id key in userInfo) {
-        NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
-    }    
-}
+		－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+		
+		    for (id key in userInfo) {
+		        NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
+		    }    
+		}
 
 &emsp;到此为止，当你在真机上运行你的app时就会出现：是否允许app显示push notification的提示框。
 
