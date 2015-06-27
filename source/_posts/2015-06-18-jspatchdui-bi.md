@@ -7,6 +7,8 @@ categories: iOS,JSPatch
 ---
 > [JSPatch](https://github.com/bang590/JSPatch)与[Wax](https://github.com/probablycorey/wax)作为iOS平台上两大热更新框架使用不同的语言、基于相同的原理（ObjC动态绑定）一直备受iOS开发者的青睐，Wax出现较早且已经不再维护，但是也有了各种各样的分支版本；JSPatch作为后起之秀得益于iOS7苹果开放了JavascriptCore.framework的API，相比以前的Wax框架有了很多更新，下面就根据以往的开发经验简单比较一下二者的优势劣势，如果想对两个框架有更多的了解，请移步上文的官方网站和相关文档。
 
+<!--more-->
+
 1. JSPatch相比于Wax的优势
 2. JSPatch相比于Wax的劣势
 

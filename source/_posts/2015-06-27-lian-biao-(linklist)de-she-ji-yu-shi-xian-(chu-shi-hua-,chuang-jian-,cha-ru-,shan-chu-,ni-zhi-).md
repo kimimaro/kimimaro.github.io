@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置）"
-date: 2015-06-27 12:08:20 +0800
+date: 2012-06-27 12:08:20 +0800
 comments: true
 categories: algorithm
 ---
@@ -16,6 +16,8 @@ version1.1:2011-3-26 1.在尾插法中增加p->next = NULL;2.将类似于p==NULL
 	//单链表的表示与实现                //
 	//Author:YuTianhang               //
 	//Date:2011.3.23                    //
+
+<!--more-->
 	
 	//Version:1.0                        //
 	//////////////////////////////////////

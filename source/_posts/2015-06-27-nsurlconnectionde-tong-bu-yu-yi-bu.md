@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "NSURLConnection的同步与异步"
-date: 2015-06-27 12:15:00 +0800
+date: 2014-06-27 12:15:00 +0800
 comments: true
 categories: iOS
 ---
@@ -10,6 +10,7 @@ categories: iOS
 
 写下体会：（时间所限，比较杂乱，见谅！）
 
+<!--more-->
 ***
 NSURLConnection的同步发送就不用说了，很简单，上面链接也说了，
 

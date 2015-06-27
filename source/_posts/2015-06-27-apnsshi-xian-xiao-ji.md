@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "APNs实现小记"
-date: 2015-06-27 11:07:51 +0800
+date: 2014-06-27 11:07:51 +0800
 comments: true
 categories: iOS
 ---
@@ -10,6 +10,7 @@ categories: iOS
 
 推荐如下链接，前两个介绍APNs的设置流程，已经很详尽，虽然很详尽但是个人感觉有些晦涩难懂，把简单的流程搞的复杂。我下面的内容是我设置APNs的过：
 
+<!--more-->
 [iPhone消息推送服务实现 - vber的专栏 - 博客频道 - CSDN.NET]
 
 [apple push notification service apple与Python结合推送 - iOS开发讨论区 - Tiny4Cocoa]

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "二分法查找的实现（递归&amp;循环）"
-date: 2015-06-27 12:07:27 +0800
+date: 2012-06-27 12:07:27 +0800
 comments: true
 categories: algorithm
 ---
@@ -13,7 +13,8 @@ categories: algorithm
 		//Author:Kimimaro                    //
 		//Date:2010-3-28                    //
 		/////////////////////////////////////////
-		
+
+<!--more-->		
 		typedef int KeyType;    //定义关键字类型
 		
 		//typedef struct        //定义数据元素结构

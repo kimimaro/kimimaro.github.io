@@ -13,6 +13,8 @@ categories: iOS,JSPatch
 4. JSPatch实用举例
 5. 与现有方案（Wax）的对比
 
+<!--more-->
+
 ---
 
 > [JSPatch实现原理详解](http://blog.cnbang.net/tech/2808/)

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "UIImageView和UIButton拉伸效果的实现"
-date: 2015-06-27 11:49:22 +0800
+date: 2015-05-27 11:49:22 +0800
 comments: true
 categories: iOS
 ---
@@ -16,6 +16,7 @@ UIImageView中Image拉伸效果的实现：
     strechTest.frame = frame;
 
  
+<!--more-->
 
 但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。
 

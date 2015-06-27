@@ -1,12 +1,13 @@
 ---
 layout: post
 title: "关于git分支的使用"
-date: 2015-06-27 11:48:12 +0800
+date: 2014-06-27 11:48:12 +0800
 comments: true
 categories: Git
 ---
 学习记录，不正确的地方望指正！
 
+<!--more-->
 git branch 显示的是本地分支
 
 git pull origin aRemoteBranch

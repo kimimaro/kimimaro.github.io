@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Java统计程序运行时间（转）"
-date: 2015-06-27 12:05:57 +0800
+date: 2013-06-27 12:05:57 +0800
 comments: true
 categories: Java
 ---
@@ -11,6 +11,7 @@ categories: Java
 
 	long startTime = System.currentTimeMillis();    //获取开始时间
 	
+<!--more-->
 	doSomething();    //测试的代码段
 	
 	long endTime = System.currentTimeMillis();    //获取结束时间
