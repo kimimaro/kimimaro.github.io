@@ -108,6 +108,22 @@ google_analytics_tracking_id:
 # Facebook Like
 facebook_like: false
 
+# Stackoverflow
+stackoverflow_user_id: "765605"
+stackoverflow_user: "kimimaro"
+
+# LinkedIn
+linkedin_user: "kimimaro"
+
+# Douban
+douban_user: "kimirius"
+
+#Quora
+quora_user: "Yu-Tianhang"
+
+# Instagram
+instagram_user: "kimirius"
+
 #Gravatar
 email_md5: 'c56d402092b54cba7b9c5c4927ea123d'
 
