@@ -5,11 +5,11 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>UIImageView和UIButton拉伸效果的实现 - 402</title>
+	<title>异步机制 - 402</title>
 	<meta name="author" content="Kimimaro">
 
 	
-	<meta name="description" content="UIImageView和UIButton拉伸效果的实现 UIImageView中Image拉伸效果的实现： UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png &hellip;">
+	<meta name="description" content="异步机制 及时响应用户 实现多核调度 NSOperation 封装了大部分异步相关的逻辑，基础类，使用的时候要继承它创建我们自己的子类； 系统实现的具体的类：NSInvocationOperation，NSBlockOperation； Dependency，Completion block， &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
 
 	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
 	
-	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/">
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150608/yi-bu-ji-zhi/">
 	<link href="/favicon.png" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -38,17 +38,23 @@
 			<div class="intrude-less">
 			<header id="header" class="inner"><div class="profilepic">
 	
-  <!-- Fuck GFW, use local image -->
+  	<!-- Fuck GFW, use local image -->
 	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
   <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
 	
 </div>
 
 <nav id="main-nav"><ul class="main">
-    <li><a href="/">Blog</a></li>
-    <li><a href="http://about.me/kimimaro">About</a></li>
+    <li><a href="/">Home</a></li>
+    <li><a href="http://about.me/kimimaro">About Me</a></li>
     <li><a href="/blog/archives">Archives</a></li>
 </ul>
+
+<section class="aboutme">
+  <p>
+    >_<
+  </p>
+</section>
 </nav>
 <nav id="sub-nav">
 	<div class="social">
@@ -97,54 +103,96 @@
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">UIImageView和UIButton拉伸效果的实现</h1>
-	<div class="entry-content" itemprop="articleBody"><p>UIImageView中Image拉伸效果的实现：</p>
+	<h1 class="title" itemprop="name">异步机制</h1>
+	<div class="entry-content" itemprop="articleBody"><blockquote>
+  <ol>
+    <li>及时响应用户</li>
+    <li>实现多核调度</li>
+  </ol>
+</blockquote>
 
-<pre><code>UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
-[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
-CGRect frame = strechTest.frame;
-frame.size.width += 100;
-strechTest.frame = frame;
+<!--more-->
+
+<h3 id="nsoperation">NSOperation</h3>
+<ol>
+  <li>封装了大部分异步相关的逻辑，基础类，使用的时候要继承它创建我们自己的子类；</li>
+  <li>系统实现的具体的类：NSInvocationOperation，NSBlockOperation；</li>
+  <li>Dependency，Completion block，KVO，Priority，Cancel</li>
+  <li>non-concurrent
+    <ul>
+      <li>重写main()</li>
+      <li>autoreleasepool</li>
+      <li>不需要自己维护状态</li>
+    </ul>
+  </li>
+  <li>concurrent
+    <ul>
+      <li>实现start()</li>
+      <li>实现异步操作</li>
+      <li>自己维护isFinished，isExcuting，isCancelled（manual KVO）</li>
+    </ul>
+  </li>
+  <li>判断是否cancel
+    <ul>
+      <li>main/start</li>
+      <li>循环开始处</li>
+      <li>逻辑区分点</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="dispatch-queue">dispatch queue</h3>
+<ol>
+  <li>将业务逻辑写在block里
+    <ul>
+      <li>
+        <p>定义：</p>
+
+        <pre><code>  ^return type(params){expression}	
+  typedef return type(^name)(params)
 </code></pre>
+      </li>
+      <li>
+        <p>声明：</p>
 
-<p>但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。</p>
-
-<p>因此UIButton实现背景拉伸，即图片两端不拉伸中间拉伸的办法有如下两种：</p>
-
-<p>第一种方法很简单而且使用性更广。做法就是直接拉伸想要setBackgroundImage的image，代码如下：</p>
-
-<pre><code>UIImage*image =[UIImage imageNamed:@"image.png"];
-
-image = [image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
-
-image =[image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+        <pre><code>  self.block = ^(params){expression};
 </code></pre>
+      </li>
+      <li>
+        <p>方法中定义的block在stack上，当调用copy时，会copy到heap上</p>
+      </li>
+    </ul>
+  </li>
+  <li>finalizer</li>
+  <li>Serial(private dispatch queue)
+    <ul>
+      <li>block间顺序执行</li>
+      <li>dispatch_queue_create()</li>
+      <li>
+        <p>需要自己维护reference count:</p>
 
-<p>设置了左端帽之后，rightCapWidth = image.size.width - (image.leftCapWidth + 1); 也就是说图片中间的一像素用来拉伸。垂直方向同上。</p>
-
-<p>设置之后无论把image放到什么控件中都可以自动拉伸了。</p>
-
-<p>第二种方法是在UIButton中加入一个UIImageView，拉伸imageView，然后将button的背景设为clearColor等等。把imageView放入button中，并且sendToBack，得到效果。</p>
-
-<p>代码如下：</p>
-
-<pre><code>//刚才imageView拉伸的代码
-
-UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
-[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
-CGRect frame = strechTest.frame;
-frame.size.width += 100;
-strechTest.frame = frame;
-
-//把imageView放入button中，并设置为back
-
-
-[temp_button addSubview:backgroundImageView];
-[temp_button sendSubviewToBack:backgroundImageView];
-[temp_button setBackgroundColor:[UIColor clearColor]];
+        <pre><code>  dispatch_release()
 </code></pre>
+      </li>
+    </ul>
+  </li>
+  <li>Concurrent(global dispatch queue)
+    <ul>
+      <li>block间并发执行</li>
+      <li>dispatch_get_global_queue()</li>
+      <li>normal, low, high</li>
+      <li>系统维护reference count</li>
+    </ul>
+  </li>
+  <li>main dispatch queue
+    <ul>
+      <li>在主线程run loop执行</li>
+      <li>更新UI/主线程作为同步</li>
+    </ul>
+  </li>
+  <li>dispatch queue维护自己的autoreleasepool</li>
+</ol>
 
-<p>button不能设置背景图片，这样就可以实现拉伸的图片作为背景并且背景上可以放置title。</p>
 </div>
 
 </article>
@@ -192,8 +240,8 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/';
-        var disqus_url = 'http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/';
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150608/yi-bu-ji-zhi/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150608/yi-bu-ji-zhi/';
         var disqus_script = 'embed.js';
       
     (function () {

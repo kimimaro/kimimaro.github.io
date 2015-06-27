@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios,jspatch | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/ios-jspatch/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-27T23:22:13+08:00</updated>
+  <updated>2015-06-28T01:25:08+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -21,6 +21,8 @@
     <content type="html"><![CDATA[<blockquote>
   <p><a href="https://github.com/bang590/JSPatch">JSPatch</a>与<a href="https://github.com/probablycorey/wax">Wax</a>作为iOS平台上两大热更新框架使用不同的语言、基于相同的原理（ObjC动态绑定）一直备受iOS开发者的青睐，Wax出现较早且已经不再维护，但是也有了各种各样的分支版本；JSPatch作为后起之秀得益于iOS7苹果开放了JavascriptCore.framework的API，相比以前的Wax框架有了很多更新，下面就根据以往的开发经验简单比较一下二者的优势劣势，如果想对两个框架有更多的了解，请移步上文的官方网站和相关文档。</p>
 </blockquote>
+
+<!--more-->
 
 <ol>
   <li>JSPatch相比于Wax的优势</li>
@@ -120,6 +122,8 @@
   <li>JSPatch实用举例</li>
   <li>与现有方案（Wax）的对比</li>
 </ol>
+
+<!--more-->
 
 <hr />
 

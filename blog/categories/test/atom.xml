@@ -4,7 +4,7 @@
   <title><![CDATA[分类：test | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/test/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-27T23:22:13+08:00</updated>
+  <updated>2015-06-28T01:25:08+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -18,7 +18,12 @@
     <link href="http://blog.oneboxapp.com/blog/20150617/first-post/"/>
     <updated>2015-06-17T23:37:54+08:00</updated>
     <id>http://blog.oneboxapp.com/blog/20150617/first-post</id>
-    <content type="html"><![CDATA[<h3 id="first-post">First Post</h3>
+    <content type="html"><![CDATA[<h3 id="first-postcnblog-">==== First Post下面是从cnblog迁移过来的旧文 ====</h3>
+
+<p>以上是摘要部分
+<!--more--></p>
+
+<p> 段落开头</p>
 ]]></content>
   </entry>
   

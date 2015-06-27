@@ -4,7 +4,7 @@
   <title><![CDATA[分类：git | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-27T23:22:13+08:00</updated>
+  <updated>2015-06-28T01:25:08+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -15,11 +15,12 @@
   
   <entry>
     <title type="html"><![CDATA[关于git分支的使用]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong/"/>
-    <updated>2015-06-27T11:48:12+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong</id>
+    <link href="http://blog.oneboxapp.com/blog/20140627/guan-yu-gitfen-zhi-de-shi-yong/"/>
+    <updated>2014-06-27T11:48:12+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20140627/guan-yu-gitfen-zhi-de-shi-yong</id>
     <content type="html"><![CDATA[<p>学习记录，不正确的地方望指正！</p>
 
+<!--more-->
 <p>git branch 显示的是本地分支</p>
 
 <p>git pull origin aRemoteBranch</p>

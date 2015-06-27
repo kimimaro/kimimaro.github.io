@@ -4,7 +4,7 @@
   <title><![CDATA[分类：ios | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-06-27T23:22:13+08:00</updated>
+  <updated>2015-06-28T01:25:08+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -14,46 +14,107 @@
 
   
   <entry>
-    <title type="html"><![CDATA[NSURLConnection的同步与异步]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/"/>
-    <updated>2015-06-27T12:15:00+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu</id>
-    <content type="html"><![CDATA[<p>从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/</p>
+    <title type="html"><![CDATA[异步机制]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150608/yi-bu-ji-zhi/"/>
+    <updated>2015-06-08T00:02:06+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150608/yi-bu-ji-zhi</id>
+    <content type="html"><![CDATA[<blockquote>
+  <ol>
+    <li>及时响应用户</li>
+    <li>实现多核调度</li>
+  </ol>
+</blockquote>
 
-<p>写下体会：（时间所限，比较杂乱，见谅！）</p>
+<!--more-->
 
-<hr />
-<p>NSURLConnection的同步发送就不用说了，很简单，上面链接也说了，</p>
+<h3 id="nsoperation">NSOperation</h3>
+<ol>
+  <li>封装了大部分异步相关的逻辑，基础类，使用的时候要继承它创建我们自己的子类；</li>
+  <li>系统实现的具体的类：NSInvocationOperation，NSBlockOperation；</li>
+  <li>Dependency，Completion block，KVO，Priority，Cancel</li>
+  <li>non-concurrent
+    <ul>
+      <li>重写main()</li>
+      <li>autoreleasepool</li>
+      <li>不需要自己维护状态</li>
+    </ul>
+  </li>
+  <li>concurrent
+    <ul>
+      <li>实现start()</li>
+      <li>实现异步操作</li>
+      <li>自己维护isFinished，isExcuting，isCancelled（manual KVO）</li>
+    </ul>
+  </li>
+  <li>判断是否cancel
+    <ul>
+      <li>main/start</li>
+      <li>循环开始处</li>
+      <li>逻辑区分点</li>
+    </ul>
+  </li>
+</ol>
 
-<p>异步在iOS5之前都是作为一个非正式的协议出现的，默认initWithRequestxxx方法发送的就是异步请求，然后通过delegate中的方法可以操作，之前我一直错误在发送异步请求的时候也开一个新的线程，看了文章之后才想明白这真的是没有必要，在其他线程跑conn的原因就是为了避免阻塞主UI线程，而现在cocoa使用了delegate帮助你避免了这个问题，所以根本不需要再开一个新的线程去请求，直接请求然后在delegate中handleData就可以了。</p>
+<h3 id="dispatch-queue">dispatch queue</h3>
+<ol>
+  <li>将业务逻辑写在block里
+    <ul>
+      <li>
+        <p>定义：</p>
 
-<p>而回到对同步conn的使用，同步conn使用我认为是一定要在新线程中，这样避免了阻塞主线程的缺点（如文中所说），但是相比与aSync conn，sync还有其他缺点，如不能在请求同时操作数据，不能cancel等等，所以还是aSync要好用。</p>
-
-<hr />
-
-<p>iOS4之前如果想在新的线程使用异步发送的conn，最好的方法应该就是文中教的trick，而</p>
-
-<p>iOS5之后添加了 NSURLConnectionDataDelegate 把之前非正式协议的一部分拿了过来变成了正是协议（formal protocol），里面包括了数据处理等代理方法，还增加了在线程中发送异步请求的方法：</p>
-
-<pre><code>+ (void)sendAsynchronousRequest:(NSURLRequest *)request
-
-                          queue:(NSOperationQueue*) queue
-
-              completionHandler:(void (^)(NSURLResponse*, NSData*, NSError*)) handler NS_AVAILABLE(10_7, 5_0);
+        <pre><code>  ^return type(params){expression}	
+  typedef return type(^name)(params)
 </code></pre>
+      </li>
+      <li>
+        <p>声明：</p>
 
-<p>这样我认为就不需要像上文作者那样trick了吧？</p>
+        <pre><code>  self.block = ^(params){expression};
+</code></pre>
+      </li>
+      <li>
+        <p>方法中定义的block在stack上，当调用copy时，会copy到heap上</p>
+      </li>
+    </ul>
+  </li>
+  <li>finalizer</li>
+  <li>Serial(private dispatch queue)
+    <ul>
+      <li>block间顺序执行</li>
+      <li>dispatch_queue_create()</li>
+      <li>
+        <p>需要自己维护reference count:</p>
 
-<p>***)
-另外还加入了NSURLConnectionDownloadDelegate，主要作用就是讲数据直接存入文件中，缓存的时候估计有用吧？</p>
+        <pre><code>  dispatch_release()
+</code></pre>
+      </li>
+    </ul>
+  </li>
+  <li>Concurrent(global dispatch queue)
+    <ul>
+      <li>block间并发执行</li>
+      <li>dispatch_get_global_queue()</li>
+      <li>normal, low, high</li>
+      <li>系统维护reference count</li>
+    </ul>
+  </li>
+  <li>main dispatch queue
+    <ul>
+      <li>在主线程run loop执行</li>
+      <li>更新UI/主线程作为同步</li>
+    </ul>
+  </li>
+  <li>dispatch queue维护自己的autoreleasepool</li>
+</ol>
+
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[UIImageView和UIButton拉伸效果的实现]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/"/>
-    <updated>2015-06-27T11:49:22+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian</id>
+    <link href="http://blog.oneboxapp.com/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/"/>
+    <updated>2015-05-27T11:49:22+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian</id>
     <content type="html"><![CDATA[<p>UIImageView中Image拉伸效果的实现：</p>
 
 <pre><code>UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
@@ -62,6 +123,8 @@ CGRect frame = strechTest.frame;
 frame.size.width += 100;
 strechTest.frame = frame;
 </code></pre>
+
+<!--more-->
 
 <p>但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。</p>
 
@@ -105,16 +168,54 @@ strechTest.frame = frame;
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[NSURLConnection的同步与异步]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20140627/nsurlconnectionde-tong-bu-yu-yi-bu/"/>
+    <updated>2014-06-27T12:15:00+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20140627/nsurlconnectionde-tong-bu-yu-yi-bu</id>
+    <content type="html"><![CDATA[<p>从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/</p>
+
+<p>写下体会：（时间所限，比较杂乱，见谅！）</p>
+
+<!--more-->
+<hr />
+<p>NSURLConnection的同步发送就不用说了，很简单，上面链接也说了，</p>
+
+<p>异步在iOS5之前都是作为一个非正式的协议出现的，默认initWithRequestxxx方法发送的就是异步请求，然后通过delegate中的方法可以操作，之前我一直错误在发送异步请求的时候也开一个新的线程，看了文章之后才想明白这真的是没有必要，在其他线程跑conn的原因就是为了避免阻塞主UI线程，而现在cocoa使用了delegate帮助你避免了这个问题，所以根本不需要再开一个新的线程去请求，直接请求然后在delegate中handleData就可以了。</p>
+
+<p>而回到对同步conn的使用，同步conn使用我认为是一定要在新线程中，这样避免了阻塞主线程的缺点（如文中所说），但是相比与aSync conn，sync还有其他缺点，如不能在请求同时操作数据，不能cancel等等，所以还是aSync要好用。</p>
+
+<hr />
+
+<p>iOS4之前如果想在新的线程使用异步发送的conn，最好的方法应该就是文中教的trick，而</p>
+
+<p>iOS5之后添加了 NSURLConnectionDataDelegate 把之前非正式协议的一部分拿了过来变成了正是协议（formal protocol），里面包括了数据处理等代理方法，还增加了在线程中发送异步请求的方法：</p>
+
+<pre><code>+ (void)sendAsynchronousRequest:(NSURLRequest *)request
+
+                          queue:(NSOperationQueue*) queue
+
+              completionHandler:(void (^)(NSURLResponse*, NSData*, NSError*)) handler NS_AVAILABLE(10_7, 5_0);
+</code></pre>
+
+<p>这样我认为就不需要像上文作者那样trick了吧？</p>
+
+<p>***)
+另外还加入了NSURLConnectionDownloadDelegate，主要作用就是讲数据直接存入文件中，缓存的时候估计有用吧？</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[APNs实现小记]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150627/apnsshi-xian-xiao-ji/"/>
-    <updated>2015-06-27T11:07:51+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150627/apnsshi-xian-xiao-ji</id>
+    <link href="http://blog.oneboxapp.com/blog/20140627/apnsshi-xian-xiao-ji/"/>
+    <updated>2014-06-27T11:07:51+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20140627/apnsshi-xian-xiao-ji</id>
     <content type="html"><![CDATA[<blockquote>
   <p>转自己以前写的博客，很早时候的学习笔记了，不过下面几个连接貌似都失效了。。。囧</p>
 </blockquote>
 
 <p>推荐如下链接，前两个介绍APNs的设置流程，已经很详尽，虽然很详尽但是个人感觉有些晦涩难懂，把简单的流程搞的复杂。我下面的内容是我设置APNs的过：</p>
 
+<!--more-->
 <p>[iPhone消息推送服务实现 - vber的专栏 - 博客频道 - CSDN.NET]</p>
 
 <p>[apple push notification service apple与Python结合推送 - iOS开发讨论区 - Tiny4Cocoa]</p>
@@ -229,101 +330,6 @@ strechTest.frame = frame;
   <li>
     <p>APNs证书如果是系统证书那么最好拷贝到登陆证书中，这样可以直接导出成p12</p>
   </li>
-</ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[异步机制]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi/"/>
-    <updated>2015-06-18T00:02:06+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150618/yi-bu-ji-zhi</id>
-    <content type="html"><![CDATA[<blockquote>
-  <ol>
-    <li>及时响应用户</li>
-    <li>实现多核调度</li>
-  </ol>
-</blockquote>
-
-<h3 id="nsoperation">NSOperation</h3>
-<ol>
-  <li>封装了大部分异步相关的逻辑，基础类，使用的时候要继承它创建我们自己的子类；</li>
-  <li>系统实现的具体的类：NSInvocationOperation，NSBlockOperation；</li>
-  <li>Dependency，Completion block，KVO，Priority，Cancel</li>
-  <li>non-concurrent
-    <ul>
-      <li>重写main()</li>
-      <li>autoreleasepool</li>
-      <li>不需要自己维护状态</li>
-    </ul>
-  </li>
-  <li>concurrent
-    <ul>
-      <li>实现start()</li>
-      <li>实现异步操作</li>
-      <li>自己维护isFinished，isExcuting，isCancelled（manual KVO）</li>
-    </ul>
-  </li>
-  <li>判断是否cancel
-    <ul>
-      <li>main/start</li>
-      <li>循环开始处</li>
-      <li>逻辑区分点</li>
-    </ul>
-  </li>
-</ol>
-
-<h3 id="dispatch-queue">dispatch queue</h3>
-<ol>
-  <li>将业务逻辑写在block里
-    <ul>
-      <li>
-        <p>定义：</p>
-
-        <pre><code>  ^return type(params){expression}	
-  typedef return type(^name)(params)
-</code></pre>
-      </li>
-      <li>
-        <p>声明：</p>
-
-        <pre><code>  self.block = ^(params){expression};
-</code></pre>
-      </li>
-      <li>
-        <p>方法中定义的block在stack上，当调用copy时，会copy到heap上</p>
-      </li>
-    </ul>
-  </li>
-  <li>finalizer</li>
-  <li>Serial(private dispatch queue)
-    <ul>
-      <li>block间顺序执行</li>
-      <li>dispatch_queue_create()</li>
-      <li>
-        <p>需要自己维护reference count:</p>
-
-        <pre><code>  dispatch_release()
-</code></pre>
-      </li>
-    </ul>
-  </li>
-  <li>Concurrent(global dispatch queue)
-    <ul>
-      <li>block间并发执行</li>
-      <li>dispatch_get_global_queue()</li>
-      <li>normal, low, high</li>
-      <li>系统维护reference count</li>
-    </ul>
-  </li>
-  <li>main dispatch queue
-    <ul>
-      <li>在主线程run loop执行</li>
-      <li>更新UI/主线程作为同步</li>
-    </ul>
-  </li>
-  <li>dispatch queue维护自己的autoreleasepool</li>
 </ol>
 
 ]]></content>

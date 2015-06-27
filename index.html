@@ -9,7 +9,7 @@
 	<meta name="author" content="Kimimaro">
 
 	
-	<meta name="description" content="android HTC G14 Sensation Z710e 刷机总结 几年前写的可能过时了，留个底。 在下面一大堆废话之前先说有用的，推荐 RomManager 这个应用，只要你的手机已经获得了root权限，这个app能够让你 随心所欲的，方便的更新 recovery，下载国内国外好的ROM &hellip;">
+	<meta name="description" content="15 Jun 22 ios,debug Comments SIGABRT错误的调试办法 iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法： Read on &rarr &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -38,17 +38,23 @@
 			<div class="intrude-less">
 			<header id="header" class="inner"><div class="profilepic">
 	
-  <!-- Fuck GFW, use local image -->
+  	<!-- Fuck GFW, use local image -->
 	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
   <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
 	
 </div>
 
 <nav id="main-nav"><ul class="main">
-    <li><a href="/">Blog</a></li>
-    <li><a href="http://about.me/kimimaro">About</a></li>
+    <li><a href="/">Home</a></li>
+    <li><a href="http://about.me/kimimaro">About Me</a></li>
     <li><a href="/blog/archives">Archives</a></li>
 </ul>
+
+<section class="aboutme">
+  <p>
+    >_<
+  </p>
+</section>
 </nav>
 <nav id="sub-nav">
 	<div class="social">
@@ -114,88 +120,25 @@
   
 
 
-<time datetime="2015-06-27T12:20:35+08:00" data-updated="true" itemprop="datePublished"></time></div>
+<time datetime="2015-06-22T10:50:39+08:00" data-updated="true" itemprop="datePublished">15 Jun 22</time></div>
 		<div class="tags">
 
 
-	<a class='category' href='/blog/categories/android/'>android</a>
+	<a class='category' href='/blog/categories/ios-debug/'>ios,debug</a>
 
 
 </div>
 		
+			<span class="comments"><a href="/blog/20150622/sigabrtcuo-wu-de-diao-shi-ban-fa/#disqus_thread">Comments</a></span>
+		
 	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/htc-g14-sensation-z710e-shua-ji-zong-jie/" itemprop="url">HTC G14 Sensation Z710e 刷机总结</a></h1>
+	<h1 class="title" itemprop="name"><a href="/blog/20150622/sigabrtcuo-wu-de-diao-shi-ban-fa/" itemprop="url">SIGABRT错误的调试办法</a></h1>
 	<div class="entry-content" itemprop="articleBody">
-		<blockquote>
-  <p>几年前写的可能过时了，留个底。</p>
-</blockquote>
+		<p>iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法：</p>
 
-<blockquote>
-  <p>在下面一大堆废话之前先说有用的，推荐 RomManager 这个应用，只要你的手机已经获得了root权限，这个app能够让你 随心所欲的，方便的更新 recovery，下载国内国外好的ROM，同时也提供了 备份和还原 功能。有免费版和付费版两个版本。 有经验的朋友应该已经知道这款应用，大神级的app。</p>
-</blockquote>
-
-<p>这不是一篇教程，但是也许会让你对刷机有一些整体的体会； 阅读这篇文章的前提是你已经有了一些刷机的经验，了解大体的步骤。推荐先了解几个概念： ROM，recovery，root，S-ON (SHIP S-OFF, END S-OFF)； 如果初次接触的话推荐 小米 的刷机教程（最新的 android 4.0 系统的 sensation 的教程），省去很多时间； 网上的刷机教程都太繁琐，只讲了流程，但是没有逻辑性，按照它的流程走通是没有问题，但是如果一旦遇到了与之流程不符的情况，就不知道如何处理了。 我写这篇教程只讲几个比较重要的软件和值得注意的点，希望能对遇到莫名其妙问题的同学有所助益。 刷机并不需要一个完整的傻瓜式教程，而是要理解其中的几个点，刷机主要有哪几个步骤，用到了哪些服务（或者说软件），它们都是做什么的，这样就ok了。 这些服务的官网上都有完整的说明，把这些说明看懂你才真正知道你在做什么，为什么要这么做 （不过这些网站都是国外的，所以如果英文不好，或者你根本就不care这些只care刷上了一个新系统的话，忽略我这篇文章） 由于时间有限所以有些服务没有链接，建议直接去官方网站上下载，顺便看看介绍。</p>
-
-<ul>
-  <li>
-    <p>两个快捷键 + 一个操作：
-  音量下 + 电源 ：进入 HBOOT 模式，要进行 fastboot，recovery等操作都要在这个模式下；
-  音量上 + 音量下 + 电源 ：硬重启，刷机会遇到这样那样的问题，偶尔会用到这个；
-  拔电池，主要是为了确认真正关机了，等到你刷上的时候就会发现这个操作很有用，如果你没用到，我只能承认你确实很厉害。</p>
-  </li>
-  <li>
-    <p>其实刷机无非就几个步骤：
-  获得 ROOT 权限；
-  Recovery；
-  Rom；</p>
-  </li>
-  <li>会用到这样一些服务，基本上都是国外的服务：
-    <ul>
-      <li>
-        <p>Revolutionary</p>
-
-        <p>用来解锁的服务，官网上有很好的解释，如果希望简单了解具体的操作步骤参见其他教程（eg. http://bbs.anshouji.com/forum.php?mod=viewthread&amp;tid=38512&amp;extra=#pid582875）</p>
-      </li>
-      <li>
-        <p>ClockWorkMod</p>
-
-        <p>Recovery 提供商，同时也是 RomManager 的作者。</p>
-      </li>
-      <li>ROM 可以就去网上找把，小米的，点心的，或者刚才提到的 ClockWorkMod 上面更多。</li>
-      <li>sensation 的解锁还要借助一个临时获得 ROOT 权限的软件： tacoRoot</li>
-    </ul>
-  </li>
-  <li>
-    <p>htc默认是不允许进行 recovery 操作的，所以需要解锁。</p>
-  </li>
-  <li>
-    <p>解锁，获取 ROOT 权限
-  htc的手机需要先解锁，用到的工具就是 Revolutionary ，但是 sensation 的解锁还要麻烦一步，
-  因为直接 Revolutionary 解锁会遇到 Zerging root… 然后直接就 failed 了。
-  所以需要借助临时获得 ROOT 的软件： tacoRoot （具体的操作用adb，见：http://www.androidpolice.com/2011/12/30/exclusive-tacoroot- by-justin-case-and-reid-holland-a-new-temporary-root-exploit-for-all- htc-devices/）
-  得到临时 ROOT 权限之后按照 Revolutionary 的操作步骤就可以把 S-ON 改为 S-OFF，但这只是一个 SHIP S-OFF，进一步可以改为 END-OFF，这里不做介绍。</p>
-  </li>
-  <li>recovery
-  ClockWorkMod 下载的 recovery 是 img 的。自己做成 PG58IMG.zip ，放在 SD 卡根目录，重启的时候 htc 会自动识别
-  网上有很多人做了相应的 zip，搜 PG58IMG.zip 能找到一堆，还是推荐 小米 的。
-  放在 SD 卡根目录然后重启，安装
-  装好后记得 PG58IMG 要删掉否则每次 htc 都会提醒你。</li>
-</ul>
-
-<p><strong>现在你可以进入 recovery 模式了</strong></p>
-
-<ul>
-  <li>ROM
-  下好的 ROM （.zip 的包，名字不限，位置不限）
-  进入 recovery 模式，install 这个包</li>
-</ul>
-
-<blockquote>
-  <p>再次声明，我写的不是教程！具体方法还是看 小米 的操作，但是这回你明白了 PG58IMG.zip 到底是什么东西，你为什么要这么做。 其实就是给手机刷一个新的 ROM，之前做的 解锁，root，recovery 都是因为 htc sensation 本身对手机做了一些限制。 顺便提一下我的htc刚开始刷了一个网上下的 PG58IMG.zip（recovery），结果导致无法关机，只有拔电池才有效，很烦；</p>
-</blockquote>
 
 		
-		
+		<a href="/blog/20150622/sigabrtcuo-wu-de-diao-shi-ban-fa/" class="more-link">Read on &rarr;</a>
 	</div>
 
 </article>
@@ -215,7 +158,131 @@
   
 
 
-<time datetime="2015-06-27T12:15:00+08:00" data-updated="true" itemprop="datePublished"></time></div>
+<time datetime="2015-06-18T19:19:06+08:00" data-updated="true" itemprop="datePublished">15 Jun 18</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios-jspatch/'>ios,jspatch</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/20150618/jspatchdui-bi/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150618/jspatchdui-bi/" itemprop="url">JSPatch与Wax对比分析</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<blockquote>
+  <p><a href="https://github.com/bang590/JSPatch">JSPatch</a>与<a href="https://github.com/probablycorey/wax">Wax</a>作为iOS平台上两大热更新框架使用不同的语言、基于相同的原理（ObjC动态绑定）一直备受iOS开发者的青睐，Wax出现较早且已经不再维护，但是也有了各种各样的分支版本；JSPatch作为后起之秀得益于iOS7苹果开放了JavascriptCore.framework的API，相比以前的Wax框架有了很多更新，下面就根据以往的开发经验简单比较一下二者的优势劣势，如果想对两个框架有更多的了解，请移步上文的官方网站和相关文档。</p>
+</blockquote>
+
+
+		
+		<a href="/blog/20150618/jspatchdui-bi/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-18T11:56:50+08:00" data-updated="true" itemprop="datePublished">15 Jun 18</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios-jspatch/'>ios,jspatch</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/20150618/jspatchchu-tan/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150618/jspatchchu-tan/" itemprop="url">JSPatch初探</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<hr />
+<ol>
+  <li>JSPatch是什么？</li>
+  <li>Objective-C动态绑定机制</li>
+  <li>JSPatch原理</li>
+  <li>JSPatch实用举例</li>
+  <li>与现有方案（Wax）的对比</li>
+</ol>
+
+
+		
+		<a href="/blog/20150618/jspatchchu-tan/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-17T23:37:54+08:00" data-updated="true" itemprop="datePublished">15 Jun 17</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/test/'>test</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/20150617/first-post/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150617/first-post/" itemprop="url">First Post</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h3 id="first-postcnblog-">==== First Post下面是从cnblog迁移过来的旧文 ====</h3>
+
+<p>以上是摘要部分
+
+		
+		<a href="/blog/20150617/first-post/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-08T00:02:06+08:00" data-updated="true" itemprop="datePublished">15 Jun  8</time></div>
 		<div class="tags">
 
 
@@ -224,639 +291,21 @@
 
 </div>
 		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/" itemprop="url">NSURLConnection的同步与异步</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/</p>
-
-<p>写下体会：（时间所限，比较杂乱，见谅！）</p>
-
-<hr />
-<p>NSURLConnection的同步发送就不用说了，很简单，上面链接也说了，</p>
-
-<p>异步在iOS5之前都是作为一个非正式的协议出现的，默认initWithRequestxxx方法发送的就是异步请求，然后通过delegate中的方法可以操作，之前我一直错误在发送异步请求的时候也开一个新的线程，看了文章之后才想明白这真的是没有必要，在其他线程跑conn的原因就是为了避免阻塞主UI线程，而现在cocoa使用了delegate帮助你避免了这个问题，所以根本不需要再开一个新的线程去请求，直接请求然后在delegate中handleData就可以了。</p>
-
-<p>而回到对同步conn的使用，同步conn使用我认为是一定要在新线程中，这样避免了阻塞主线程的缺点（如文中所说），但是相比与aSync conn，sync还有其他缺点，如不能在请求同时操作数据，不能cancel等等，所以还是aSync要好用。</p>
-
-<hr />
-
-<p>iOS4之前如果想在新的线程使用异步发送的conn，最好的方法应该就是文中教的trick，而</p>
-
-<p>iOS5之后添加了 NSURLConnectionDataDelegate 把之前非正式协议的一部分拿了过来变成了正是协议（formal protocol），里面包括了数据处理等代理方法，还增加了在线程中发送异步请求的方法：</p>
-
-<pre><code>+ (void)sendAsynchronousRequest:(NSURLRequest *)request
-
-                          queue:(NSOperationQueue*) queue
-
-              completionHandler:(void (^)(NSURLResponse*, NSData*, NSError*)) handler NS_AVAILABLE(10_7, 5_0);
-</code></pre>
-
-<p>这样我认为就不需要像上文作者那样trick了吧？</p>
-
-<p>***)
-另外还加入了NSURLConnectionDownloadDelegate，主要作用就是讲数据直接存入文件中，缓存的时候估计有用吧？</p>
-
-		
+			<span class="comments"><a href="/blog/20150608/yi-bu-ji-zhi/#disqus_thread">Comments</a></span>
 		
 	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-27T12:08:20+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/algorithm/'>algorithm</a>
-
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/lian-biao-(linklist)de-she-ji-yu-shi-xian-(chu-shi-hua-,chuang-jian-,cha-ru-,shan-chu-,ni-zhi-)/" itemprop="url">链表（LinkList）的设计与实现（初始化，创建，插入，删除，逆置）</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>只是为了自己学习留作记录，需要的朋友可以看看。</p>
-
-<p>修改日志：</p>
-
-<p>version1.1:2011-3-26 1.在尾插法中增加p-&gt;next = NULL;2.将类似于p==NULL改为NULL==p(示范性改正，没有全改);</p>
-
-<pre><code>//////////////////////////////////////
-//单链表的表示与实现                //
-//Author:YuTianhang               //
-//Date:2011.3.23                    //
-
-//Version:1.0                        //
-//////////////////////////////////////
-
-#include "stdafx.h"
-
-typedef int ElemType;
-
-//定义单链表的结点类型
-
-typedef struct LNode
-{
-    ElemType data;
-    struct LNode *next;
-}LNode,*LinkList;
-
-////////////////////////////////////////////////
-
-//单链表的初始化
-
-int InitList(LinkList &amp;L)
-{
-    L = (LinkList)malloc(sizeof(LNode));    //申请结点空间
-
-    if(NULL == L) printf("申请结点空间失败！\n");    //判断是否有足够的内存空间
-
-    L-&gt;next = NULL;
-
-    return 1;
-}
-
-///////////////////////////////////////////////
-
-//头插法创建带头结点的单链表
-
-int CreatList_H(LinkList &amp;L)
-{
-    L = (LinkList)malloc(sizeof(LNode));    //申请头结点空间
-    L-&gt;next = NULL;    //初始化一个空链表
-
-    ElemType e;
-
-    printf("Input:!\n");
-
-    while(scanf("%d",&amp;e) != EOF)
-    {
-        LNode *p;
-        p = (LNode *)malloc(sizeof(LNode));    //建立一个新结点
-        p-&gt;data = e;
-
-        p-&gt;next = L-&gt;next;    //头插法插入结点p
-        L-&gt;next = p;
-    }
-
-    //int i = 5;
-
-    //while(i &gt; 0)
-    //{
-    //    scanf("%d",&amp;e);
-    //   
-    //    LNode *p;
-    //    p = (LNode *)malloc(sizeof(LNode));    //建立一个新结点
-    //    p-&gt;data = e;
-
-    //    p-&gt;next = L-&gt;next;    //头插法插入结点p
-    //    L-&gt;next = p;
-
-    //    i--;
-    //}
-
-    return 1;
-}
-
-////////////////////////////////////////////////////////
-
-//尾插法创建带头结点的链表
-
-int CreatList_T(LinkList &amp;L)
-{
-    L = (LinkList)malloc(sizeof(LNode));
-    L-&gt;next = NULL;
-
-    ElemType e;
-    LNode *r;
-    r = L;
-    while(scanf("%d",&amp;e) != EOF)
-    {
-        LNode *p;
-        p = (LNode *)malloc(sizeof(LNode));
-        p-&gt;data = e;
-
-        p-&gt;next = NULL;    //第一次没有付空值，导致输出的时候p的next指针无法确定
-
-        r-&gt;next = p;    //尾插法插入结点p
-        r = p;
-    }
-
-    return 1;
-}
-
-///////////////////////////////////////////////////////
-
-//在单链表的第i个位置插入元素e
-
-int ListInsert(LinkList &amp;L,int i,ElemType e)
-{
-    LNode *pre;        //pre为i位置的前驱结点
-    pre = L;
-    while(i &gt; 0)    //查找i位置的前驱结点
-    {
-        pre = pre-&gt;next;
-        --i;
-    }
-
-    LNode *p;
-    p = (LNode *)malloc(sizeof(LNode));
-    p-&gt;data = e;
-
-    p-&gt;next = pre-&gt;next;    //将p结点插入到第i个位置
-    pre-&gt;next = p;
-
-    return 1;
-}
-
-/////////////////////////////////////////////////////////////
-
-//在单链表中删除第i个结点并用e返回其结点值
-
-int ListDelete(LinkList &amp;L,int i,ElemType &amp;e)
-{
-    LNode *pre;
-    pre = L;
-
-    while(i &gt; 0)
-    {
-        pre = pre-&gt;next;
-        --i;
-    }
-
-    LNode *p;
-    p = pre-&gt;next;
-    e = p-&gt;data;
-
-    pre-&gt;next = p-&gt;next;    //删除第i个位置的结点p
-    free(p);
-
-    return 1;
-}
-
-/////////////////////////////////////////////////////
-
-//输入单链表的各项
-
-int OutputList(LinkList L)
-{
-    if(L == NULL) printf("Error!\n");
-    LNode *p;
-    p = L-&gt;next;
-
-    printf("Kimimaro:\n");
-    do
-    {
-        if(p != L-&gt;next) printf(",");
-
-        printf("%d",p-&gt;data);
-        p = p-&gt;next;
-    }while(p != NULL);
-
-    printf("\n");
-
-    return 1;
-}
-
-//////////////////////////////////////////////////
-
-//单链表的逆置
-
-int InvertList(LinkList &amp;L)
-{
-    LNode *p,*q,*r;
-    p = L-&gt;next-&gt;next;
-    q = p-&gt;next;
-
-    r = L-&gt;next;
-    r-&gt;next = NULL;
-
-    while(p-&gt;next != NULL)
-    {
-        p-&gt;next = r;    //头插法插入结点p
-        r = p;
-        p = q;
-        q = p-&gt;next;
-    }
-
-    p-&gt;next = r;    //最后一个结点的处理
-    L-&gt;next = p;
-
-    //while(p != NULL)                            //错误代码，导致最后两个结点循环？
-    //{
-    //    p-&gt;next = L-&gt;next;    //头插法插入结点p
-    //    L-&gt;next = p;
-    //    p = q;
-    //    q = p-&gt;next;
-    //}
-
-    //p-&gt;next = L-&gt;next;    //最后一个结点的处理
-    //L-&gt;next = p;
-
-    return 1;
-}
-
-int _tmain(int argc, _TCHAR* argv[])
-{
-    LinkList L;
-
-    CreatList_H(L);
-
-    OutputList(L);
-
-    int i = 3;
-    ElemType e = 22;
-    ListInsert(L,i,e);
-
-    OutputList(L);
-
-    /*ListDelete(L,i,e);
-
-    OutputList(L);*/
-
-    InvertList(L);
-
-    OutputList(L);
-
-    char ch;
-    ch = getchar();
-    return 0;
-}
-</code></pre>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-27T12:07:27+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/algorithm/'>algorithm</a>
-
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/er-fen-fa-cha-zhao-de-shi-xian-(di-gui-and-xun-huan-)/" itemprop="url">二分法查找的实现（递归&amp;循环）</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<pre><code>	#include "stdafx.h"
-	
-	//////////////////////////////////////////
-	//二分查找                            //
-	//Author:Kimimaro                    //
-	//Date:2010-3-28                    //
-	/////////////////////////////////////////
-	
-	typedef int KeyType;    //定义关键字类型
-	
-	//typedef struct        //定义数据元素结构
-	//{
-	//    KeyType key;    //关键字域
-	//}SElemType;
-	
-	//宏定义关键字比较操作
-	
-	#define EQ(a,b) ((a) == (b))
-	#define LT(a,b) ((a) &lt;  (b))
-	#define LQ(a,b) ((a) &lt;= (b))
-	
-	//定义表长
-	
-	#define MAX 5
-	
-	//----------------静态查找表的顺序存储结构-------------------
-	
-	typedef struct
-	{
-	    KeyType *elem;
-	    int length;
-	}SSTable;
-	
-	//创建指定长度的静态查找表
-	
-	int CreatSST(SSTable &amp;S,int n)
-	{
-	    S.length = n;
-	    S.elem = (KeyType*)malloc(S.length*sizeof(KeyType));
-	
-	    int i = 1;
-	
-	    while(scanf("%d",&amp;(S.elem[i])) != EOF)
-	    {
-	        i++;
-	    }
-	   
-	    return 0;
-	}
-	
-	//递归二分查找
-	
-	int binarySearch(SSTable S,KeyType key,int low,int high)
-	{
-	    if(low &gt; high) return -1;
-	
-	    int mid = (low + high) / 2;
-	
-	    if(EQ(key, S.elem[mid])) return mid;
-	    else if(LT(key, S.elem[mid])) binarySearch(S,key,low,mid - 1);
-	    else binarySearch(S,key,mid + 1,high);
-	}
-	
-	//循环二分查找
-	
-	//int binarySearch(SSTable S,KeyType key)
-	//{
-	//    int low = 1,high = S.length,mid;
-	//
-	//    while(low &lt;= high)
-	//    {
-	//        mid = (low + high) / 2;
-	//
-	//        if(EQ(key,mid)) return mid;
-	//        else if(LT(key,mid)) high = mid - 1;
-	//        else low = mid + 1;
-	//    }
-	//
-	//    return -1;
-	//}
-	
-	int _tmain(int argc, _TCHAR *argv[])
-	{
-	    SSTable S;
-	    CreatSST(S,MAX);
-	
-	    for(int i = 1;i &lt;= S.length;i++)
-	    {
-	        printf("%d ",S.elem[i]);
-	        if(i == S.length) printf("\n");
-	    }
-	
-	    int key;
-	    printf("Which number do you want to search?\n");
-	    scanf("%d",&amp;key);
-	
-	    int location;
-	//    location = binarySearch(S,key);        //循环二分查找
-	    location = binarySearch(S,key,1,S.length);        //递归二分查找
-	    char chs = getchar();
-	    printf("The elem is S.elem[%d].\n",location);
-	
-	    char ch = getchar();
-	   
-	    return 0;
-	}
-</code></pre>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-27T12:05:57+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/java/'>java</a>
-
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)/" itemprop="url">Java统计程序运行时间（转）</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>代码如下：
-第一种是以毫秒为单位计算的。</p>
-
-<pre><code>long startTime = System.currentTimeMillis();    //获取开始时间
-
-doSomething();    //测试的代码段
-
-long endTime = System.currentTimeMillis();    //获取结束时间
-
-System.out.println("程序运行时间：" + (endTime - startTime) + "ms");    //输出程序运行时间
-</code></pre>
-
-<p>第二种是以纳秒为单位计算的。</p>
-
-<pre><code>long startTime=System.nanoTime();   //获取开始时间  
-
-doSomeThing(); //测试的代码段  
-
-long endTime=System.nanoTime(); //获取结束时间  
-
-System.out.println("程序运行时间： "+(endTime-startTime)+"ns"); 
-</code></pre>
-
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-27T11:54:10+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/algorithm/'>algorithm</a>
-
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/you-fu-hao-ding-dian-shu-de-biao-shi-fang-fa/" itemprop="url">有符号定点数的表示方法</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p> 有符号定点数用首位0表示正，1表示负，正数与负数的补码求法不同。</p>
-
-<ul>
-  <li>正数的原码，反码，补码相同（这条要首先牢记，之后才能记住负数反码，补码的求法）；</li>
-  <li>负数的反码是除原码符号为外按位求反，负数的补码是对原码按位求反之后加1。
-反码的作用不大，主要要记住反码的作用。</li>
-</ul>
-
-<p><strong>补码的设计目的是:</strong></p>
-
-<ol>
-  <li>使符号位能与有效值部分一起参加运算,从而简化运算规则；</li>
-  <li>使减法运算转换为加法运算,进一步简化计算机中运算器的线路设计 。
-移码主要应用于浮点数的运算中，有关移码的介绍在网上查了一下居然没有找到，都是些数据结构基础中就介绍的，以后有空要写个总结记录一下。
-作为一个小白，我觉得更重要的不是记住上面的运算方法，这些都异常简单，重要的是记住某些特殊值或者规律，这些能帮我们计算的更快，反应的更迅速，感兴趣的朋友可以在下面写出你掌握的规律。</li>
-</ol>
-
-<p>比如说：
-数值0原码两个，反码两个，补码只有一个；
-由上述特点直接衍生出的是补码可以多表示一个数字，若字长为8位，补码中就多了一个-128，补码可以表示256个数；</p>
-
-<hr />
-<p>我的理解绝大部分的也运算都应该采用补码形式，具体的原因就很多了；
-进行补码运算时，应注意所得结果不应超过补码所能表示数的范围；
-在以二进制补码表示负数的机器上，~（按位运算符）10的结果为十进制数-11；
-等等。</p>
-
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-27T11:50:43+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/algorithm/'>algorithm</a>
-
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/yi-wei-yun-suan-fu/" itemprop="url">移位运算符</a></h1>
+	<h1 class="title" itemprop="name"><a href="/blog/20150608/yi-bu-ji-zhi/" itemprop="url">异步机制</a></h1>
 	<div class="entry-content" itemprop="articleBody">
 		<blockquote>
-  <p>移位运算先转化成2进制，再根据运算符指定的位数作以为运算。
-左移运算符（«）：逻辑/算数移位。在不考虑溢出的情况下，相当于乘2，移位时移出的位数全部丢弃，右侧补入的数全部是0；左移时要注意有符号数的溢出情况。
-右移运算符（»）：算术运算，对于无符号数以及有符号正数相当于除2，移位时溢出的位数全部丢弃，补入的数分为两种情况：如果是无符号数，左侧全部补0；如果是有符号数与符号位和编译器有关，一般情况下补符号位的副本。</p>
+  <ol>
+    <li>及时响应用户</li>
+    <li>实现多核调度</li>
+  </ol>
 </blockquote>
 
-<hr />
-<p>移位计数的取值问题：</p>
-
-<ol>
-  <li>
-    <p>网上查到的结果是如果移动的位数超过类型的长度时，会对移位计数取余，举个小例子：</p>
-
-    <p>int i = 1, j = 0x80000000; //设int为32位
-   i = i « 33;     // 33 % 32 = 1 左移1位,i变成2
-   j = j « 33;     // 33 % 32 = 1 左移1位,j变成0,最高位被丢弃</p>
-  </li>
-  <li>
-    <p>《C Traps and Pitfalls》这本书上说的是：移位计数必须大于等于0，而严格小于n（如上例的32位），即：i « 32 和 i«-1这种写法都是非法的，我猜是这本书出版的时间比较早，但是我还是更喜欢这样的做法。</p>
-  </li>
-</ol>
-
-<p>除法运算代替以为运算，将导致程序运行速度大大减慢。换句话说：使用移位预算符将大大提高程序的执行效率。对于这一点我将在自己以后的应用中继续总结。</p>
-
 
 		
-		
+		<a href="/blog/20150608/yi-bu-ji-zhi/" class="more-link">Read on &rarr;</a>
 	</div>
 
 </article>
@@ -876,7 +325,7 @@ System.out.println("程序运行时间： "+(endTime-startTime)+"ns");
   
 
 
-<time datetime="2015-06-27T11:49:22+08:00" data-updated="true" itemprop="datePublished"></time></div>
+<time datetime="2015-05-27T11:49:22+08:00" data-updated="true" itemprop="datePublished">15 May 27</time></div>
 		<div class="tags">
 
 
@@ -885,8 +334,10 @@ System.out.println("程序运行时间： "+(endTime-startTime)+"ns");
 
 </div>
 		
+			<span class="comments"><a href="/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/#disqus_thread">Comments</a></span>
+		
 	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/" itemprop="url">UIImageView和UIButton拉伸效果的实现</a></h1>
+	<h1 class="title" itemprop="name"><a href="/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/" itemprop="url">UIImageView和UIButton拉伸效果的实现</a></h1>
 	<div class="entry-content" itemprop="articleBody">
 		<p>UIImageView中Image拉伸效果的实现：</p>
 
@@ -897,47 +348,9 @@ frame.size.width += 100;
 strechTest.frame = frame;
 </code></pre>
 
-<p>但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。</p>
-
-<p>因此UIButton实现背景拉伸，即图片两端不拉伸中间拉伸的办法有如下两种：</p>
-
-<p>第一种方法很简单而且使用性更广。做法就是直接拉伸想要setBackgroundImage的image，代码如下：</p>
-
-<pre><code>UIImage*image =[UIImage imageNamed:@"image.png"];
-
-image = [image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
-
-image =[image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
-</code></pre>
-
-<p>设置了左端帽之后，rightCapWidth = image.size.width - (image.leftCapWidth + 1); 也就是说图片中间的一像素用来拉伸。垂直方向同上。</p>
-
-<p>设置之后无论把image放到什么控件中都可以自动拉伸了。</p>
-
-<p>第二种方法是在UIButton中加入一个UIImageView，拉伸imageView，然后将button的背景设为clearColor等等。把imageView放入button中，并且sendToBack，得到效果。</p>
-
-<p>代码如下：</p>
-
-<pre><code>//刚才imageView拉伸的代码
-
-UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
-[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
-CGRect frame = strechTest.frame;
-frame.size.width += 100;
-strechTest.frame = frame;
-
-//把imageView放入button中，并设置为back
-
-
-[temp_button addSubview:backgroundImageView];
-[temp_button sendSubviewToBack:backgroundImageView];
-[temp_button setBackgroundColor:[UIColor clearColor]];
-</code></pre>
-
-<p>button不能设置背景图片，这样就可以实现拉伸的图片作为背景并且背景上可以放置title。</p>
 
 		
-		
+		<a href="/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/" class="more-link">Read on &rarr;</a>
 	</div>
 
 </article>
@@ -957,72 +370,7 @@ strechTest.frame = frame;
   
 
 
-<time datetime="2015-06-27T11:48:12+08:00" data-updated="true" itemprop="datePublished"></time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/git/'>git</a>
-
-
-</div>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong/" itemprop="url">关于git分支的使用</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<p>学习记录，不正确的地方望指正！</p>
-
-<p>git branch 显示的是本地分支</p>
-
-<p>git pull origin aRemoteBranch</p>
-
-<p>git push origin aRemoteBranch</p>
-
-<p>git commit 是提交到当前的本地分支</p>
-
-<p>git remote显示远程服务器</p>
-
-<p>git remote show aRemote显示指定的远程服务器（origin）上的远程分支</p>
-
-<p>git checkout –track -b aLocalBranch aRemote/aRemoteBranch 创建一个新本地分支追踪远程分支（也可以直接 git checkout aRemoteBranch）</p>
-
-<p>远程分支不可见，只能通过新建本地分支来追踪远程分支，本地分支和远程分支是两个不同的东西，也可以不同名。</p>
-
-<p>checkout的时候会先检查本地分支，如果有则checkout到这个本地分支（不论它track哪个远程分支），如果没有则查看远程分支，如果有同名远程分支则新建一个本地同名分支并追踪（track）远程分支</p>
-
-<p>git branch -d aLocalBranch  删除本地分支</p>
-
-<p>git push ARemote :aRemoteBranch 删除远程分支</p>
-
-<p>-d -&gt; -D 强制删除</p>
-
-<p>vim .git/config</p>
-
-<p>可以查看当前的remote和已经track了remote分支的本地分支</p>
-
-<p>可以建多个本地分支track同一个远程分支，删除本地分支对远程分支没有影响。</p>
-
-		
-		
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-27T11:07:51+08:00" data-updated="true" itemprop="datePublished"></time></div>
+<time datetime="2014-06-27T12:15:00+08:00" data-updated="true" itemprop="datePublished">14 Jun 27</time></div>
 		<div class="tags">
 
 
@@ -1031,8 +379,88 @@ strechTest.frame = frame;
 
 </div>
 		
+			<span class="comments"><a href="/blog/20140627/nsurlconnectionde-tong-bu-yu-yi-bu/#disqus_thread">Comments</a></span>
+		
 	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150627/apnsshi-xian-xiao-ji/" itemprop="url">APNs实现小记</a></h1>
+	<h1 class="title" itemprop="name"><a href="/blog/20140627/nsurlconnectionde-tong-bu-yu-yi-bu/" itemprop="url">NSURLConnection的同步与异步</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/</p>
+
+<p>写下体会：（时间所限，比较杂乱，见谅！）</p>
+
+
+		
+		<a href="/blog/20140627/nsurlconnectionde-tong-bu-yu-yi-bu/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-27T11:48:12+08:00" data-updated="true" itemprop="datePublished">14 Jun 27</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/git/'>git</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/20140627/guan-yu-gitfen-zhi-de-shi-yong/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20140627/guan-yu-gitfen-zhi-de-shi-yong/" itemprop="url">关于git分支的使用</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>学习记录，不正确的地方望指正！</p>
+
+
+		
+		<a href="/blog/20140627/guan-yu-gitfen-zhi-de-shi-yong/" class="more-link">Read on &rarr;</a>
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-06-27T11:07:51+08:00" data-updated="true" itemprop="datePublished">14 Jun 27</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/ios/'>ios</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/20140627/apnsshi-xian-xiao-ji/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20140627/apnsshi-xian-xiao-ji/" itemprop="url">APNs实现小记</a></h1>
 	<div class="entry-content" itemprop="articleBody">
 		<blockquote>
   <p>转自己以前写的博客，很早时候的学习笔记了，不过下面几个连接貌似都失效了。。。囧</p>
@@ -1040,125 +468,51 @@ strechTest.frame = frame;
 
 <p>推荐如下链接，前两个介绍APNs的设置流程，已经很详尽，虽然很详尽但是个人感觉有些晦涩难懂，把简单的流程搞的复杂。我下面的内容是我设置APNs的过：</p>
 
-<p>[iPhone消息推送服务实现 - vber的专栏 - 博客频道 - CSDN.NET]</p>
 
-<p>[apple push notification service apple与Python结合推送 - iOS开发讨论区 - Tiny4Cocoa]</p>
+		
+		<a href="/blog/20140627/apnsshi-xian-xiao-ji/" class="more-link">Read on &rarr;</a>
+	</div>
 
-<table>
-  <tbody>
-    <tr>
-      <td>[编写push notification之获取device token</td>
-      <td>Marshal’s Blog]</td>
-    </tr>
-  </tbody>
-</table>
+</article>
 
-<p><a href="http://slj.me/2010/02/iphone-push-notification/">偷窥iPhone Push Notification的幕后 - SLJ.me - 申力军</a></p>
 
-<table>
-  <tbody>
-    <tr>
-      <td>[iPhone的Push(推送通知)功能原理浅析 - iPhone/iPad 进阶讨论区 - 悦Phone论坛 iPhone</td>
-      <td>iPad开发者、苹果开发者]</td>
-    </tr>
-  </tbody>
-</table>
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
 
-<p> 第一次接触APNs，鼓捣了一下午终于有了点眉目。</p>
 
-<p> 链接1,2的流程介绍都是从最基础的入门级介绍，其实在你开发一款iOS app时，你需要做的是申请开发者帐号，设置Apple ID，生成provisioning file导入到Xcode，而APNs只是在设置Apple ID的时候多选择了一个选项，即Apple ID 的configure页面的 Enable for Apple Push Notification service选项，勾选它，然后根据你的需要生成dev或者release版本的SSL证书（证书生成的过程apple已经给了详尽的提示）。这里要注意的是，勾选了enable for apns之后，其实你的provisioning file已经改变，所以要重新下载新的导入Xcode。</p>
 
-<hr />
-<p>此时，你的app已经支持apns了。</p>
 
-<p> 之后需要做的是两个方面：</p>
 
-<ol>
-  <li>
-    <p>客户端 在appDelegate中编写代码，为了阅读方便就把上面链接中的代码重新贴一次：</p>
 
-    <pre><code> - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {  
-   [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];  
- }  
- - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {  
-   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"Error in registration. Error: %@", err] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
- }  
- - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {  
-   NSLog(@"devToken=%@",deviceToken);  
-   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"devToken=%@",deviceToken] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
- } 
+
+
+  
+
+
+<time datetime="2013-06-27T12:05:57+08:00" data-updated="true" itemprop="datePublished">13 Jun 27</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/java/'>java</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/20130627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20130627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)/" itemprop="url">Java统计程序运行时间（转）</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>代码如下：
+第一种是以毫秒为单位计算的。</p>
+
+<pre><code>long startTime = System.currentTimeMillis();    //获取开始时间
 </code></pre>
-  </li>
-</ol>
-
-<p> 其实就是在appDidFinishLaunch的时候注册（register）apns，然后通过didRegisterForRemoteNotificationsWithDeviceToken得到DeviceToken。</p>
-
-<p>接受服务器消息并改变客户端本地状态（如在app图表显示带数字的小红圈）的代码如下：</p>
-
-<pre><code>	－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-	
-	    for (id key in userInfo) {
-	        NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
-	    }    
-	}
-</code></pre>
-
-<p> 到此为止，当你在真机上运行你的app时就会出现：是否允许app显示push notification的提示框。</p>
-
-<ol>
-  <li>服务器端 服务器端可以用PHP，Python等实现，网上也有一些现成的库如开源库APNSWrapper。现在你会发现我理解的思路跟链接1,2的介绍流程稍有不同，同时你会发现我还没有使用Enable for Apple Push Notification service时生成的证书文件，现在回到Apple ID configure页面下载生成的 Development (or Production) Push SSL Certificate 文件，关于这个文件要多说几句：</li>
-</ol>
-
-<blockquote>
-  <p>这个文件的作用是让apple的APNs服务器确认服务器端具有push notification的权限。将这个证书作一定的处理（＊至于是什么处理为了不影响文章的连贯性会在下面介绍），生成一个ck.pem文件（这个名字可以自定义）。</p>
-</blockquote>
-
-<p> 然后就要涉及到APNs的工作机制，我的总结如下：当一个device（苹果设备）启用apns功能（就是通知功能）的时候会和apple的APNs服务器建立TLS连接，APNs服务器根据device的UDID和加密密钥新建一个DeviceToken（它的作用是让服务器端指定device，唯一）返回给device，然后device会把device token给你的app客户端，这时会调用刚才写的didRegisterForRemoteNotificationsWithDeviceToken方法，你可以在这个方法中将device token返回给服务器端。此后，如果服务器端push了一个notification给客户端，需要将这个device token和之前处理的ck.pem文件同时发送给APNs服务器，APNs服务器会验证你的ck.pem文件然后根据device token指定的设备推送消息给客户端）。当客户端接受到push的通知时调用didReceiveRemoteNotification方法，你可以在这个方法中放入你需要的操作。</p>
-
-<blockquote>
-  <p>现在再回到Apple ID configure页面下载生成的 Development (or Production) Push SSL Certificate 文件，对它的处理链接1,2都有介绍，就是：</p>
-</blockquote>
-
-<ol>
-  <li>
-    <p>选择“我的证书”, 选定推送服务证书(Apple Development Push Services*),导出到桌面,保存为Certificates.p12。</p>
-  </li>
-  <li>
-    <p>在终端中运行如下命令:</p>
-
- 	openssl pkcs12 -clcerts -nokeys -out cert.pem -in Certificates.p12<br />
- 	openssl pkcs12 -nocerts -out key.pem -in Certificates.p12<br />
- 	openssl rsa -in key.pem -out key.unencrypted.pem<br />
-    <pre><code> 	cat cert.pem key.unencrypted.pem &gt; ck.pem  
-
- ck.pem文件则是PHP推送消息时所使用的证书文件。
-</code></pre>
-  </li>
-</ol>
-
-<p> 你剩下的任务就是编写服务器端的代码，push notification，这部分只要记住发送device token和证书文件就可以了。</p>
-
-<p>（以上就是我理解学习APNs的过程，许多理解都不深入，所以描述也不准确，包涵～）</p>
-
-<h2 id="section">更新：</h2>
-
-<p><strong>开发中遇到的问题汇总</strong>：</p>
-
-<ol>
-  <li>
-    <p>正常的iPhone刷系统之后，是没有设备证书和密钥的。这就是为什么iPhone会需要连接到 iTunes上进行激活——激活过程中，Apple会分配给每台iPhone独一无二的设备证书(device certificate)和密钥(key)。(如果没有意识到这个会一直收到 “未找到应用程序的”aps-environment” 的权利字符串)</p>
-  </li>
-  <li>
-    <p>如果生成appleID的时候没有enable aps，那么enable之后一定要删掉原来的dev和rc证书重新生成，这样才能保证开启新功能，否则仅仅是刷新这张证书仍然会没有aps，提示（ “未找到应用程序的”aps-environment” 的权利字符串）</p>
-  </li>
-  <li>
-    <p>APNs证书如果是系统证书那么最好拷贝到登陆证书中，这样可以直接导出成p12</p>
-  </li>
-</ol>
 
 
 		
-		
+		<a href="/blog/20130627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)/" class="more-link">Read on &rarr;</a>
 	</div>
 
 </article>
@@ -1167,7 +521,7 @@ strechTest.frame = frame;
 <nav id="pagenavi">
     
     
-        <a href="2" class="next">Next</a>
+        <a href="posts/2" class="next">Next</a>
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>

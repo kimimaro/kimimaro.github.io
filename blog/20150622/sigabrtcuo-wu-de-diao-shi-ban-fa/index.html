@@ -5,11 +5,11 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>NSURLConnection的同步与异步 - 402</title>
+	<title>SIGABRT错误的调试办法 - 402</title>
 	<meta name="author" content="Kimimaro">
 
 	
-	<meta name="description" content="NSURLConnection的同步与异步 从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/ 写下体会：（时间所限，比较杂乱，见谅！） &hellip;">
+	<meta name="description" content="SIGABRT错误的调试办法 iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法： Stackflow回答链接 重点就是 Set an exception &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +19,7 @@
 
 	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
 	
-	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/">
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150622/sigabrtcuo-wu-de-diao-shi-ban-fa/">
 	<link href="/favicon.png" rel="shortcut icon">
 	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
@@ -38,17 +38,23 @@
 			<div class="intrude-less">
 			<header id="header" class="inner"><div class="profilepic">
 	
-  <!-- Fuck GFW, use local image -->
+  	<!-- Fuck GFW, use local image -->
 	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
   <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
 	
 </div>
 
 <nav id="main-nav"><ul class="main">
-    <li><a href="/">Blog</a></li>
-    <li><a href="http://about.me/kimimaro">About</a></li>
+    <li><a href="/">Home</a></li>
+    <li><a href="http://about.me/kimimaro">About Me</a></li>
     <li><a href="/blog/archives">Archives</a></li>
 </ul>
+
+<section class="aboutme">
+  <p>
+    >_<
+  </p>
+</section>
 </nav>
 <nav id="sub-nav">
 	<div class="social">
@@ -97,35 +103,35 @@
 			
 			<div class="mid-col-container">
 				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
-	<h1 class="title" itemprop="name">NSURLConnection的同步与异步</h1>
-	<div class="entry-content" itemprop="articleBody"><p>从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/</p>
+	<h1 class="title" itemprop="name">SIGABRT错误的调试办法</h1>
+	<div class="entry-content" itemprop="articleBody"><p>iOS经常会遇到一个头疼的error就是在main函数上显示“ Thread 1: signal SIGABRT ”这个错误，终于在stackoverflow上找到了调试的办法：</p>
 
-<p>写下体会：（时间所限，比较杂乱，见谅！）</p>
+<!--more-->
 
-<hr />
-<p>NSURLConnection的同步发送就不用说了，很简单，上面链接也说了，</p>
+<p><a href="http://stackoverflow.com/questions/9782621/i-have-an-error-in-main-m-thread-1-signal-sigabrt-how-can-i-fix-this">Stackflow回答链接</a></p>
 
-<p>异步在iOS5之前都是作为一个非正式的协议出现的，默认initWithRequestxxx方法发送的就是异步请求，然后通过delegate中的方法可以操作，之前我一直错误在发送异步请求的时候也开一个新的线程，看了文章之后才想明白这真的是没有必要，在其他线程跑conn的原因就是为了避免阻塞主UI线程，而现在cocoa使用了delegate帮助你避免了这个问题，所以根本不需要再开一个新的线程去请求，直接请求然后在delegate中handleData就可以了。</p>
+<p>重点就是 <strong>Set an exception breakpoint.</strong></p>
 
-<p>而回到对同步conn的使用，同步conn使用我认为是一定要在新线程中，这样避免了阻塞主线程的缺点（如文中所说），但是相比与aSync conn，sync还有其他缺点，如不能在请求同时操作数据，不能cancel等等，所以还是aSync要好用。</p>
+<p>之前我们遇到的在main函数上的那个崩溃信息，如果想要调试就加入一个 an exception breakpoint ，它会在exception 被 cathc 的时候停下来，这样就可以追踪到造成 exception 的代码了。</p>
 
-<hr />
+<p>加入一个exception breakpoint的方法就是：在navigator的断点页面，点击左下角的加号就能看到 exception breakpoint；</p>
 
-<p>iOS4之前如果想在新的线程使用异步发送的conn，最好的方法应该就是文中教的trick，而</p>
+<p>加入的时候可以设置，默认是 all，也可以选择针对 oc 还是 c 的断点。</p>
 
-<p>iOS5之后添加了 NSURLConnectionDataDelegate 把之前非正式协议的一部分拿了过来变成了正是协议（formal protocol），里面包括了数据处理等代理方法，还增加了在线程中发送异步请求的方法：</p>
+<blockquote>
+  <p>原文：</p>
 
-<pre><code>+ (void)sendAsynchronousRequest:(NSURLRequest *)request
+  <p>When you get SIGABRT on that line of main, it means that your program is raising an exception. The stack trace shows where the exception is being caught, &gt;not where it’s being raised. Usually this is not helpful. To debug the problem, you can do two things:</p>
 
-                          queue:(NSOperationQueue*) queue
-
-              completionHandler:(void (^)(NSURLResponse*, NSData*, NSError*)) handler NS_AVAILABLE(10_7, 5_0);
-</code></pre>
-
-<p>这样我认为就不需要像上文作者那样trick了吧？</p>
-
-<p>***)
-另外还加入了NSURLConnectionDownloadDelegate，主要作用就是讲数据直接存入文件中，缓存的时候估计有用吧？</p>
+  <ol>
+    <li>
+      <p>Click the “Continue Program Execution” button in the debugger control bar, or choose Program &gt; Debug &gt; Continue from the menu bar. This will let the program continue the exception-raising process. It will print a message to the debugger console that will help you understand what’s wrong. (You may have &gt;to continue execution a couple of times before it actually prints messages.) Read the messages carefully! They usually continue helpful information.</p>
+    </li>
+    <li>
+      <p>Set an exception breakpoint. This will make Xcode stop your program at the point where the exception is being raised, so you can see the code and the stack trace that is causing the problem.</p>
+    </li>
+  </ol>
+</blockquote>
 </div>
 
 </article>
@@ -173,8 +179,8 @@ Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Sha
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/';
-        var disqus_url = 'http://blog.oneboxapp.com/blog/20150627/nsurlconnectionde-tong-bu-yu-yi-bu/';
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150622/sigabrtcuo-wu-de-diao-shi-ban-fa/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150622/sigabrtcuo-wu-de-diao-shi-ban-fa/';
         var disqus_script = 'embed.js';
       
     (function () {
