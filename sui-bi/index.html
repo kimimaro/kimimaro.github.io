@@ -17,12 +17,14 @@
 	
 	<meta name="description" content="
 ">
-	
 
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<meta name="keywords" content="iOS,developer,Objective-C,Baidu,编程">
+
+	<!-- http://t.co/dKP3o1e -->
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
 	
@@ -34,7 +36,20 @@
 	<!--<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>-->
 	<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
 	
-  
+<script id="search-results-template" type="text/x-handlebars-template">
+  {{#entries}}
+    <article>
+      <h3>
+         <small><time datetime="{{date}}" pubdate>{{date}}</time></small>
+         <a href="{{url}}">{{title}}</a>
+         <p>tagged: {{ tags }} | category: <a href="/categories/{{category }}">{{category}}</a></p>
+      </h3>
+    </article>
+  {{/entries}}
+</script>
+
+
+  	
 	<script type="text/javascript">
 		var _gaq = _gaq || [];
 		_gaq.push(['_setAccount', 'UA-64568626-1']);
@@ -69,12 +84,28 @@
     <li><a href="/blog/archives">Archives</a></li>
 </ul>
 
+<!-- duckduckgo -->
+<!--  -->
+
 <section class="aboutme">
   <p>
     >_<
   </p>
 </section>
-</nav>
+
+
+<!-- lunr.js -->
+<!-- 
+
+
+  <form action="/search" method="get">
+  <fieldset role ="search">
+    <input type="text" id="search-query" name="q" placeholder="Search" autocomplete="off" class="search" />
+  </fieldset>
+</form>
+
+
+ --></nav>
 <nav id="sub-nav">
 	<div class="social">
 		
