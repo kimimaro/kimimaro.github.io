@@ -1,0 +1,179 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>移位运算符 - 402</title>
+	<meta name="author" content="Kimimaro">
+
+	
+	<meta name="description" content="移位运算符 移位运算先转化成2进制，再根据运算符指定的位数作以为运算。
+左移运算符（«）：逻辑/算数移位。在不考虑溢出的情况下，相当于乘2，移位时移出的位数全部丢弃，右侧补入的数全部是0；左移时要注意有符号数的溢出情况。
+右移运算符（»）：算术运算，对于无符号数以及有符号正数相当于除2， &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150627/yi-wei-yun-suan-fu/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+  <!-- Fuck GFW, use local image -->
+	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
+  <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:kimirius@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/kimirius" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/kimimaro" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">移位运算符</h1>
+	<div class="entry-content" itemprop="articleBody"><blockquote>
+  <p>移位运算先转化成2进制，再根据运算符指定的位数作以为运算。
+左移运算符（«）：逻辑/算数移位。在不考虑溢出的情况下，相当于乘2，移位时移出的位数全部丢弃，右侧补入的数全部是0；左移时要注意有符号数的溢出情况。
+右移运算符（»）：算术运算，对于无符号数以及有符号正数相当于除2，移位时溢出的位数全部丢弃，补入的数分为两种情况：如果是无符号数，左侧全部补0；如果是有符号数与符号位和编译器有关，一般情况下补符号位的副本。</p>
+</blockquote>
+
+<hr />
+<p>移位计数的取值问题：</p>
+
+<ol>
+  <li>
+    <p>网上查到的结果是如果移动的位数超过类型的长度时，会对移位计数取余，举个小例子：</p>
+
+    <p>int i = 1, j = 0x80000000; //设int为32位
+   i = i « 33;     // 33 % 32 = 1 左移1位,i变成2
+   j = j « 33;     // 33 % 32 = 1 左移1位,j变成0,最高位被丢弃</p>
+  </li>
+  <li>
+    <p>《C Traps and Pitfalls》这本书上说的是：移位计数必须大于等于0，而严格小于n（如上例的32位），即：i « 32 和 i«-1这种写法都是非法的，我猜是这本书出版的时间比较早，但是我还是更喜欢这样的做法。</p>
+  </li>
+</ol>
+
+<p>除法运算代替以为运算，将导致程序运行速度大大减慢。换句话说：使用移位预算符将大大提高程序的执行效率。对于这一点我将在自己以后的应用中继续总结。</p>
+
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Kimimaro
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	<script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'kimimaro';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150627/yi-wei-yun-suan-fu/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150627/yi-wei-yun-suan-fu/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>

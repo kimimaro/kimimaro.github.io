@@ -131,18 +131,17 @@
   <li>
     <p>客户端 在appDelegate中编写代码，为了阅读方便就把上面链接中的代码重新贴一次：</p>
 
-    <ul>
-      <li>(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {<br />
-[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];<br />
- }</li>
-      <li>(void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {<br />
-[self alertNotice:@”” withMSG:[NSString stringWithFormat:@”Error in registration. Error: %@”, err] cancleButtonTitle:@”Ok” otherButtonTitle:@””];<br />
- }</li>
-      <li>(void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {<br />
-NSLog(@”devToken=%@”,deviceToken);<br />
-[self alertNotice:@”” withMSG:[NSString stringWithFormat:@”devToken=%@”,deviceToken] cancleButtonTitle:@”Ok” otherButtonTitle:@””];<br />
- }</li>
-    </ul>
+    <pre><code> - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {  
+   [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];  
+ }  
+ - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {  
+   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"Error in registration. Error: %@", err] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
+ }  
+ - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {  
+   NSLog(@"devToken=%@",deviceToken);  
+   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"devToken=%@",deviceToken] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
+ } 
+</code></pre>
   </li>
 </ol>
 
@@ -150,11 +149,12 @@ NSLog(@”devToken=%@”,deviceToken);<br />
 
 <p>接受服务器消息并改变客户端本地状态（如在app图表显示带数字的小红圈）的代码如下：</p>
 
-<p>－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {</p>
-
-<pre><code>for (id key in userInfo) {
-    NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
-}     }
+<pre><code>	－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	
+	    for (id key in userInfo) {
+	        NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
+	    }    
+	}
 </code></pre>
 
 <p> 到此为止，当你在真机上运行你的app时就会出现：是否允许app显示push notification的提示框。</p>

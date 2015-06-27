@@ -1,0 +1,200 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>UIImageView和UIButton拉伸效果的实现 - 402</title>
+	<meta name="author" content="Kimimaro">
+
+	
+	<meta name="description" content="UIImageView和UIButton拉伸效果的实现 UIImageView中Image拉伸效果的实现： UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+  <!-- Fuck GFW, use local image -->
+	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
+  <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:kimirius@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/kimirius" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/kimimaro" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">UIImageView和UIButton拉伸效果的实现</h1>
+	<div class="entry-content" itemprop="articleBody"><p>UIImageView中Image拉伸效果的实现：</p>
+
+<pre><code>UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
+[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
+CGRect frame = strechTest.frame;
+frame.size.width += 100;
+strechTest.frame = frame;
+</code></pre>
+
+<p>但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。</p>
+
+<p>因此UIButton实现背景拉伸，即图片两端不拉伸中间拉伸的办法有如下两种：</p>
+
+<p>第一种方法很简单而且使用性更广。做法就是直接拉伸想要setBackgroundImage的image，代码如下：</p>
+
+<pre><code>UIImage*image =[UIImage imageNamed:@"image.png"];
+
+image = [image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+
+image =[image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+</code></pre>
+
+<p>设置了左端帽之后，rightCapWidth = image.size.width - (image.leftCapWidth + 1); 也就是说图片中间的一像素用来拉伸。垂直方向同上。</p>
+
+<p>设置之后无论把image放到什么控件中都可以自动拉伸了。</p>
+
+<p>第二种方法是在UIButton中加入一个UIImageView，拉伸imageView，然后将button的背景设为clearColor等等。把imageView放入button中，并且sendToBack，得到效果。</p>
+
+<p>代码如下：</p>
+
+<pre><code>//刚才imageView拉伸的代码
+
+UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
+[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
+CGRect frame = strechTest.frame;
+frame.size.width += 100;
+strechTest.frame = frame;
+
+//把imageView放入button中，并设置为back
+
+
+[temp_button addSubview:backgroundImageView];
+[temp_button sendSubviewToBack:backgroundImageView];
+[temp_button setBackgroundColor:[UIColor clearColor]];
+</code></pre>
+
+<p>button不能设置背景图片，这样就可以实现拉伸的图片作为背景并且背景上可以放置title。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Kimimaro
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	<script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'kimimaro';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>

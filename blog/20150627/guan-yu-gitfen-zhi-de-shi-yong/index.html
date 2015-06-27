@@ -1,0 +1,184 @@
+
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>关于git分支的使用 - 402</title>
+	<meta name="author" content="Kimimaro">
+
+	
+	<meta name="description" content="关于git分支的使用 学习记录，不正确的地方望指正！ git branch 显示的是本地分支 git pull origin aRemoteBranch git push origin aRemoteBranch git commit 是提交到当前的本地分支 git remote显示远程服务器 &hellip;">
+	
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="402" type="application/atom+xml">
+	
+	<link rel="canonical" href="http://blog.oneboxapp.com/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong/">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<link href='http://fonts.googleapis.com/css?family=Nunito:400,300,700' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+  
+
+</head>
+
+
+<body>
+	<div class="container">
+		<div class="left-col">
+			<div class="intrude-less">
+			<header id="header" class="inner"><div class="profilepic">
+	
+  <!-- Fuck GFW, use local image -->
+	<!-- <img src="http://www.gravatar.com/avatar/c56d402092b54cba7b9c5c4927ea123d?s=160" alt="Profile Picture" style="width: 160px;" /> -->
+  <img src="/images/avatar.jpg" alt="Profile Picture" style="width: 160px;" />
+	
+</div>
+
+<nav id="main-nav"><ul class="main">
+    <li><a href="/">Blog</a></li>
+    <li><a href="http://about.me/shashankmehta">About</a></li>
+    <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="sub-nav">
+	<div class="social">
+		
+			<a class="email" href="mailto:kimirius@gmail.com" title="Email">Email</a>
+		
+		
+		
+		
+			<a class="twitter" href="http://twitter.com/kimirius" title="Twitter">Twitter</a>
+		
+		
+			<a class="github" href="https://github.com/kimimaro" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+    	
+    	
+			<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+</nav>
+</header>				
+			</div>
+		</div>	
+		<div class="mid-col">
+			
+				
+			
+			<div class="mid-col-container">
+				<div id="content" class="inner"><article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+	<h1 class="title" itemprop="name">关于git分支的使用</h1>
+	<div class="entry-content" itemprop="articleBody"><p>学习记录，不正确的地方望指正！</p>
+
+<p>git branch 显示的是本地分支</p>
+
+<p>git pull origin aRemoteBranch</p>
+
+<p>git push origin aRemoteBranch</p>
+
+<p>git commit 是提交到当前的本地分支</p>
+
+<p>git remote显示远程服务器</p>
+
+<p>git remote show aRemote显示指定的远程服务器（origin）上的远程分支</p>
+
+<p>git checkout –track -b aLocalBranch aRemote/aRemoteBranch 创建一个新本地分支追踪远程分支（也可以直接 git checkout aRemoteBranch）</p>
+
+<p>远程分支不可见，只能通过新建本地分支来追踪远程分支，本地分支和远程分支是两个不同的东西，也可以不同名。</p>
+
+<p>checkout的时候会先检查本地分支，如果有则checkout到这个本地分支（不论它track哪个远程分支），如果没有则查看远程分支，如果有同名远程分支则新建一个本地同名分支并追踪（track）远程分支</p>
+
+<p>git branch -d aLocalBranch  删除本地分支</p>
+
+<p>git push ARemote :aRemoteBranch 删除远程分支</p>
+
+<p>-d -&gt; -D 强制删除</p>
+
+<p>vim .git/config</p>
+
+<p>可以查看当前的remote和已经track了remote分支的本地分支</p>
+
+<p>可以建多个本地分支track同一个远程分支，删除本地分支对远程分支没有影响。</p>
+</div>
+
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+			</div>
+			<footer id="footer" class="inner">Copyright &copy; 2015
+
+    Kimimaro
+
+
+Design credit: <a href="http://shashankmehta.in/archive/2012/greyshade.html">Shashank Mehta</a></footer>
+		</div>
+	</div>
+	<script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'kimimaro';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.oneboxapp.com/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong/';
+        var disqus_url = 'http://blog.oneboxapp.com/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+</body>
+</html>

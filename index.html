@@ -9,7 +9,8 @@
 	<meta name="author" content="Kimimaro">
 
 	
-	<meta name="description" content="APNs实现小记 转自己以前写的博客，很早时候的学习笔记了，不过下面几个连接貌似都失效了。。。囧 推荐如下链接，前两个介绍APNs的设置流程，已经很详尽，虽然很详尽但是个人感觉有些晦涩难懂，把简单的流程搞的复杂。我下面的内容是我设置APNs的过： [iPhone消息推送服务实现 - &hellip;">
+	<meta name="description" content="有符号定点数的表示方法  有符号定点数用首位0表示正，1表示负，正数与负数的补码求法不同。 正数的原码，反码，补码相同（这条要首先牢记，之后才能记住负数反码，补码的求法）； 负数的反码是除原码符号为外按位求反，负数的补码是对原码按位求反之后加1。
+反码的作用不大，主要要记住反码的作用。 &hellip;">
 	
 
   <!-- http://t.co/dKP3o1e -->
@@ -104,6 +105,255 @@
   
 
 
+<time datetime="2015-06-27T11:54:10+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150627/you-fu-hao-ding-dian-shu-de-biao-shi-fang-fa/" itemprop="url">有符号定点数的表示方法</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p> 有符号定点数用首位0表示正，1表示负，正数与负数的补码求法不同。</p>
+
+<ul>
+  <li>正数的原码，反码，补码相同（这条要首先牢记，之后才能记住负数反码，补码的求法）；</li>
+  <li>负数的反码是除原码符号为外按位求反，负数的补码是对原码按位求反之后加1。
+反码的作用不大，主要要记住反码的作用。</li>
+</ul>
+
+<p><strong>补码的设计目的是:</strong></p>
+
+<ol>
+  <li>使符号位能与有效值部分一起参加运算,从而简化运算规则；</li>
+  <li>使减法运算转换为加法运算,进一步简化计算机中运算器的线路设计 。
+移码主要应用于浮点数的运算中，有关移码的介绍在网上查了一下居然没有找到，都是些数据结构基础中就介绍的，以后有空要写个总结记录一下。
+作为一个小白，我觉得更重要的不是记住上面的运算方法，这些都异常简单，重要的是记住某些特殊值或者规律，这些能帮我们计算的更快，反应的更迅速，感兴趣的朋友可以在下面写出你掌握的规律。</li>
+</ol>
+
+<p>比如说：
+数值0原码两个，反码两个，补码只有一个；
+由上述特点直接衍生出的是补码可以多表示一个数字，若字长为8位，补码中就多了一个-128，补码可以表示256个数；</p>
+
+<hr />
+<p>我的理解绝大部分的也运算都应该采用补码形式，具体的原因就很多了；
+进行补码运算时，应注意所得结果不应超过补码所能表示数的范围；
+在以二进制补码表示负数的机器上，~（按位运算符）10的结果为十进制数-11；
+等等。</p>
+
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-27T11:50:43+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150627/yi-wei-yun-suan-fu/" itemprop="url">移位运算符</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<blockquote>
+  <p>移位运算先转化成2进制，再根据运算符指定的位数作以为运算。
+左移运算符（«）：逻辑/算数移位。在不考虑溢出的情况下，相当于乘2，移位时移出的位数全部丢弃，右侧补入的数全部是0；左移时要注意有符号数的溢出情况。
+右移运算符（»）：算术运算，对于无符号数以及有符号正数相当于除2，移位时溢出的位数全部丢弃，补入的数分为两种情况：如果是无符号数，左侧全部补0；如果是有符号数与符号位和编译器有关，一般情况下补符号位的副本。</p>
+</blockquote>
+
+<hr />
+<p>移位计数的取值问题：</p>
+
+<ol>
+  <li>
+    <p>网上查到的结果是如果移动的位数超过类型的长度时，会对移位计数取余，举个小例子：</p>
+
+    <p>int i = 1, j = 0x80000000; //设int为32位
+   i = i « 33;     // 33 % 32 = 1 左移1位,i变成2
+   j = j « 33;     // 33 % 32 = 1 左移1位,j变成0,最高位被丢弃</p>
+  </li>
+  <li>
+    <p>《C Traps and Pitfalls》这本书上说的是：移位计数必须大于等于0，而严格小于n（如上例的32位），即：i « 32 和 i«-1这种写法都是非法的，我猜是这本书出版的时间比较早，但是我还是更喜欢这样的做法。</p>
+  </li>
+</ol>
+
+<p>除法运算代替以为运算，将导致程序运行速度大大减慢。换句话说：使用移位预算符将大大提高程序的执行效率。对于这一点我将在自己以后的应用中继续总结。</p>
+
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-27T11:49:22+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150627/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/" itemprop="url">UIImageView和UIButton拉伸效果的实现</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>UIImageView中Image拉伸效果的实现：</p>
+
+<pre><code>UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
+[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
+CGRect frame = strechTest.frame;
+frame.size.width += 100;
+strechTest.frame = frame;
+</code></pre>
+
+<p>但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。</p>
+
+<p>因此UIButton实现背景拉伸，即图片两端不拉伸中间拉伸的办法有如下两种：</p>
+
+<p>第一种方法很简单而且使用性更广。做法就是直接拉伸想要setBackgroundImage的image，代码如下：</p>
+
+<pre><code>UIImage*image =[UIImage imageNamed:@"image.png"];
+
+image = [image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+
+image =[image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+</code></pre>
+
+<p>设置了左端帽之后，rightCapWidth = image.size.width - (image.leftCapWidth + 1); 也就是说图片中间的一像素用来拉伸。垂直方向同上。</p>
+
+<p>设置之后无论把image放到什么控件中都可以自动拉伸了。</p>
+
+<p>第二种方法是在UIButton中加入一个UIImageView，拉伸imageView，然后将button的背景设为clearColor等等。把imageView放入button中，并且sendToBack，得到效果。</p>
+
+<p>代码如下：</p>
+
+<pre><code>//刚才imageView拉伸的代码
+
+UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
+[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
+CGRect frame = strechTest.frame;
+frame.size.width += 100;
+strechTest.frame = frame;
+
+//把imageView放入button中，并设置为back
+
+
+[temp_button addSubview:backgroundImageView];
+[temp_button sendSubviewToBack:backgroundImageView];
+[temp_button setBackgroundColor:[UIColor clearColor]];
+</code></pre>
+
+<p>button不能设置背景图片，这样就可以实现拉伸的图片作为背景并且背景上可以放置title。</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-27T11:48:12+08:00" data-updated="true" itemprop="datePublished"></time></div>
+		<div class="tags">
+
+</div>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150627/guan-yu-gitfen-zhi-de-shi-yong/" itemprop="url">关于git分支的使用</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<p>学习记录，不正确的地方望指正！</p>
+
+<p>git branch 显示的是本地分支</p>
+
+<p>git pull origin aRemoteBranch</p>
+
+<p>git push origin aRemoteBranch</p>
+
+<p>git commit 是提交到当前的本地分支</p>
+
+<p>git remote显示远程服务器</p>
+
+<p>git remote show aRemote显示指定的远程服务器（origin）上的远程分支</p>
+
+<p>git checkout –track -b aLocalBranch aRemote/aRemoteBranch 创建一个新本地分支追踪远程分支（也可以直接 git checkout aRemoteBranch）</p>
+
+<p>远程分支不可见，只能通过新建本地分支来追踪远程分支，本地分支和远程分支是两个不同的东西，也可以不同名。</p>
+
+<p>checkout的时候会先检查本地分支，如果有则checkout到这个本地分支（不论它track哪个远程分支），如果没有则查看远程分支，如果有同名远程分支则新建一个本地同名分支并追踪（track）远程分支</p>
+
+<p>git branch -d aLocalBranch  删除本地分支</p>
+
+<p>git push ARemote :aRemoteBranch 删除远程分支</p>
+
+<p>-d -&gt; -D 强制删除</p>
+
+<p>vim .git/config</p>
+
+<p>可以查看当前的remote和已经track了remote分支的本地分支</p>
+
+<p>可以建多个本地分支track同一个远程分支，删除本地分支对远程分支没有影响。</p>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
 <time datetime="2015-06-27T11:07:51+08:00" data-updated="true" itemprop="datePublished"></time></div>
 		<div class="tags">
 
@@ -155,18 +405,17 @@
   <li>
     <p>客户端 在appDelegate中编写代码，为了阅读方便就把上面链接中的代码重新贴一次：</p>
 
-    <ul>
-      <li>(BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {<br />
-[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];<br />
- }</li>
-      <li>(void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {<br />
-[self alertNotice:@”” withMSG:[NSString stringWithFormat:@”Error in registration. Error: %@”, err] cancleButtonTitle:@”Ok” otherButtonTitle:@””];<br />
- }</li>
-      <li>(void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {<br />
-NSLog(@”devToken=%@”,deviceToken);<br />
-[self alertNotice:@”” withMSG:[NSString stringWithFormat:@”devToken=%@”,deviceToken] cancleButtonTitle:@”Ok” otherButtonTitle:@””];<br />
- }</li>
-    </ul>
+    <pre><code> - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {  
+   [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];  
+ }  
+ - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {  
+   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"Error in registration. Error: %@", err] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
+ }  
+ - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {  
+   NSLog(@"devToken=%@",deviceToken);  
+   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"devToken=%@",deviceToken] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
+ } 
+</code></pre>
   </li>
 </ol>
 
@@ -174,11 +423,12 @@ NSLog(@”devToken=%@”,deviceToken);<br />
 
 <p>接受服务器消息并改变客户端本地状态（如在app图表显示带数字的小红圈）的代码如下：</p>
 
-<p>－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {</p>
-
-<pre><code>for (id key in userInfo) {
-    NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
-}     }
+<pre><code>	－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+	
+	    for (id key in userInfo) {
+	        NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
+	    }    
+	}
 </code></pre>
 
 <p> 到此为止，当你在真机上运行你的app时就会出现：是否允许app显示push notification的提示框。</p>
