@@ -18,4 +18,7 @@ end
 gem 'sinatra', '~> 1.4.2'
 gem 'kramdown'
 gem 'coderay'
-gem 'jekyll-sitemap'
+
+gem 'jasmine'
+gem 'jasmine-headless-webkit'
+gem 'guard-jasmine-headless-webkit'

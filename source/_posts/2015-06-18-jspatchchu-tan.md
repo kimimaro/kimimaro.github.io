@@ -4,6 +4,8 @@ title: "JSPatch初探"
 date: 2015-06-18 11:56:50 +0800
 comments: true
 categories: iOS,JSPatch
+keywords: iOS,JSPatch
+description: "JSPatch初探"
 ---
 
 ---
