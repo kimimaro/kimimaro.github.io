@@ -4,7 +4,7 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-08-20T13:24:52+08:00</updated>
+  <updated>2015-09-07T16:41:46+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -12,6 +12,83 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[调起协议测试页面]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150907/diao-qi-xie-yi-ce-shi-ye-mian/"/>
+    <updated>2015-09-07T16:04:32+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150907/diao-qi-xie-yi-ce-shi-ye-mian</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p>用于外部插件调起的测试页面</p>
+</blockquote>
+
+<ol>
+  <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22url%22%3A%22http%3A%5C%2F%5C%2Fm.dianying.baidu.com%3Fldata%3D%257B%2522src_from%2522%253A%2522life_plus_icon%2522%257D%22%2C%22plugin_id%22%3A%22com.naplugin.movie%22%2C%22log_url%22%3A%22%22%2C%22log_header%22%3A%22%22%7D&amp;minver=6.6.8.0">调起影票插件</a></li>
+  <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22url%22%3A%22http%3A%5C%2F%5C%2Fm.nuomi.com%3Fn%3D1%26category%3Dgroupon%26cid%3Dbaidubox_old%26com_dispatch_param%3D%257B%2522ldata%2522%253A%2522%2522%252C%2522qid%2522%253A%2522%2522%252C%2522resid%2522%253A%2522%2522%252C%2522src_channel%2522%253A%2522kuang_life_hot_serve%2522%257D%26target%3Dtarget_wise_home%26box_citycode%3D131%22%2C%22plugin_id%22%3A%22lbsplugin.iphone.baidu.groupon%22%2C%22log_url%22%3A%22%22%2C%22log_header%22%3A%22%22%7D&amp;minver=6.5.0.0">调起团购插件</a></li>
+  <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22url%22%3A%22http%3A%5C%2F%5C%2Fmap.baidu.com%5C%2Fmobile%5C%2Fwebapp%5C%2Fplace%5C%2Fhotelzt%5C%2Ftest%3Dtest%26c%3D131%26hidenav%3D1%26hidefooter%3D1%26locMC%3D%7B%7BlocMC%7D%7D%26third_party%3Dkuang_service_hot_na%26cuid%3D15E7297BE1E69FF171C7AB4C15AD323F23F39C139ORQIDOKHNO%26resid%3D03%26com_dispatch_param%3D%7B%7D%26src_from%3Dkuang_service_hot_na%26category%3Dhotel%26target%3Dhotel_search_channel_wise%22%2C%22plugin_id%22%3A%22lbsplugin.iphone.baidu.hotel%22%2C%22log_url%22%3A%22%22%2C%22log_header%22%3A%22%22%7D&amp;minver=6.5.0.0">调起酒店插件</a></li>
+  <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22url%22%3A%22http%3A%5C%2F%5C%2Fwaimai.baidu.com%5C%2Fmobile%5C%2Fwaimai%3Fqt%3Dshoplist%26utm_source%3Dbaidu%26utm_medium%3Dbaidu_kuang%26utm_content%3Dkapian%26utm_term%3Ddefault%26utm_campaign%3Dkuang%26cid%3DWebAPP_%25E5%25A4%2596%25E5%258D%2596%25E6%258E%25A8%25E5%25B9%25BF_948162%26vmgdb%3D0020100222s%22%2C%22plugin_id%22%3A%22box.plugin.waimai%22%2C%22log_url%22%3A%22%22%2C%22log_header%22%3A%22%22%7D&amp;minver=6.6.8.0">调起外卖插件</a></li>
+  <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22plugin_id%22%3A%22box.plugin.voicesearch%22%2C%22url%22%3A%22args%3Dsource_app%253Dbaiduboxapp%2526referer%253Dhome%22%7D&amp;minver=6.4.0.0">调起语音插件</a></li>
+  <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22plugin_id%22%3A%22box.plugin.imagesearch%22%2C%22url%22%3A%22args%3Dsource_app%253Dbaiduboxapp%2526referer%253Dhome%22%7D&amp;minver=6.4.0.0">调起图像搜索插件</a></li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS Blog List]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150831/ios-blog-list/"/>
+    <updated>2015-08-31T17:35:48+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150831/ios-blog-list</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p>还没来得及整理，各种途径搜集到的记录这里以后看。ps. 还是怀念greader时代啊。</p>
+</blockquote>
+
+<h3 id="ios">iOS</h3>
+<ol>
+  <li><a href="https://www.objc.io/">objc.io</a></li>
+</ol>
+
+<h3 id="section">图</h3>
+<p><img src="http://7xl7vj.com1.z0.glb.clouddn.com/blog_list.png" alt="" /></p>
+
+<h3 id="github">github</h3>
+<ol>
+  <li><a href="https://github.com/longv2go/iOSBlogCN">longv2go/iOSBlogCN</a></li>
+</ol>
+
+<h3 id="swift">Swift</h3>
+<ol>
+  <li><a href="http://swifter.tips/condition-compile/">Swifter - @ONECAT</a></li>
+  <li><a href="http://natashatherobot.com/">Natasha The Robot</a></li>
+  <li><a href="http://nshipster.cn/swift-objc-runtime/">Swift &amp; the Objective-C Runtime - NSHipster</a></li>
+  <li><a href="https://developer.apple.com/swift/blog/">Swift Blog - Apple Developer</a></li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[wkwebview]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150826/wkwebview/"/>
+    <updated>2015-08-26T15:53:26+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150826/wkwebview</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p><a href="http://nshipster.cn/wkwebkit/">WKWebView - NSHipster</a></p>
+
+  <table>
+    <tbody>
+      <tr>
+        <td>[WKWebView的新特性与使用</td>
+        <td>发光的我](http://www.brighttj.com/ios/ios-wkwebview-new-features-and-use.html)</td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<h1 id="wkwebkit-framework">WKWebKit Framework</h1>
+
+<h1 id="nirtro-javascript">Nirtro JavaScript</h1>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[How can I find my passion【from Quaro】]]></title>
@@ -142,7 +219,10 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
     <id>http://blog.oneboxapp.com/blog/20150628/swiftkai-fa-ri-ji</id>
     <content type="html"><![CDATA[<h3 id="section">博客站</h3>
 <ol>
-  <li><a href="http://swifter.tips/condition-compile/">Swifter - @ONECAT</a></li>
+  <li><a href="http://swifter.tips/">Swifter - Swift 必备 tips</a></li>
+  <li><a href="http://natashatherobot.com/">Natasha The Robot</a></li>
+  <li><a href="http://nshipster.cn/swift-objc-runtime/">Swift &amp; the Objective-C Runtime - NSHipster</a></li>
+  <li><a href="https://developer.apple.com/swift/blog/">Swift Blog - Apple Developer</a></li>
 </ol>
 
 <h3 id="section-1">开发技巧</h3>
@@ -151,6 +231,18 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
   <li>string interpolation</li>
   <li>Inferred Typing</li>
   <li>any properties you declare must be set to an initial value when you declare them, or in your initializer</li>
+  <li>命令行输入：lldb repl 调起 REPL(Read–Eval–Print Loop) ，推出命令：”:” -&gt; “quit”</li>
+</ol>
+
+<h3 id="swift">Swift特点</h3>
+<ol>
+  <li>编译型语言；</li>
+  <li>LLVM；</li>
+  <li>类型安全，同OC，变量和方法都有明确的返回，并且变量使用之前需要初始化；</li>
+  <li>先进的语法体系：闭包、多返回、泛型、函数式编程理念；</li>
+  <li>函数成为一种类型；</li>
+  <li>Playground；</li>
+  <li>iOS7及以上支持；</li>
 </ol>
 
 <h3 id="section-2">问题记录</h3>
@@ -159,6 +251,7 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
   <li>如何做到 Inferred Typing</li>
   <li>继承：与NSObject对比</li>
   <li>动态类型（Runtime）</li>
+  <li>为什么iOS6及以下不支持？</li>
 </ol>
 
 <hr />
