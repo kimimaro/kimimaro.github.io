@@ -4,7 +4,7 @@
   <title><![CDATA[分类：git | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-09-07T16:41:46+08:00</updated>
+  <updated>2015-09-09T15:59:12+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -12,6 +12,18 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Git学习笔记]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150907/gitxue-xi-bi-ji/"/>
+    <updated>2015-09-07T17:58:21+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150907/gitxue-xi-bi-ji</id>
+    <content type="html"><![CDATA[<h3 id="submodule">Submodule</h3>
+<ul>
+  <li><a href="http://www.kafeitu.me/git/2012/03/27/git-submodule.html">Git Submodule使用完整教程 - 咖啡兔 - HenryYan</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[关于git分支的使用]]></title>

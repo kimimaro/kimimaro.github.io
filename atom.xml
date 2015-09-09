@@ -4,7 +4,7 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-09-07T16:41:46+08:00</updated>
+  <updated>2015-09-09T15:59:12+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -12,6 +12,18 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Git学习笔记]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150907/gitxue-xi-bi-ji/"/>
+    <updated>2015-09-07T17:58:21+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150907/gitxue-xi-bi-ji</id>
+    <content type="html"><![CDATA[<h3 id="submodule">Submodule</h3>
+<ul>
+  <li><a href="http://www.kafeitu.me/git/2012/03/27/git-submodule.html">Git Submodule使用完整教程 - 咖啡兔 - HenryYan</a></li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[调起协议测试页面]]></title>
@@ -29,6 +41,7 @@
   <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22url%22%3A%22http%3A%5C%2F%5C%2Fwaimai.baidu.com%5C%2Fmobile%5C%2Fwaimai%3Fqt%3Dshoplist%26utm_source%3Dbaidu%26utm_medium%3Dbaidu_kuang%26utm_content%3Dkapian%26utm_term%3Ddefault%26utm_campaign%3Dkuang%26cid%3DWebAPP_%25E5%25A4%2596%25E5%258D%2596%25E6%258E%25A8%25E5%25B9%25BF_948162%26vmgdb%3D0020100222s%22%2C%22plugin_id%22%3A%22box.plugin.waimai%22%2C%22log_url%22%3A%22%22%2C%22log_header%22%3A%22%22%7D&amp;minver=6.6.8.0">调起外卖插件</a></li>
   <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22plugin_id%22%3A%22box.plugin.voicesearch%22%2C%22url%22%3A%22args%3Dsource_app%253Dbaiduboxapp%2526referer%253Dhome%22%7D&amp;minver=6.4.0.0">调起语音插件</a></li>
   <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22plugin_id%22%3A%22box.plugin.imagesearch%22%2C%22url%22%3A%22args%3Dsource_app%253Dbaiduboxapp%2526referer%253Dhome%22%7D&amp;minver=6.4.0.0">调起图像搜索插件</a></li>
+  <li><a href="baiduboxapp://browse?url=http%3a%2f%2fm.baidu.com&amp;minver=3.8.0.0">调起网页浏览</a></li>
 </ol>
 ]]></content>
   </entry>
@@ -1288,123 +1301,6 @@ int _tmain(int argc, _TCHAR* argv[])
     ch = getchar();
     return 0;
 }
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[二分法查找的实现（递归&amp;循环）]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20120627/er-fen-fa-cha-zhao-de-shi-xian-(di-gui-and-xun-huan-)/"/>
-    <updated>2012-06-27T12:07:27+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20120627/er-fen-fa-cha-zhao-de-shi-xian-(di-gui-and-xun-huan-)</id>
-    <content type="html"><![CDATA[<pre><code>	#include "stdafx.h"
-	
-	//////////////////////////////////////////
-	//二分查找                            //
-	//Author:Kimimaro                    //
-	//Date:2010-3-28                    //
-	/////////////////////////////////////////
-</code></pre>
-
-<!--more-->
-<pre><code>	typedef int KeyType;    //定义关键字类型
-	
-	//typedef struct        //定义数据元素结构
-	//{
-	//    KeyType key;    //关键字域
-	//}SElemType;
-	
-	//宏定义关键字比较操作
-	
-	#define EQ(a,b) ((a) == (b))
-	#define LT(a,b) ((a) &lt;  (b))
-	#define LQ(a,b) ((a) &lt;= (b))
-	
-	//定义表长
-	
-	#define MAX 5
-	
-	//----------------静态查找表的顺序存储结构-------------------
-	
-	typedef struct
-	{
-	    KeyType *elem;
-	    int length;
-	}SSTable;
-	
-	//创建指定长度的静态查找表
-	
-	int CreatSST(SSTable &amp;S,int n)
-	{
-	    S.length = n;
-	    S.elem = (KeyType*)malloc(S.length*sizeof(KeyType));
-	
-	    int i = 1;
-	
-	    while(scanf("%d",&amp;(S.elem[i])) != EOF)
-	    {
-	        i++;
-	    }
-	   
-	    return 0;
-	}
-	
-	//递归二分查找
-	
-	int binarySearch(SSTable S,KeyType key,int low,int high)
-	{
-	    if(low &gt; high) return -1;
-	
-	    int mid = (low + high) / 2;
-	
-	    if(EQ(key, S.elem[mid])) return mid;
-	    else if(LT(key, S.elem[mid])) binarySearch(S,key,low,mid - 1);
-	    else binarySearch(S,key,mid + 1,high);
-	}
-	
-	//循环二分查找
-	
-	//int binarySearch(SSTable S,KeyType key)
-	//{
-	//    int low = 1,high = S.length,mid;
-	//
-	//    while(low &lt;= high)
-	//    {
-	//        mid = (low + high) / 2;
-	//
-	//        if(EQ(key,mid)) return mid;
-	//        else if(LT(key,mid)) high = mid - 1;
-	//        else low = mid + 1;
-	//    }
-	//
-	//    return -1;
-	//}
-	
-	int _tmain(int argc, _TCHAR *argv[])
-	{
-	    SSTable S;
-	    CreatSST(S,MAX);
-	
-	    for(int i = 1;i &lt;= S.length;i++)
-	    {
-	        printf("%d ",S.elem[i]);
-	        if(i == S.length) printf("\n");
-	    }
-	
-	    int key;
-	    printf("Which number do you want to search?\n");
-	    scanf("%d",&amp;key);
-	
-	    int location;
-	//    location = binarySearch(S,key);        //循环二分查找
-	    location = binarySearch(S,key,1,S.length);        //递归二分查找
-	    char chs = getchar();
-	    printf("The elem is S.elem[%d].\n",location);
-	
-	    char ch = getchar();
-	   
-	    return 0;
-	}
 </code></pre>
 ]]></content>
   </entry>

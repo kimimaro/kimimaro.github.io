@@ -4,7 +4,7 @@
   <title><![CDATA[分类：work | 402]]></title>
   <link href="http://blog.oneboxapp.com/blog/categories/work/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-09-07T16:41:46+08:00</updated>
+  <updated>2015-09-09T15:59:12+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -29,6 +29,7 @@
   <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22url%22%3A%22http%3A%5C%2F%5C%2Fwaimai.baidu.com%5C%2Fmobile%5C%2Fwaimai%3Fqt%3Dshoplist%26utm_source%3Dbaidu%26utm_medium%3Dbaidu_kuang%26utm_content%3Dkapian%26utm_term%3Ddefault%26utm_campaign%3Dkuang%26cid%3DWebAPP_%25E5%25A4%2596%25E5%258D%2596%25E6%258E%25A8%25E5%25B9%25BF_948162%26vmgdb%3D0020100222s%22%2C%22plugin_id%22%3A%22box.plugin.waimai%22%2C%22log_url%22%3A%22%22%2C%22log_header%22%3A%22%22%7D&amp;minver=6.6.8.0">调起外卖插件</a></li>
   <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22plugin_id%22%3A%22box.plugin.voicesearch%22%2C%22url%22%3A%22args%3Dsource_app%253Dbaiduboxapp%2526referer%253Dhome%22%7D&amp;minver=6.4.0.0">调起语音插件</a></li>
   <li><a href="baiduboxapp://invokePlug?action=open&amp;params=%7B%22plugin_id%22%3A%22box.plugin.imagesearch%22%2C%22url%22%3A%22args%3Dsource_app%253Dbaiduboxapp%2526referer%253Dhome%22%7D&amp;minver=6.4.0.0">调起图像搜索插件</a></li>
+  <li><a href="baiduboxapp://browse?url=http%3a%2f%2fm.baidu.com&amp;minver=3.8.0.0">调起网页浏览</a></li>
 </ol>
 ]]></content>
   </entry>
