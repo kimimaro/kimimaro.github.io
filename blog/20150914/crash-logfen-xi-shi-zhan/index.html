@@ -156,21 +156,21 @@
 	<div class="entry-content" itemprop="articleBody"><blockquote>
   <p>事情的缘起是收到了一个用户的线上Crash反馈，QA无法复现，但是作为体量大开发质量又追求极致的应用通常还得解决这样的问题。</p>
 
-  <p>通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！崩溃日志如下：（出于公司隐私考虑去掉了部分符号）</p>
+  <p>通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！崩溃日志如下：（出于公司隐私考虑去掉了部分符号）
+<!--more-->
+	{“name”:”XXXApp”,”bug_type”:”109”,”os_version”:”iPhone OS 7.1.1 (11D201)”,”bundleID”:”com.xxx”,”version”:”6.7.1.0 (6.7.1)”,”app_name”:”XXXApp”}
+	Incident Identifier: EC2DC883-C0DB-4FD6-81FB-237626598366
+	CrashReporter Key:   d5c091bc35732df06fcaf41e5786833159b04ea5
+	Hardware Model:      iPhone5,2
+	Process:             XXXApp [1912]
+	Path:                /var/mobile/Applications/4E3E131C-5847-4B61-A0E0-D350830C1693/BaiduBoxApp.app/XXXApp
+	Identifier:          com.xxx
+	Version:             6.7.1.0 (6.7.1)
+	Code Type:           ARM (Native)
+	Parent Process:      launchd [1]</p>
 </blockquote>
 
-<pre><code>{"name":"XXXApp","bug_type":"109","os_version":"iPhone OS 7.1.1 (11D201)","bundleID":"com.xxx","version":"6.7.1.0 (6.7.1)","app_name":"XXXApp"}
-Incident Identifier: EC2DC883-C0DB-4FD6-81FB-237626598366
-CrashReporter Key:   d5c091bc35732df06fcaf41e5786833159b04ea5
-Hardware Model:      iPhone5,2
-Process:             XXXApp [1912]
-Path:                /var/mobile/Applications/4E3E131C-5847-4B61-A0E0-D350830C1693/BaiduBoxApp.app/XXXApp
-Identifier:          com.xxx
-Version:             6.7.1.0 (6.7.1)
-Code Type:           ARM (Native)
-Parent Process:      launchd [1]
-
-Date/Time:           2015-08-28 00:37:32.658 +0800
+<pre><code>Date/Time:           2015-08-28 00:37:32.658 +0800
 OS Version:          iOS 7.1.1 (11D201)
 Report Version:      104
 
@@ -225,7 +225,8 @@ Thread 3:
   <p>于是只好把各种exception type和C signal分析了一遍，希望能找到一些蛛丝马迹。</p>
 </blockquote>
 
-<h2 id="exccrash-sigsegv">首先还是来看看 EXC_CRASH (SIGSEGV)</h2>
+<h1 id="crash-log">Crash Log分析实例</h1>
+<p>###1. 首先还是来看看 EXC_CRASH (SIGSEGV)</p>
 
 <p><strong>Crash Log分析的标准姿势</strong>一般是这样的：</p>
 
@@ -315,18 +316,20 @@ Thread 3:
   <li>
     <p>在符号化后的日志中找到：</p>
 
-    <pre><code> Triggered by Thread:  0  根据所指示的找到崩溃的线程，然后happy happy的在里面找到崩溃的函数；
+    <pre><code> Triggered by Thread:  0
 </code></pre>
+
+    <p>根据所指示的找到崩溃的线程，然后happy happy的在里面找到崩溃的函数；</p>
   </li>
 </ol>
 
-<p> 但是往往当我们找到崩溃线程的时候发现不能happy的解Bug了，因为对应的线程里面一个应用内调用的方法都没有，ORZ。</p>
+<p> 但是往往当我们找到崩溃线程的时候发现不能happy的解Bug了，因为对应的线程里面竟然全都是系统调用，一个应用内调用的方法都没有，ORZ。</p>
 
 <blockquote>
   <p>接下来的分析可能就根据对应问题不同分析的手段也不同，但是总得来说还是有一些规律可寻的。</p>
 </blockquote>
 
-<h3 id="exception-type--c-signle">1. Exception Type &amp; C signle</h3>
+<h3 id="exception-type--c-signle">2. Exception Type &amp; C signle</h3>
 
 <p> 上面Log里面的可以找到这样两行：</p>
 
@@ -441,11 +444,16 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
  它會出現在當程式企圖存取CPU無法定址的記憶體區段時。
 </code></pre>
   </li>
-  <li>可以看出这个Log中显示的崩溃是一种比较异常的情况：（Mach Exception Type和C signal常识上不匹配）；</li>
-  <li>程序崩溃的原因比较大的可能仍是访问了无效的内存地址。</li>
+  <li>
+    <p>结合Exception Type和UNIX Signal可以看出：</p>
+    <ul>
+      <li>这个Log中显示的崩溃是一种比较异常的情况：（Mach Exception Type和C signal常识上不匹配）；</li>
+      <li>程序崩溃的原因比较大的可能仍是<strong>访问了无效的内存地址</strong>。</li>
+    </ul>
+  </li>
 </ol>
 
-<h3 id="section">2. 崩溃线程中的系统调用</h3>
+<h3 id="section">3. 崩溃线程中的系统调用</h3>
 <blockquote>
   <p>接着Exception Type部分往下看，程序崩溃在了Thread 0，那么我们就来看一下Thread 0的内存堆栈。</p>
 </blockquote>
@@ -466,19 +474,19 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
 <pre><code>1   Foundation                    	0x2f901c1e __NSThreadPerformPerform + 382
 </code></pre>
 
-<p>这个方法告诉我们很大可能是在我们调用performSelector:系列方法时程序发生崩溃的。</p>
+<p>这个方法告诉我们很大可能是<strong>在我们调用performSelector:系列方法时程序发生崩溃</strong>的。</p>
 
 <pre><code>_NSThreadPerformPerform is used by the performSelector... family of methods. So look at your use of those methods. In particular, figure out if it's possible that you're asking an object to perform a selector that it doesn't support. That would throw an exception.
 </code></pre>
 
-<h3 id="section-1">3. 判断当前程序正在运行的时机</h3>
+<h3 id="section-1">4. 判断当前程序正在运行的时机</h3>
 <blockquote>
   <p>其他线程虽然不是导致崩溃的线程，但是根据其他线程中的可识别代码，可以大致判断出当前程序所处于的时期（程序启动、程序运行期、前后台切换等等），缩小问题定位的范围。</p>
 </blockquote>
 
 <p> 在上述Crash Log例子中通过其他线程正在执行的方法判断出此时程序正在启动（各种单例初始化的过程中），再从这部分逻辑中找到performSelector:相关的代码逻辑，虽然不是最好的办法，但是通常通过这种方式可以把问题的查找方位逐渐缩小，提高找到问题原因的可能性。</p>
 
-<h2 id="crash">常见Crash类型梳理（持续完善中…）</h2>
+<h1 id="crash">常见Crash类型梳理（持续完善中…）</h1>
 <blockquote>
   <p>之前每次查crash log都是查完就扔到一般，其实每种崩溃日志都有其特定的特点。下面列一些常见的Crash类型，也作为自己开发的经验积累，不断扩展中…</p>
 </blockquote>
@@ -502,7 +510,7 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   </li>
 </ul>
 
-<h3 id="llvm">LLVM的使用</h3>
+<h1 id="llvm">LLVM的使用</h1>
 <blockquote>
   <p>顺带记录一下调试过程中查到的一些LLVM实用技巧，后续有机会也都总结出来。
 9. po $exa</p>
@@ -511,7 +519,7 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
 <pre><code>	The po command stands for “print object.” The symbol $eax refers to one of the CPU registers. In the case of an exception, this register will contain a pointer to the NSException object. Note: $eax only works for the simulator, if you’re debugging on the device you’ll need to use register $r0.
 </code></pre>
 
-<h3 id="section-2">参考资料</h3>
+<h1 id="section-2">参考资料</h1>
 <ol>
   <li><a href="https://zh.wikipedia.org/wiki/SIGSEGV">SIGSEGV - 维基百科，自由的百科全书</a></li>
   <li><a href="http://en.cppreference.com/w/c/program/SIG_types">SIGTERM, SIGSEGV, SIGINT, SIGILL, SIGABRT, SIGFPE - cppreference.com</a></li>
@@ -522,7 +530,7 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <li>sigaction: <a href="https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man2/sigaction.2.html">Mac OS X Manual Page For sigaction(2)</a></li>
 </ol>
 
-<h3 id="my-question">My Question</h3>
+<h1 id="my-question">My Question</h1>
 <blockquote>
   <p>这次遇到的棘手问题也上传到了stackoverflow：</p>
 </blockquote>
@@ -531,7 +539,7 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <li><a href="http://stackoverflow.com/questions/32480179/a-very-interesting-crash-log-with-exception-typeexc-crash-sigsegv">ios - A very interesting crash log with Exception Type:”EXC_CRASH (SIGSEGV)” - Stack Overflow</a></li>
 </ul>
 
-<h3 id="where-to-go">Where to Go</h3>
+<h1 id="todos">TODOs</h1>
 <ol>
   <li>Try Catch到的到底是什么？</li>
   <li>Mach Exceptions深入研究</li>
