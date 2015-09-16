@@ -15,7 +15,7 @@
 	<meta name="author" content="Kimimaro">
 
 	
-	<meta name="description" content="15 Sep 14 ios Comments iOS Crash Log分析实战 事情的缘起是收到了一个用户的线上Crash反馈，QA无法复现，但是作为体量大开发质量又追求极致的应用通常还得解决这样的问题。 通过各种努力终于拿到了用户的Crash Log， &hellip;">
+	<meta name="description" content="15 Sep 16 Comments GoodBooks Dev Explore - GitBook 15 Sep 16 coretext, ios, Comments iOS富文本组件的实现-CoreText vs TextKit iOS富文本实现  在iOS7之前， &hellip;">
 
 	
 	<meta name="keywords" content="iOS,developer,Objective-C,Baidu,编程">
@@ -169,6 +169,107 @@
   
 
 
+<time datetime="2015-09-16T20:37:37+08:00" data-updated="true" itemprop="datePublished">15 Sep 16</time></div>
+		<div class="tags">
+
+</div>
+		
+			<span class="comments"><a href="/blog/20150916/goodbooks/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150916/goodbooks/" itemprop="url">GoodBooks</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h3 id="dev">Dev</h3>
+<ul>
+  <li><a href="https://www.gitbook.com/explore">Explore - GitBook</a></li>
+</ul>
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-16T18:00:44+08:00" data-updated="true" itemprop="datePublished">15 Sep 16</time></div>
+		<div class="tags">
+
+
+	<a class='category' href='/blog/categories/coretext/'>coretext</a>, <a class='category' href='/blog/categories/ios/'>ios,</a>
+
+
+</div>
+		
+			<span class="comments"><a href="/blog/20150916/iosfu-wen-ben-zu-jian-de-shi-xian-coretext-vs-textkit/#disqus_thread">Comments</a></span>
+		
+	</div>
+	<h1 class="title" itemprop="name"><a href="/blog/20150916/iosfu-wen-ben-zu-jian-de-shi-xian-coretext-vs-textkit/" itemprop="url">iOS富文本组件的实现-CoreText vs TextKit</a></h1>
+	<div class="entry-content" itemprop="articleBody">
+		<h1 id="ios">iOS富文本实现</h1>
+
+<p> 在iOS7之前，系统展现文字的方式只有UILabel、UITextView这样的简单控件，如果要实现复杂的富文本展现，则需要开发者自己调用CoreText去实现，开发的复杂程度非常大。</p>
+
+<p> iOS7之前最优秀的实现应该是开源项目：<a href="https://github.com/Cocoanetics/DTCoreText">Cocoanetics/DTCoreText</a>，通过解析HTML和CSS文件最终用CoreText绘制。（UIWebView应该不会有人用吧 = .=）基于JavascriptCore应该也可以解析渲染出元素丰富的界面，但是没有HTML和CSS来的直观。</p>
+
+<h1 id="dtcoretext">DTCoreText</h1>
+<blockquote>
+  <p>有关这个项目bang神的blog写的很赞。</p>
+</blockquote>
+
+<ul>
+  <li><a href="http://blog.cnbang.net/tech/2630/">iOS富文本组件的实现—DTCoreText源码解析 数据篇 « bang’s blog</a></li>
+  <li><a href="http://blog.cnbang.net/tech/2729/">iOS富文本组件的实现—DTCoreText源码解析 渲染篇 « bang’s blog</a></li>
+  <li>基于DTCoreText实现的富文本项目Demo演示</li>
+</ul>
+
+<h1 id="textkit">TextKit</h1>
+<blockquote>
+  <p>iOS7上终于等来了TextKit，有关的介绍和吐槽都在这里：</p>
+</blockquote>
+
+<ul>
+  <li><a href="https://www.objc.io/issues/5-ios7/getting-to-know-textkit/">Getting to Know TextKit · objc.io</a></li>
+</ul>
+
+<h1 id="section">总结</h1>
+<p> 综合来讲TextKit已经具备了富文本展现的一切必备功能：整段缩进、截断（加省略号）、连字符、对齐、文本样式、文本效果、图片视频附件，但就多媒体附件这一块似乎支持的还没有DTCoreText那么灵活，只能插入固定的类型而不是插入一个View。</p>
+
+
+		
+		
+	</div>
+
+</article>
+
+
+    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="meta">
+		<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
 <time datetime="2015-09-14T15:56:22+08:00" data-updated="true" itemprop="datePublished">15 Sep 14</time></div>
 		<div class="tags">
 
@@ -186,7 +287,7 @@
 		<blockquote>
   <p>事情的缘起是收到了一个用户的线上Crash反馈，QA无法复现，但是作为体量大开发质量又追求极致的应用通常还得解决这样的问题。</p>
 
-  <p>通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！崩溃日志如下：（出于公司隐私考虑去掉了部分符号）
+  <p>通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！
 
 		
 		<a href="/blog/20150914/crash-logfen-xi-shi-zhan/" class="more-link">继续阅读 &rarr;</a>
@@ -336,6 +437,11 @@
   <li><a href="http://natashatherobot.com/">Natasha The Robot</a></li>
   <li><a href="http://nshipster.cn/swift-objc-runtime/">Swift &amp; the Objective-C Runtime - NSHipster</a></li>
   <li><a href="https://developer.apple.com/swift/blog/">Swift Blog - Apple Developer</a></li>
+</ol>
+
+<h3 id="colleague">Colleague</h3>
+<ol>
+  <li><a href="http://blog.sunnyxx.com/">sunnyxx的技术博客</a></li>
 </ol>
 
 		
@@ -543,91 +649,6 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
 
 		
 		<a href="/blog/20150622/sigabrtcuo-wu-de-diao-shi-ban-fa/" class="more-link">继续阅读 &rarr;</a>
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-18T19:19:06+08:00" data-updated="true" itemprop="datePublished">15 Jun 18</time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ios-jspatch/'>ios,jspatch</a>
-
-
-</div>
-		
-			<span class="comments"><a href="/blog/20150618/jspatchdui-bi/#disqus_thread">Comments</a></span>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150618/jspatchdui-bi/" itemprop="url">JSPatch与Wax对比分析</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<blockquote>
-  <p><a href="https://github.com/bang590/JSPatch">JSPatch</a>与<a href="https://github.com/probablycorey/wax">Wax</a>作为iOS平台上两大热更新框架使用不同的语言、基于相同的原理（ObjC动态绑定）一直备受iOS开发者的青睐，Wax出现较早且已经不再维护，但是也有了各种各样的分支版本；JSPatch作为后起之秀得益于iOS7苹果开放了JavascriptCore.framework的API，相比以前的Wax框架有了很多更新，下面就根据以往的开发经验简单比较一下二者的优势劣势，如果想对两个框架有更多的了解，请移步上文的官方网站和相关文档。</p>
-</blockquote>
-
-
-		
-		<a href="/blog/20150618/jspatchdui-bi/" class="more-link">继续阅读 &rarr;</a>
-	</div>
-
-</article>
-
-
-    <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-	<div class="meta">
-		<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-18T11:56:50+08:00" data-updated="true" itemprop="datePublished">15 Jun 18</time></div>
-		<div class="tags">
-
-
-	<a class='category' href='/blog/categories/ios-jspatch/'>ios,jspatch</a>
-
-
-</div>
-		
-			<span class="comments"><a href="/blog/20150618/jspatchchu-tan/#disqus_thread">Comments</a></span>
-		
-	</div>
-	<h1 class="title" itemprop="name"><a href="/blog/20150618/jspatchchu-tan/" itemprop="url">JSPatch初探</a></h1>
-	<div class="entry-content" itemprop="articleBody">
-		<hr />
-<ol>
-  <li>JSPatch是什么？</li>
-  <li>Objective-C动态绑定机制</li>
-  <li>JSPatch原理</li>
-  <li>JSPatch实用举例</li>
-  <li>与现有方案（Wax）的对比</li>
-</ol>
-
-
-		
-		<a href="/blog/20150618/jspatchchu-tan/" class="more-link">继续阅读 &rarr;</a>
 	</div>
 
 </article>

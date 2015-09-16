@@ -15,7 +15,7 @@
 	<meta name="author" content="Kimimaro">
 
 	
-	<meta name="description" content="iOS Crash Log分析实战 事情的缘起是收到了一个用户的线上Crash反馈，QA无法复现，但是作为体量大开发质量又追求极致的应用通常还得解决这样的问题。 通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！崩溃日志如下：（ &hellip;">
+	<meta name="description" content="iOS Crash Log分析实战 事情的缘起是收到了一个用户的线上Crash反馈，QA无法复现，但是作为体量大开发质量又追求极致的应用通常还得解决这样的问题。 通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！ 崩溃日志如下：（ &hellip;">
 
 	
 	<meta name="keywords" content="iOS,developer,Objective-C,Baidu,编程">
@@ -156,21 +156,23 @@
 	<div class="entry-content" itemprop="articleBody"><blockquote>
   <p>事情的缘起是收到了一个用户的线上Crash反馈，QA无法复现，但是作为体量大开发质量又追求极致的应用通常还得解决这样的问题。</p>
 
-  <p>通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！崩溃日志如下：（出于公司隐私考虑去掉了部分符号）
+  <p>通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！
 <!--more-->
-	{“name”:”XXXApp”,”bug_type”:”109”,”os_version”:”iPhone OS 7.1.1 (11D201)”,”bundleID”:”com.xxx”,”version”:”6.7.1.0 (6.7.1)”,”app_name”:”XXXApp”}
-	Incident Identifier: EC2DC883-C0DB-4FD6-81FB-237626598366
-	CrashReporter Key:   d5c091bc35732df06fcaf41e5786833159b04ea5
-	Hardware Model:      iPhone5,2
-	Process:             XXXApp [1912]
-	Path:                /var/mobile/Applications/4E3E131C-5847-4B61-A0E0-D350830C1693/BaiduBoxApp.app/XXXApp
-	Identifier:          com.xxx
-	Version:             6.7.1.0 (6.7.1)
-	Code Type:           ARM (Native)
-	Parent Process:      launchd [1]</p>
+崩溃日志如下：（出于公司隐私考虑去掉了部分符号）</p>
 </blockquote>
 
-<pre><code>Date/Time:           2015-08-28 00:37:32.658 +0800
+<pre><code>{"name":"XXXApp","bug_type":"109","os_version":"iPhone OS 7.1.1 (11D201)","bundleID":"com.xxx","version":"6.7.1.0 (6.7.1)","app_name":"XXXApp"}
+Incident Identifier: EC2DC883-C0DB-4FD6-81FB-237626598366
+CrashReporter Key:   d5c091bc35732df06fcaf41e5786833159b04ea5
+Hardware Model:      iPhone5,2
+Process:             XXXApp [1912]
+Path:                /var/mobile/Applications/4E3E131C-5847-4B61-A0E0-D350830C1693/BaiduBoxApp.app/XXXApp
+Identifier:          com.xxx
+Version:             6.7.1.0 (6.7.1)
+Code Type:           ARM (Native)
+Parent Process:      launchd [1]
+
+Date/Time:           2015-08-28 00:37:32.658 +0800
 OS Version:          iOS 7.1.1 (11D201)
 Report Version:      104
 
@@ -226,14 +228,15 @@ Thread 3:
 </blockquote>
 
 <h1 id="crash-log">Crash Log分析实例</h1>
-<p>###1. 首先还是来看看 EXC_CRASH (SIGSEGV)</p>
+
+<h3 id="exccrash-sigsegv">1. 首先还是来看看 EXC_CRASH (SIGSEGV)</h3>
 
 <p><strong>Crash Log分析的标准姿势</strong>一般是这样的：</p>
 
 <ol>
   <li>在用户的Crash日志文件查看应用版本，找到发布版本时的Archive包；</li>
   <li>其实我们只需要Archive包中的.app文件或者dSYM文件，二者中的一个即可；</li>
-  <li>符号化日志中的内存地址，符号化出来的日志文件中的地址会被转换成对应的代码及行数，方法有如下集中。
+  <li>符号化日志中的内存地址，符号化出来的日志文件中的地址会被转换成对应的代码及行数，<strong>符号化的方法</strong>有如下几种：
     <ul>
       <li>mdimport dSYM文件，步骤如下：
         <ol>
@@ -404,15 +407,15 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <tbody>
     <tr>
       <td style="text-align: left">SIGSEGV</td>
-      <td style="text-align: left">访问了无效的内存地址，这个地址存在，但是当前进程没有权限访问它</td>
+      <td style="text-align: left">访问了无效的内存地址，这个地址存在，但是当前进程没有权限访问它。<strong>属于硬件层错误</strong></td>
     </tr>
     <tr>
       <td style="text-align: left">SIGABRT</td>
-      <td style="text-align: left">程序Crash，这个符号是由C函数abort()触发的。通常代表系统发现当前程序执行出错。</td>
+      <td style="text-align: left">程序Crash，这个符号是由C函数abort()触发的。通常代表系统发现当前程序执行出错。<strong>属于软件层错误</strong></td>
     </tr>
     <tr>
       <td style="text-align: left">SIGBUS</td>
-      <td style="text-align: left">访问了无效的内存地址，与SIGSEGV的区别是：SIGBUS表示内存地址不存在</td>
+      <td style="text-align: left">访问了无效的内存地址，与SIGSEGV的区别是：SIGBUS表示内存地址不存在。<strong>属于硬件层错误</strong></td>
     </tr>
     <tr>
       <td style="text-align: left">SIGTRAP</td>
@@ -431,18 +434,64 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <li>
     <p>EXC_CRASH</p>
 
-    <pre><code> EXC_CRASH is a mach exception that just means the application terminated abnormally. The parenthetical is the signal that caused the exception, in your case it's SIGABRT which almost always means that you have an un-handled exception somewhere or you have some code that is calling abort() for some reason (again, generally the un-handled exception handler calls this in the end).
-</code></pre>
+    <ul>
+      <li>EXC_CRASH is a mach exception that just means the application terminated abnormally. The parenthetical is the signal that caused the exception, in your case it’s SIGABRT which almost always means that you have an un-handled exception somewhere or you have some code that is calling abort() for some reason (again, generally the un-handled exception handler calls this in the end).</li>
+      <li>可能导致问题的原因：
+        <ul>
+          <li>unrecognized selector</li>
+        </ul>
+      </li>
+      <li>调试方法：
+        <ul>
+          <li>All Exception Point</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>EXC_BAD_ACCESS</p>
+
+    <ul>
+      <li>可能导致该问题的原因：
+        <ul>
+          <li>memory errors</li>
+        </ul>
+      </li>
+      <li>调试方法：
+        <ul>
+          <li>NSZombie</li>
+        </ul>
+      </li>
+    </ul>
   </li>
   <li>
     <p>SIGSEGV</p>
 
-    <pre><code> 在POSIX兼容的平台上，SIGSEGV是当一个进程执行了一个无效的内存引用，或发生段错误时发送给它的信号。SIGSEGV的符号常量在头文件signal.h中定义。因为在不同平台上，信号数字可能变化，因此符号信号名被使用。通常，它是信号#11。
-	
- SIG是信号名的通用前缀。SEGV是segmentation violation（段违例）的缩写。
-	
- 它會出現在當程式企圖存取CPU無法定址的記憶體區段時。
-</code></pre>
+    <ul>
+      <li>在POSIX兼容的平台上，SIGSEGV是当一个进程执行了一个无效的内存引用，或发生段错误时发送给它的信号。SIGSEGV的符号常量在头文件signal.h中定义。因为在不同平台上，信号数字可能变化，因此符号信号名被使用。通常，它是信号#11。</li>
+      <li>SIG是信号名的通用前缀。SEGV是segmentation violation（段违例）的缩写。</li>
+      <li>它會出現在當程式企圖存取CPU無法定址的記憶體區段時。</li>
+      <li>可能导致该问题的原因：
+        <ul>
+          <li>引用released对象</li>
+          <li>引用从未init的对象</li>
+          <li>数组越界</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>SIGABRT</p>
+
+    <ul>
+      <li>软件层（系统层）的错误</li>
+      <li>可能导致该问题的原因：
+        <ul>
+          <li>try to free the same memory twice</li>
+          <li>raise Exception</li>
+        </ul>
+      </li>
+    </ul>
   </li>
   <li>
     <p>结合Exception Type和UNIX Signal可以看出：</p>
@@ -508,6 +557,13 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
     <pre><code>  viewController.list = [NSArray arrayWithObjects:@"One", @"Two"];
 </code></pre>
   </li>
+  <li>Home键退后台后程序crash
+    <ul>
+      <li>在app处于后台时，ios是不允许app调opengl的</li>
+      <li><a href="http://www.cnblogs.com/Clin/p/3405173.html">按Home键切换到后台后会触发libGPUSupportMercury.dylib: gpus_ReturnNotPermittedKillClient导致crash - Clin - 博客园</a></li>
+      <li>应用占用内存过高（通常UIWebView会出现），推到后台直接被杀死</li>
+    </ul>
+  </li>
 </ul>
 
 <h1 id="llvm">LLVM的使用</h1>
@@ -544,6 +600,8 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <li>Try Catch到的到底是什么？</li>
   <li>Mach Exceptions深入研究</li>
   <li>EXC_CRASH部分叫做Mach Exceptions，只有iOS和Mac才有，(SIGSEGV)是Unix Signal，所有基于Unix的系统都可以看到这样的符号？</li>
+  <li>ARC(retain, release, weak, strong, assign, unsafe_retained)</li>
+  <li>__kill 与 __pthread_kill 区别？</li>
 </ol>
 </div>
 

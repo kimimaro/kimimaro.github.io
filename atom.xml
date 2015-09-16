@@ -4,7 +4,7 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-09-14T23:32:27+08:00</updated>
+  <updated>2015-09-16T20:59:57+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -14,6 +14,55 @@
 
   
   <entry>
+    <title type="html"><![CDATA[GoodBooks]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150916/goodbooks/"/>
+    <updated>2015-09-16T20:37:37+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150916/goodbooks</id>
+    <content type="html"><![CDATA[<h3 id="dev">Dev</h3>
+<ul>
+  <li><a href="https://www.gitbook.com/explore">Explore - GitBook</a></li>
+</ul>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[iOS富文本组件的实现-CoreText vs TextKit]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150916/iosfu-wen-ben-zu-jian-de-shi-xian-coretext-vs-textkit/"/>
+    <updated>2015-09-16T18:00:44+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150916/iosfu-wen-ben-zu-jian-de-shi-xian-coretext-vs-textkit</id>
+    <content type="html"><![CDATA[<h1 id="ios">iOS富文本实现</h1>
+
+<p> 在iOS7之前，系统展现文字的方式只有UILabel、UITextView这样的简单控件，如果要实现复杂的富文本展现，则需要开发者自己调用CoreText去实现，开发的复杂程度非常大。</p>
+
+<p> iOS7之前最优秀的实现应该是开源项目：<a href="https://github.com/Cocoanetics/DTCoreText">Cocoanetics/DTCoreText</a>，通过解析HTML和CSS文件最终用CoreText绘制。（UIWebView应该不会有人用吧 = .=）基于JavascriptCore应该也可以解析渲染出元素丰富的界面，但是没有HTML和CSS来的直观。</p>
+
+<h1 id="dtcoretext">DTCoreText</h1>
+<blockquote>
+  <p>有关这个项目bang神的blog写的很赞。</p>
+</blockquote>
+
+<ul>
+  <li><a href="http://blog.cnbang.net/tech/2630/">iOS富文本组件的实现—DTCoreText源码解析 数据篇 « bang’s blog</a></li>
+  <li><a href="http://blog.cnbang.net/tech/2729/">iOS富文本组件的实现—DTCoreText源码解析 渲染篇 « bang’s blog</a></li>
+  <li>基于DTCoreText实现的富文本项目Demo演示</li>
+</ul>
+
+<h1 id="textkit">TextKit</h1>
+<blockquote>
+  <p>iOS7上终于等来了TextKit，有关的介绍和吐槽都在这里：</p>
+</blockquote>
+
+<ul>
+  <li><a href="https://www.objc.io/issues/5-ios7/getting-to-know-textkit/">Getting to Know TextKit · objc.io</a></li>
+</ul>
+
+<h1 id="section">总结</h1>
+<p> 综合来讲TextKit已经具备了富文本展现的一切必备功能：整段缩进、截断（加省略号）、连字符、对齐、文本样式、文本效果、图片视频附件，但就多媒体附件这一块似乎支持的还没有DTCoreText那么灵活，只能插入固定的类型而不是插入一个View。</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[iOS Crash Log分析实战]]></title>
     <link href="http://blog.oneboxapp.com/blog/20150914/crash-logfen-xi-shi-zhan/"/>
     <updated>2015-09-14T15:56:22+08:00</updated>
@@ -21,21 +70,23 @@
     <content type="html"><![CDATA[<blockquote>
   <p>事情的缘起是收到了一个用户的线上Crash反馈，QA无法复现，但是作为体量大开发质量又追求极致的应用通常还得解决这样的问题。</p>
 
-  <p>通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！崩溃日志如下：（出于公司隐私考虑去掉了部分符号）
+  <p>通过各种努力终于拿到了用户的Crash Log，结果符号化后的崩溃线程堆栈里面竟然一条有用的信息都找不到，WTF！
 <!--more-->
-	{“name”:”XXXApp”,”bug_type”:”109”,”os_version”:”iPhone OS 7.1.1 (11D201)”,”bundleID”:”com.xxx”,”version”:”6.7.1.0 (6.7.1)”,”app_name”:”XXXApp”}
-	Incident Identifier: EC2DC883-C0DB-4FD6-81FB-237626598366
-	CrashReporter Key:   d5c091bc35732df06fcaf41e5786833159b04ea5
-	Hardware Model:      iPhone5,2
-	Process:             XXXApp [1912]
-	Path:                /var/mobile/Applications/4E3E131C-5847-4B61-A0E0-D350830C1693/BaiduBoxApp.app/XXXApp
-	Identifier:          com.xxx
-	Version:             6.7.1.0 (6.7.1)
-	Code Type:           ARM (Native)
-	Parent Process:      launchd [1]</p>
+崩溃日志如下：（出于公司隐私考虑去掉了部分符号）</p>
 </blockquote>
 
-<pre><code>Date/Time:           2015-08-28 00:37:32.658 +0800
+<pre><code>{"name":"XXXApp","bug_type":"109","os_version":"iPhone OS 7.1.1 (11D201)","bundleID":"com.xxx","version":"6.7.1.0 (6.7.1)","app_name":"XXXApp"}
+Incident Identifier: EC2DC883-C0DB-4FD6-81FB-237626598366
+CrashReporter Key:   d5c091bc35732df06fcaf41e5786833159b04ea5
+Hardware Model:      iPhone5,2
+Process:             XXXApp [1912]
+Path:                /var/mobile/Applications/4E3E131C-5847-4B61-A0E0-D350830C1693/BaiduBoxApp.app/XXXApp
+Identifier:          com.xxx
+Version:             6.7.1.0 (6.7.1)
+Code Type:           ARM (Native)
+Parent Process:      launchd [1]
+
+Date/Time:           2015-08-28 00:37:32.658 +0800
 OS Version:          iOS 7.1.1 (11D201)
 Report Version:      104
 
@@ -91,14 +142,15 @@ Thread 3:
 </blockquote>
 
 <h1 id="crash-log">Crash Log分析实例</h1>
-<p>###1. 首先还是来看看 EXC_CRASH (SIGSEGV)</p>
+
+<h3 id="exccrash-sigsegv">1. 首先还是来看看 EXC_CRASH (SIGSEGV)</h3>
 
 <p><strong>Crash Log分析的标准姿势</strong>一般是这样的：</p>
 
 <ol>
   <li>在用户的Crash日志文件查看应用版本，找到发布版本时的Archive包；</li>
   <li>其实我们只需要Archive包中的.app文件或者dSYM文件，二者中的一个即可；</li>
-  <li>符号化日志中的内存地址，符号化出来的日志文件中的地址会被转换成对应的代码及行数，方法有如下集中。
+  <li>符号化日志中的内存地址，符号化出来的日志文件中的地址会被转换成对应的代码及行数，<strong>符号化的方法</strong>有如下几种：
     <ul>
       <li>mdimport dSYM文件，步骤如下：
         <ol>
@@ -269,15 +321,15 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <tbody>
     <tr>
       <td style="text-align: left">SIGSEGV</td>
-      <td style="text-align: left">访问了无效的内存地址，这个地址存在，但是当前进程没有权限访问它</td>
+      <td style="text-align: left">访问了无效的内存地址，这个地址存在，但是当前进程没有权限访问它。<strong>属于硬件层错误</strong></td>
     </tr>
     <tr>
       <td style="text-align: left">SIGABRT</td>
-      <td style="text-align: left">程序Crash，这个符号是由C函数abort()触发的。通常代表系统发现当前程序执行出错。</td>
+      <td style="text-align: left">程序Crash，这个符号是由C函数abort()触发的。通常代表系统发现当前程序执行出错。<strong>属于软件层错误</strong></td>
     </tr>
     <tr>
       <td style="text-align: left">SIGBUS</td>
-      <td style="text-align: left">访问了无效的内存地址，与SIGSEGV的区别是：SIGBUS表示内存地址不存在</td>
+      <td style="text-align: left">访问了无效的内存地址，与SIGSEGV的区别是：SIGBUS表示内存地址不存在。<strong>属于硬件层错误</strong></td>
     </tr>
     <tr>
       <td style="text-align: left">SIGTRAP</td>
@@ -296,18 +348,64 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <li>
     <p>EXC_CRASH</p>
 
-    <pre><code> EXC_CRASH is a mach exception that just means the application terminated abnormally. The parenthetical is the signal that caused the exception, in your case it's SIGABRT which almost always means that you have an un-handled exception somewhere or you have some code that is calling abort() for some reason (again, generally the un-handled exception handler calls this in the end).
-</code></pre>
+    <ul>
+      <li>EXC_CRASH is a mach exception that just means the application terminated abnormally. The parenthetical is the signal that caused the exception, in your case it’s SIGABRT which almost always means that you have an un-handled exception somewhere or you have some code that is calling abort() for some reason (again, generally the un-handled exception handler calls this in the end).</li>
+      <li>可能导致问题的原因：
+        <ul>
+          <li>unrecognized selector</li>
+        </ul>
+      </li>
+      <li>调试方法：
+        <ul>
+          <li>All Exception Point</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>EXC_BAD_ACCESS</p>
+
+    <ul>
+      <li>可能导致该问题的原因：
+        <ul>
+          <li>memory errors</li>
+        </ul>
+      </li>
+      <li>调试方法：
+        <ul>
+          <li>NSZombie</li>
+        </ul>
+      </li>
+    </ul>
   </li>
   <li>
     <p>SIGSEGV</p>
 
-    <pre><code> 在POSIX兼容的平台上，SIGSEGV是当一个进程执行了一个无效的内存引用，或发生段错误时发送给它的信号。SIGSEGV的符号常量在头文件signal.h中定义。因为在不同平台上，信号数字可能变化，因此符号信号名被使用。通常，它是信号#11。
-	
- SIG是信号名的通用前缀。SEGV是segmentation violation（段违例）的缩写。
-	
- 它會出現在當程式企圖存取CPU無法定址的記憶體區段時。
-</code></pre>
+    <ul>
+      <li>在POSIX兼容的平台上，SIGSEGV是当一个进程执行了一个无效的内存引用，或发生段错误时发送给它的信号。SIGSEGV的符号常量在头文件signal.h中定义。因为在不同平台上，信号数字可能变化，因此符号信号名被使用。通常，它是信号#11。</li>
+      <li>SIG是信号名的通用前缀。SEGV是segmentation violation（段违例）的缩写。</li>
+      <li>它會出現在當程式企圖存取CPU無法定址的記憶體區段時。</li>
+      <li>可能导致该问题的原因：
+        <ul>
+          <li>引用released对象</li>
+          <li>引用从未init的对象</li>
+          <li>数组越界</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>SIGABRT</p>
+
+    <ul>
+      <li>软件层（系统层）的错误</li>
+      <li>可能导致该问题的原因：
+        <ul>
+          <li>try to free the same memory twice</li>
+          <li>raise Exception</li>
+        </ul>
+      </li>
+    </ul>
   </li>
   <li>
     <p>结合Exception Type和UNIX Signal可以看出：</p>
@@ -373,6 +471,13 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
     <pre><code>  viewController.list = [NSArray arrayWithObjects:@"One", @"Two"];
 </code></pre>
   </li>
+  <li>Home键退后台后程序crash
+    <ul>
+      <li>在app处于后台时，ios是不允许app调opengl的</li>
+      <li><a href="http://www.cnblogs.com/Clin/p/3405173.html">按Home键切换到后台后会触发libGPUSupportMercury.dylib: gpus_ReturnNotPermittedKillClient导致crash - Clin - 博客园</a></li>
+      <li>应用占用内存过高（通常UIWebView会出现），推到后台直接被杀死</li>
+    </ul>
+  </li>
 </ul>
 
 <h1 id="llvm">LLVM的使用</h1>
@@ -409,6 +514,8 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <li>Try Catch到的到底是什么？</li>
   <li>Mach Exceptions深入研究</li>
   <li>EXC_CRASH部分叫做Mach Exceptions，只有iOS和Mac才有，(SIGSEGV)是Unix Signal，所有基于Unix的系统都可以看到这样的符号？</li>
+  <li>ARC(retain, release, weak, strong, assign, unsafe_retained)</li>
+  <li>__kill 与 __pthread_kill 区别？</li>
 </ol>
 ]]></content>
   </entry>
@@ -475,6 +582,11 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
   <li><a href="http://natashatherobot.com/">Natasha The Robot</a></li>
   <li><a href="http://nshipster.cn/swift-objc-runtime/">Swift &amp; the Objective-C Runtime - NSHipster</a></li>
   <li><a href="https://developer.apple.com/swift/blog/">Swift Blog - Apple Developer</a></li>
+</ol>
+
+<h3 id="colleague">Colleague</h3>
+<ol>
+  <li><a href="http://blog.sunnyxx.com/">sunnyxx的技术博客</a></li>
 </ol>
 ]]></content>
   </entry>
@@ -899,6 +1011,61 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
 <!--more--></p>
 
 <p> 段落开头</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">值</th>
+      <th style="text-align: left">描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">baseline</td>
+      <td style="text-align: left">默认元素放置在父元素的基线上</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">sub</td>
+      <td style="text-align: left">垂直对齐文本的下标</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">super</td>
+      <td style="text-align: left">垂直对齐文本的上标</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">top</td>
+      <td style="text-align: left">把元素的顶端与行中最高元素的顶端对齐</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">text-top</td>
+      <td style="text-align: left">把元素的顶端与父元素字体的顶端对齐</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">middle</td>
+      <td style="text-align: left">把此元素放置在父元素的中部</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">bottom</td>
+      <td style="text-align: left">把元素的顶端与行中最低的元素的顶端对齐</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">text-bottom</td>
+      <td style="text-align: left">把元素的底端与父元素字体的底端对齐</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">length</td>
+      <td style="text-align: left">相对基准线的偏移</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">%</td>
+      <td style="text-align: left">使用 “line-height” 属性的百分比值来排列此元素允许使用负值</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">inherit</td>
+      <td style="text-align: left">规定应该从父元素继承 vertical-align 属性的值<em>（所有的IE都不支持？！）</em></td>
+    </tr>
+  </tbody>
+</table>
 ]]></content>
   </entry>
   
@@ -1331,119 +1498,6 @@ System.out.println("程序运行时间： "+(endTime-startTime)+"ns");
 在以二进制补码表示负数的机器上，~（按位运算符）10的结果为十进制数-11；
 等等。</p>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[移位运算符]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20130627/yi-wei-yun-suan-fu/"/>
-    <updated>2013-06-27T11:50:43+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20130627/yi-wei-yun-suan-fu</id>
-    <content type="html"><![CDATA[<blockquote>
-  <p>移位运算先转化成2进制，再根据运算符指定的位数作以为运算。
-左移运算符（«）：逻辑/</p>
-</blockquote>
-
-<!--more-->
-
-<p>算数移位。在不考虑溢出的情况下，相当于乘2，移位时移出的位数全部丢弃，右侧补入的数全部是0；左移时要注意有符号数的溢出情况。
-右移运算符（»）：算术运算，对于无符号数以及有符号正数相当于除2，移位时溢出的位数全部丢弃，补入的数分为两种情况：如果是无符号数，左侧全部补0；如果是有符号数与符号位和编译器有关，一般情况下补符号位的副本。</p>
-
-<hr />
-<p>移位计数的取值问题：</p>
-
-<ol>
-  <li>
-    <p>网上查到的结果是如果移动的位数超过类型的长度时，会对移位计数取余，举个小例子：</p>
-
-    <p>int i = 1, j = 0x80000000; //设int为32位
-   i = i « 33;     // 33 % 32 = 1 左移1位,i变成2
-   j = j « 33;     // 33 % 32 = 1 左移1位,j变成0,最高位被丢弃</p>
-  </li>
-  <li>
-    <p>《C Traps and Pitfalls》这本书上说的是：移位计数必须大于等于0，而严格小于n（如上例的32位），即：i « 32 和 i«-1这种写法都是非法的，我猜是这本书出版的时间比较早，但是我还是更喜欢这样的做法。</p>
-  </li>
-</ol>
-
-<p>除法运算代替以为运算，将导致程序运行速度大大减慢。换句话说：使用移位预算符将大大提高程序的执行效率。对于这一点我将在自己以后的应用中继续总结。</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[HTC G14 Sensation Z710e 刷机总结]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20120627/htc-g14-sensation-z710e-shua-ji-zong-jie/"/>
-    <updated>2012-06-27T12:20:35+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20120627/htc-g14-sensation-z710e-shua-ji-zong-jie</id>
-    <content type="html"><![CDATA[<blockquote>
-  <p>几年前写的可能过时了，留个底。</p>
-</blockquote>
-
-<blockquote>
-  <p>在下面一大堆废话之前先说有用的，推荐 RomManager 这个应用，只要你的手机已经获得了root权限，这个app能够让你 随心所欲的，方便的更新 recovery，下载国内国外好的ROM，同时也提供了 备份和还原 功能。有免费版和付费版两个版本。 有经验的朋友应该已经知道这款应用，大神级的app。</p>
-</blockquote>
-
-<!--more-->
-
-<p> 这不是一篇教程，但是也许会让你对刷机有一些整体的体会； 阅读这篇文章的前提是你已经有了一些刷机的经验，了解大体的步骤。推荐先了解几个概念： ROM，recovery，root，S-ON (SHIP S-OFF, END S-OFF)； 如果初次接触的话推荐 小米 的刷机教程（最新的 android 4.0 系统的 sensation 的教程），省去很多时间； 网上的刷机教程都太繁琐，只讲了流程，但是没有逻辑性，按照它的流程走通是没有问题，但是如果一旦遇到了与之流程不符的情况，就不知道如何处理了。 我写这篇教程只讲几个比较重要的软件和值得注意的点，希望能对遇到莫名其妙问题的同学有所助益。 刷机并不需要一个完整的傻瓜式教程，而是要理解其中的几个点，刷机主要有哪几个步骤，用到了哪些服务（或者说软件），它们都是做什么的，这样就ok了。 这些服务的官网上都有完整的说明，把这些说明看懂你才真正知道你在做什么，为什么要这么做 （不过这些网站都是国外的，所以如果英文不好，或者你根本就不care这些只care刷上了一个新系统的话，忽略我这篇文章） 由于时间有限所以有些服务没有链接，建议直接去官方网站上下载，顺便看看介绍。</p>
-
-<ul>
-  <li>
-    <p>两个快捷键 + 一个操作：
-  音量下 + 电源 ：进入 HBOOT 模式，要进行 fastboot，recovery等操作都要在这个模式下；
-  音量上 + 音量下 + 电源 ：硬重启，刷机会遇到这样那样的问题，偶尔会用到这个；
-  拔电池，主要是为了确认真正关机了，等到你刷上的时候就会发现这个操作很有用，如果你没用到，我只能承认你确实很厉害。</p>
-  </li>
-  <li>
-    <p>其实刷机无非就几个步骤：
-  获得 ROOT 权限；
-  Recovery；
-  Rom；</p>
-  </li>
-  <li>会用到这样一些服务，基本上都是国外的服务：
-    <ul>
-      <li>
-        <p>Revolutionary</p>
-
-        <p>用来解锁的服务，官网上有很好的解释，如果希望简单了解具体的操作步骤参见其他教程（eg. http://bbs.anshouji.com/forum.php?mod=viewthread&amp;tid=38512&amp;extra=#pid582875）</p>
-      </li>
-      <li>
-        <p>ClockWorkMod</p>
-
-        <p>Recovery 提供商，同时也是 RomManager 的作者。</p>
-      </li>
-      <li>ROM 可以就去网上找把，小米的，点心的，或者刚才提到的 ClockWorkMod 上面更多。</li>
-      <li>sensation 的解锁还要借助一个临时获得 ROOT 权限的软件： tacoRoot</li>
-    </ul>
-  </li>
-  <li>
-    <p>htc默认是不允许进行 recovery 操作的，所以需要解锁。</p>
-  </li>
-  <li>
-    <p>解锁，获取 ROOT 权限
-  htc的手机需要先解锁，用到的工具就是 Revolutionary ，但是 sensation 的解锁还要麻烦一步，
-  因为直接 Revolutionary 解锁会遇到 Zerging root… 然后直接就 failed 了。
-  所以需要借助临时获得 ROOT 的软件： tacoRoot （具体的操作用adb，见：http://www.androidpolice.com/2011/12/30/exclusive-tacoroot- by-justin-case-and-reid-holland-a-new-temporary-root-exploit-for-all- htc-devices/）
-  得到临时 ROOT 权限之后按照 Revolutionary 的操作步骤就可以把 S-ON 改为 S-OFF，但这只是一个 SHIP S-OFF，进一步可以改为 END-OFF，这里不做介绍。</p>
-  </li>
-  <li>recovery
-  ClockWorkMod 下载的 recovery 是 img 的。自己做成 PG58IMG.zip ，放在 SD 卡根目录，重启的时候 htc 会自动识别
-  网上有很多人做了相应的 zip，搜 PG58IMG.zip 能找到一堆，还是推荐 小米 的。
-  放在 SD 卡根目录然后重启，安装
-  装好后记得 PG58IMG 要删掉否则每次 htc 都会提醒你。</li>
-</ul>
-
-<p><strong>现在你可以进入 recovery 模式了</strong></p>
-
-<ul>
-  <li>ROM
-  下好的 ROM （.zip 的包，名字不限，位置不限）
-  进入 recovery 模式，install 这个包</li>
-</ul>
-
-<blockquote>
-  <p>再次声明，我写的不是教程！具体方法还是看 小米 的操作，但是这回你明白了 PG58IMG.zip 到底是什么东西，你为什么要这么做。 其实就是给手机刷一个新的 ROM，之前做的 解锁，root，recovery 都是因为 htc sensation 本身对手机做了一些限制。 顺便提一下我的htc刚开始刷了一个网上下的 PG58IMG.zip（recovery），结果导致无法关机，只有拔电池才有效，很烦；</p>
-</blockquote>
 ]]></content>
   </entry>
   

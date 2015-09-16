@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://blog.oneboxapp.com/blog/20150916/goodbooks/</loc>
+    <lastmod>2015-09-16T20:37:37+08:00</lastmod>
+  </url>
+  <url>
+    <loc>http://blog.oneboxapp.com/blog/20150916/iosfu-wen-ben-zu-jian-de-shi-xian-coretext-vs-textkit/</loc>
+    <lastmod>2015-09-16T18:00:44+08:00</lastmod>
+  </url>
+  <url>
     <loc>http://blog.oneboxapp.com/blog/20150914/crash-logfen-xi-shi-zhan/</loc>
     <lastmod>2015-09-14T15:56:22+08:00</lastmod>
   </url>
@@ -146,9 +154,9 @@
     <loc>http://blog.oneboxapp.com/blog/categories/work/</loc>
   </url>
   <url>
-    <loc>http://blog.oneboxapp.com/posts/2/</loc>
+    <loc>http://blog.oneboxapp.com/blog/categories/ios/</loc>
   </url>
   <url>
-    <loc>http://blog.oneboxapp.com/posts/3/</loc>
+    <loc>http://blog.oneboxapp.com/blog/categories/coretext/</loc>
   </url>
 </urlset>
