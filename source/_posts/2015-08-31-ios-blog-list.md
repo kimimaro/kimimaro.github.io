@@ -22,3 +22,6 @@ categories: iOS
 2. [Natasha The Robot](http://natashatherobot.com/)
 3. [Swift & the Objective-C Runtime - NSHipster](http://nshipster.cn/swift-objc-runtime/)
 4. [Swift Blog - Apple Developer](https://developer.apple.com/swift/blog/)
+
+###Colleague
+1. [sunnyxx的技术博客](http://blog.sunnyxx.com/)
