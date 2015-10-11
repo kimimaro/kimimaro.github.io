@@ -158,84 +158,91 @@
 <ul>
   <li>使用let定义常量</li>
   <li>使用var定义变量</li>
-  <li>普通值类型的变量声明之后不会赋默认值，必须初始化才能使用</li>
-  <li>除普通值类型外，还可以声明Optional值类型的变量，这个后面会详细说。</li>
+  <li><strong>普通值</strong>类型的变量声明之后不会赋默认值，必须初始化才能使用</li>
+  <li>除普通值类型外，还可以声明<strong>Optional值</strong>类型的变量，也就是本文所讲的内容。</li>
 </ul>
 
-<p>常量变量使用这一块，Optional值理解起来是比较困难的，尤其是？和！这样的语法糖，代码写起来赏心悦目，但是学习起来就需要下点功夫。</p>
+<p>Swift的常量变量使用中，Optional值理解起来是比较困难的，尤其是?和!这样的语法糖，代码写起来赏心悦目，但是学习起来就需要下点功夫。</p>
 
 <blockquote>
-  <p>?和!只是Optional值的语法糖，而！可以看做是？的进一步的特殊形式，所以后面说明的顺序是：Optional值 -&gt; ?语法糖 -&gt; !语法糖 -&gt; 使用注意事项</p>
+  <p>?和!只是Optional值的语法糖，而!可以看做是?的进一步的特殊形式，所以后面说明的顺序是：Optional值 -&gt; ?语法糖 -&gt; !语法糖 -&gt; 使用注意事项</p>
 </blockquote>
 
 <!--more-->
+
+<h3 id="optinal">什么是Optinal值（?语法糖）</h3>
+
 <p>首先，我们来声明一个普通值的变量。</p>
 
-<pre><code>	var str : String
+<pre><code>var str : String
 </code></pre>
 
 <p>不给str赋初值，直接使用的话编译器会报错：</p>
 
-<pre><code>	// error: Variable 'str' used before being initialized
-	print(str)
+<pre><code>// error: Variable 'str' used before being initialized
+print(str)
 </code></pre>
 
 <p>如果我们这样定义，就没有问题了。</p>
 
-<pre><code>	var str2 : Optional&lt;String&gt;
-			
-	// 通常我们使用?语法糖来实现上面的语法：
-	// var str2 : String?
-			
-	print(str2)		// "nil\n"
+<pre><code>var str2 : Optional&lt;String&gt;
+		
+// 通常我们使用?语法糖来实现上面的语法：
+// var str2 : String?
+		
+print(str2)		// "nil\n"
 </code></pre>
 
 <p>“Optional&lt;String&gt;”就是一个Optional值，通过这个格式可以看出：Optional本身是一个枚举，&lt;String&gt;是这个枚举里面定义的一个泛型。</p>
 
 <p>Optional在Swift2.0中的定义如下：</p>
 
-<pre><code>	public enum Optional&lt;Wrapped&gt; : _Reflectable, NilLiteralConvertible {
-	    case None
-	    case Some(Wrapped)
-	    /// Construct a `nil` instance.
-	    public init()
-	    /// Construct a non-`nil` instance that stores `some`.
-	    public init(_ some: Wrapped)
-	    /// If `self == nil`, returns `nil`.  Otherwise, returns `f(self!)`.
-	    @warn_unused_result
-	    @rethrows public func map&lt;U&gt;(@noescape f: (Wrapped) throws -&gt; U) rethrows -&gt; U?
-	    /// Returns `nil` if `self` is nil, `f(self!)` otherwise.
-	    @warn_unused_result
-	    @rethrows public func flatMap&lt;U&gt;(@noescape f: (Wrapped) throws -&gt; U?) rethrows -&gt; U?
-	    /// Create an instance initialized with `nil`.
-	    public init(nilLiteral: ())
-	}
+<pre><code>public enum Optional&lt;Wrapped&gt; : _Reflectable, NilLiteralConvertible {
+    case None
+    case Some(Wrapped)
+    /// Construct a `nil` instance.
+    public init()
+    /// Construct a non-`nil` instance that stores `some`.
+    public init(_ some: Wrapped)
+    /// If `self == nil`, returns `nil`.  Otherwise, returns `f(self!)`.
+    @warn_unused_result
+    @rethrows public func map&lt;U&gt;(@noescape f: (Wrapped) throws -&gt; U) rethrows -&gt; U?
+    /// Returns `nil` if `self` is nil, `f(self!)` otherwise.
+    @warn_unused_result
+    @rethrows public func flatMap&lt;U&gt;(@noescape f: (Wrapped) throws -&gt; U?) rethrows -&gt; U?
+    /// Create an instance initialized with `nil`.
+    public init(nilLiteral: ())
+}
 </code></pre>
 
-<p>通过上面的定义我们可以看到两个枚举类型：.None和.Some(Wrapped)。这样就很好理解了，声明的时候如果使用了?或者!，这个变量的类型就不简简单单是String这样的类型，而是一个Optinal.Some<string>这样的枚举，因此也就解释了为什么对于这样的变量直接进行属性访问、方法调用等操作的时候编译器会报各种各样的错误，印象中早期未经完善的Xcode会把这样的操作都解释为类型错误。</string></p>
+<p>通过上面的定义我们可以看到两个枚举类型：.None和.Some(Wrapped)。这样就很好理解了，声明的时候如果使用了?或者!，这个变量的类型就不简简单单是String类型，而是一个Optinal.Some<string>的枚举，因此也就解释了为什么对于这样的变量直接进行比较、属性访问、方法调用时编译器会报各种各样的错误。</string></p>
 
-<p>其实，<strong>Swift里面的nil就是Optional.None</strong>；非nil就是Optional.Some(Wrapped)，即变量里面存储的不是普通值（原始值），而是对原始值的封装（Wrap），这也是Optional值类型变量在使用时需要先拆包(Unwrap)的原因。</p>
+<h3 id="section">封装和拆包</h3>
+
+<p>其实，<strong>Swift里面的nil就是Optional.None</strong>；非nil就是Optional.Some(Wrapped)，即变量里面存储的不是普通值（原始值），而是对原始值的<strong>封装（Wrap）</strong>，这也是Optional值类型变量在使用时需要先<strong>拆包(Unwrap)</strong>的原因。</p>
 
 <p>因此 var str2 : Optional<string> 形式定义的变量，作为Optional值使用，例如用于比较、打印，可直接使用。</string></p>
 
-<pre><code>	// if (str2 != nil)
-	if (str2 != Optional.None) {    // 与上面意思相等
-		...
-	}
+<pre><code>// if (str2 != nil)
+if (str2 != Optional.None) {    // 与上面意思相等
+	...
+}
 </code></pre>
 
 <p>这里强调一点是Swift2.0里面Optional值不能直接用作判断条件，必须和nil比较，如下的语句编译器会报错：</p>
 
-<pre><code>	// error: Optinal type cannot be used as a boolean.
-	// if str2 {
+<pre><code>// error: Optinal type cannot be used as a boolean.
+// if str2 {
 </code></pre>
 
 <p>Optinal值还可以直接打印：</p>
 
-<pre><code>	print(str2)		// "nil\n"
+<pre><code>print(str2)		// "nil\n"
 </code></pre>
 
-<p>如果要作为普通值使用，例如方法调用、属性访问、下标访问、打印原始值，则需要先拆包，再使用。由于Swift里面没有显示的拆包方法，因此需要通过?和!两个语法糖来实现。</p>
+<h3 id="optinal-1">Optinal值的使用（拆包）</h3>
+
+<p>如果要作为普通值使用，例如<strong>方法调用、属性访问、下标访问、打印原始值</strong>，则需要先拆包，再使用。由于Swift里面没有显示的拆包方法，因此需要通过?和!两个语法糖来实现。</p>
 
 <ul>
   <li>
@@ -295,7 +302,7 @@
 
     <p>打印未主动初始化的Optinal值同样会报错。</p>
 
-    <pre><code>	var str5 : String?
+    <pre><code>  var str5 : String?
   // error: Execution was interrupted, reason: EXC_BAD_INSTRUCTION
   // print(str5!)
 </code></pre>
@@ -303,6 +310,8 @@
 </ul>
 
 <p>以上就是?语法糖（即Optinal值）在变量声明和变量使用两个方面的用法，有了上面的基础，!语法糖可以简单总结为两句话：</p>
+
+<h3 id="section-1">!语法糖</h3>
 
 <ol>
   <li>
@@ -344,46 +353,48 @@
 
 <p>值得注意的是：对于nil强制拆包会导致Crash。因此<strong>!这个东西是把双刃剑</strong>，有过大型程序经验的同学都了解：今天的逻辑保证x不为空，不代表明天的逻辑还能保证x不为空。</p>
 
+<h3 id="section-2">?和!用于类型转换</h3>
+
 <p>?和!还有另一种用法就是用于类型转换，看下下面的例子。</p>
 
-<pre><code>	var anybody : AnyObject
-	anybody = "still a String"
+<pre><code>var anybody : AnyObject
+anybody = "still a String"
 </code></pre>
 
 <p>如果要把AnyObject赋值给一个Optinal.Some<string>，则需要as后面跟上?来进行类型转换，?的作用是判断anybody是否为一个String，如果是则赋值给justTry，如果不是则justTry值为nil。</string></p>
 
-<pre><code>	var justTry : String?
-	justTry = anybody as? String	// "still a String"
+<pre><code>var justTry : String?
+justTry = anybody as? String	// "still a String"
 </code></pre>
 
 <p>如果要把AnyObject赋值给一个普通String，则需要as后面跟上!来强制类型转换，!的作用是强制转换并赋值给secondTry。</p>
 
-<pre><code>	var secondTry : String
-	secondTry = anybody as! String		// "still a String"
+<pre><code>var secondTry : String
+secondTry = anybody as! String		// "still a String"
 </code></pre>
 
 <p>如果我们这里重新给anybody赋一个Int值，那么发现!转换编译器会报错，而?转换的结果为nil</p>
 
-<pre><code>	anybody = 1
-	// error: Execution was interrupted, reason: singal SIGABRT.
-	// let anotherTry = anybody as! String
-	
-	let tryAgain = anybody as? String	// nil
-	
-	// 不带?和!的转换同样会报错
-	//let failedTry = anybody as String
+<pre><code>anybody = 1
+// error: Execution was interrupted, reason: singal SIGABRT.
+// let anotherTry = anybody as! String
+
+let tryAgain = anybody as? String	// nil
+
+// 不带?和!的转换同样会报错
+//let failedTry = anybody as String
 </code></pre>
 
-<p>小贴士：</p>
+<h3 id="section-3">小贴士</h3>
 
 <ol>
-  <li>在思考Optinal值的nil比较时突然想到既然普通值不能与nil比较，那么普通值如何判断是否为nil呢？再细一想是自己犯二了，普通值在声明的时候compile-time就保证了不会为空，自然也不需要判断；</li>
+  <li>在思考Optinal值的nil比较时突然想到既然普通值不能与nil比较，那么普通值如何判断是否为nil呢?再细一想是自己犯二了，普通值在声明的时候compile-time就保证了不会为空，自然也不需要判断；</li>
   <li>上面已经提到在Swift中，nil其实是一个枚举值Optional.None，还有一个有意思的值：Void，它其实是()，一个空元组；</li>
   <li>强制拆包（!）不要轻易使用，倒也还没想到必须使用的场景，不知道后续会不会出现关于这一点的开发规范；</li>
   <li>可以考虑Optinal值在定义的时候增加一个特殊的命名规范和普通值加以区分，虽然现在编译器给的错误提示挺全面，但是代码的可阅读性也需要考虑。</li>
 </ol>
 
-<p>什么时候需要Optional值:</p>
+<h3 id="optional">什么时候需要Optional值</h3>
 
 <ol>
   <li>属性的初始化操作不在声明时和init中进行时；</li>
