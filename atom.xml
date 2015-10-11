@@ -4,7 +4,7 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-09-18T13:35:10+08:00</updated>
+  <updated>2015-10-11T23:55:52+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -12,6 +12,339 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Swift的 ? 和 ! ]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20151010/swiftde-he/"/>
+    <updated>2015-10-10T17:12:37+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20151010/swiftde-he</id>
+    <content type="html"><![CDATA[<p>Swift语言中的常量变量的声明和使用方式借鉴了像Ruby这样的动态语言，也保留了静态语言的一些特性。</p>
+
+<ul>
+  <li>使用let定义常量</li>
+  <li>使用var定义变量</li>
+  <li>普通值类型的变量声明之后不会赋默认值，必须初始化才能使用</li>
+  <li>除普通值类型外，还可以声明Optional值类型的变量，这个后面会详细说。</li>
+</ul>
+
+<p>常量变量使用这一块，Optional值理解起来是比较困难的，尤其是？和！这样的语法糖，代码写起来赏心悦目，但是学习起来就需要下点功夫。</p>
+
+<blockquote>
+  <p>?和!只是Optional值的语法糖，而！可以看做是？的进一步的特殊形式，所以后面说明的顺序是：Optional值 -&gt; ?语法糖 -&gt; !语法糖 -&gt; 使用注意事项</p>
+</blockquote>
+
+<!--more-->
+<p>首先，我们来声明一个普通值的变量。</p>
+
+<pre><code>	var str : String
+</code></pre>
+
+<p>不给str赋初值，直接使用的话编译器会报错：</p>
+
+<pre><code>	// error: Variable 'str' used before being initialized
+	print(str)
+</code></pre>
+
+<p>如果我们这样定义，就没有问题了。</p>
+
+<pre><code>	var str2 : Optional&lt;String&gt;
+			
+	// 通常我们使用?语法糖来实现上面的语法：
+	// var str2 : String?
+			
+	print(str2)		// "nil\n"
+</code></pre>
+
+<p>“Optional&lt;String&gt;”就是一个Optional值，通过这个格式可以看出：Optional本身是一个枚举，&lt;String&gt;是这个枚举里面定义的一个泛型。</p>
+
+<p>Optional在Swift2.0中的定义如下：</p>
+
+<pre><code>	public enum Optional&lt;Wrapped&gt; : _Reflectable, NilLiteralConvertible {
+	    case None
+	    case Some(Wrapped)
+	    /// Construct a `nil` instance.
+	    public init()
+	    /// Construct a non-`nil` instance that stores `some`.
+	    public init(_ some: Wrapped)
+	    /// If `self == nil`, returns `nil`.  Otherwise, returns `f(self!)`.
+	    @warn_unused_result
+	    @rethrows public func map&lt;U&gt;(@noescape f: (Wrapped) throws -&gt; U) rethrows -&gt; U?
+	    /// Returns `nil` if `self` is nil, `f(self!)` otherwise.
+	    @warn_unused_result
+	    @rethrows public func flatMap&lt;U&gt;(@noescape f: (Wrapped) throws -&gt; U?) rethrows -&gt; U?
+	    /// Create an instance initialized with `nil`.
+	    public init(nilLiteral: ())
+	}
+</code></pre>
+
+<p>通过上面的定义我们可以看到两个枚举类型：.None和.Some(Wrapped)。这样就很好理解了，声明的时候如果使用了?或者!，这个变量的类型就不简简单单是String这样的类型，而是一个Optinal.Some<string>这样的枚举，因此也就解释了为什么对于这样的变量直接进行属性访问、方法调用等操作的时候编译器会报各种各样的错误，印象中早期未经完善的Xcode会把这样的操作都解释为类型错误。</string></p>
+
+<p>其实，<strong>Swift里面的nil就是Optional.None</strong>；非nil就是Optional.Some(Wrapped)，即变量里面存储的不是普通值（原始值），而是对原始值的封装（Wrap），这也是Optional值类型变量在使用时需要先拆包(Unwrap)的原因。</p>
+
+<p>因此 var str2 : Optional<string> 形式定义的变量，作为Optional值使用，例如用于比较、打印，可直接使用。</string></p>
+
+<pre><code>	// if (str2 != nil)
+	if (str2 != Optional.None) {    // 与上面意思相等
+		...
+	}
+</code></pre>
+
+<p>这里强调一点是Swift2.0里面Optional值不能直接用作判断条件，必须和nil比较，如下的语句编译器会报错：</p>
+
+<pre><code>	// error: Optinal type cannot be used as a boolean.
+	// if str2 {
+</code></pre>
+
+<p>Optinal值还可以直接打印：</p>
+
+<pre><code>	print(str2)		// "nil\n"
+</code></pre>
+
+<p>如果要作为普通值使用，例如方法调用、属性访问、下标访问、打印原始值，则需要先拆包，再使用。由于Swift里面没有显示的拆包方法，因此需要通过?和!两个语法糖来实现。</p>
+
+<ul>
+  <li>
+    <p>属性访问，?的作用可以理解为不是简单的拆包，而是先判断当前变量是否为nil，如果为nil，则忽略后续操作，如果不为nil，则执行后面的操作。</p>
+
+    <pre><code>  str2?.capitalizedString		// nil
+	
+  // 此处由于在整个上下文中我还没有对str2赋值，所以编译器会报错
+  // error: Execution was interrupted, reason: EXC_BAD_INSTRUCTION
+  // str2!.capitalizedString		
+	
+  str2 = "test"
+  str2!.capitalizedString		// "Test"
+</code></pre>
+  </li>
+  <li>
+    <p>方法调用，在方法调用的时候?的作用类似于OC中的isResponseToSelector:，如果是nil则忽略后面的方法调用，如果非nil则执行方法调用。</p>
+
+    <pre><code>  var str3 : String?
+  str3 = "hello"
+  print(str3)		// "Optional("hello")\n"
+	
+  str3?.appendContentsOf(" swift")
+  print(str3)		// "Optional("hello swift")\n"
+</code></pre>
+  </li>
+  <li>
+    <p>下标访问</p>
+
+    <pre><code>  var ary1 : Array&lt;Int&gt;?
+	
+  // 未经拆包访问下标编译器会报错
+  // error: Cannot subscript a value from type 'Array&lt;Int&gt;?'
+  // ary1[0]
+	
+  ary1?[0]	// nil
+	
+  ary1 = [1, 2, 3]
+  ary1?[1]	// 2
+</code></pre>
+  </li>
+  <li>
+    <p>打印原始值，打印时不能用?号，Swift中?号只能用来访问属性、调用方法、访问下标元素。</p>
+
+    <pre><code>  var str4 : String?
+	
+  // error: '?' must be followed by a call, member lookup, or subscript
+  // print(str4?)
+</code></pre>
+
+    <p>只能用!打印Optional的原始值，当然，如果什么都不加，则打印的是原始值本身。</p>
+
+    <pre><code>  str4 = "make a cup of tea"
+  print(str4!)	// "make a cup of tea\n"
+  print(str4)		// "Optional("make a cup of tea")\n"
+</code></pre>
+
+    <p>打印未主动初始化的Optinal值同样会报错。</p>
+
+    <pre><code>	var str5 : String?
+  // error: Execution was interrupted, reason: EXC_BAD_INSTRUCTION
+  // print(str5!)
+</code></pre>
+  </li>
+</ul>
+
+<p>以上就是?语法糖（即Optinal值）在变量声明和变量使用两个方面的用法，有了上面的基础，!语法糖可以简单总结为两句话：</p>
+
+<ol>
+  <li>
+    <p>声明时指定!，则表示这个变量不仅是一个Optinal值，并被初始化为nil，而且这个Optinal值在使用的时候都会被编译器隐式的加上!，即强制拆包。</p>
+
+    <pre><code> var str6 : String!
+ str6 = "str6"
+ print(str6)		// "str6\n"
+</code></pre>
+
+    <p>注意到上面打印出来的是拆包后的内容，而不是”Optinal(“str6”)\n”。</p>
+
+    <p>隐式拆包的Optinal值（Implicitly Unwrapped Optionals）的调用方式可以有如下三种，当然通常我们使用的是第一种：</p>
+
+    <pre><code> str6.capitalizedString		// "Str6"
+ str6?.capitalizedString		// "Str6"
+ str6!.capitalizedString		// "Str6"
+</code></pre>
+
+    <p>前面提到!只不过是一种语法糖，真正对应的其实是ImplicitlyUnwrappedOptional这种枚举类型，如下两种方式声明得到的结果是一样的：</p>
+
+    <pre><code> // var str7 : String!
+ var str7 : ImplicitlyUnwrappedOptional&lt;String&gt;
+</code></pre>
+  </li>
+  <li>
+    <p>使用时加上!号表示强制拆包，由于对隐式拆包的Optinal值强制拆包是没有意义的（虽然编译上没有报错），因此这里的强制拆包通常用于使用?声明的Optinal值。</p>
+
+    <pre><code> var str8 : String?				
+ str8 = "Swift"
+	
+ if (str8 != nil) {
+     // if判断从逻辑上保证str8不为空，可以强制拆包
+     str8!.appendContentsOf(" is fun")
+ }
+</code></pre>
+  </li>
+</ol>
+
+<p>值得注意的是：对于nil强制拆包会导致Crash。因此<strong>!这个东西是把双刃剑</strong>，有过大型程序经验的同学都了解：今天的逻辑保证x不为空，不代表明天的逻辑还能保证x不为空。</p>
+
+<p>?和!还有另一种用法就是用于类型转换，看下下面的例子。</p>
+
+<pre><code>	var anybody : AnyObject
+	anybody = "still a String"
+</code></pre>
+
+<p>如果要把AnyObject赋值给一个Optinal.Some<string>，则需要as后面跟上?来进行类型转换，?的作用是判断anybody是否为一个String，如果是则赋值给justTry，如果不是则justTry值为nil。</string></p>
+
+<pre><code>	var justTry : String?
+	justTry = anybody as? String	// "still a String"
+</code></pre>
+
+<p>如果要把AnyObject赋值给一个普通String，则需要as后面跟上!来强制类型转换，!的作用是强制转换并赋值给secondTry。</p>
+
+<pre><code>	var secondTry : String
+	secondTry = anybody as! String		// "still a String"
+</code></pre>
+
+<p>如果我们这里重新给anybody赋一个Int值，那么发现!转换编译器会报错，而?转换的结果为nil</p>
+
+<pre><code>	anybody = 1
+	// error: Execution was interrupted, reason: singal SIGABRT.
+	// let anotherTry = anybody as! String
+	
+	let tryAgain = anybody as? String	// nil
+	
+	// 不带?和!的转换同样会报错
+	//let failedTry = anybody as String
+</code></pre>
+
+<p>小贴士：</p>
+
+<ol>
+  <li>在思考Optinal值的nil比较时突然想到既然普通值不能与nil比较，那么普通值如何判断是否为nil呢？再细一想是自己犯二了，普通值在声明的时候compile-time就保证了不会为空，自然也不需要判断；</li>
+  <li>上面已经提到在Swift中，nil其实是一个枚举值Optional.None，还有一个有意思的值：Void，它其实是()，一个空元组；</li>
+  <li>强制拆包（!）不要轻易使用，倒也还没想到必须使用的场景，不知道后续会不会出现关于这一点的开发规范；</li>
+  <li>可以考虑Optinal值在定义的时候增加一个特殊的命名规范和普通值加以区分，虽然现在编译器给的错误提示挺全面，但是代码的可阅读性也需要考虑。</li>
+</ol>
+
+<p>什么时候需要Optional值:</p>
+
+<ol>
+  <li>属性的初始化操作不在声明时和init中进行时；</li>
+  <li>对已定义的Optinal变量使用时；</li>
+  <li>对变量做类型转换时；</li>
+  <li>当然，任何想用的时候只要得到编译器的同意都可以用。</li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mac开发日记]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20151010/mackai-fa-ri-ji/"/>
+    <updated>2015-10-10T00:38:39+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20151010/mackai-fa-ri-ji</id>
+    <content type="html"><![CDATA[<h3 id="nscollectionview">NSCollectionView</h3>
+<ol>
+  <li>通过 collectonViewItem.representedObject 拿到当前item正在展示的model，在其中可以存储id，index等信息</li>
+</ol>
+
+<h3 id="nsarraycontroller">NSArrayController</h3>
+<ol>
+  <li>
+    <p>reload内容</p>
+
+    <pre><code> .rearrangeObjects()
+</code></pre>
+  </li>
+  <li>
+    <p><a href="http://www.jeepshoe.org/629425401.htm">NSCollectionView + NSArrayController 实战 - 教程网</a></p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Swift?!]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150923/swift/"/>
+    <updated>2015-09-23T16:15:47+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150923/swift</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[离散学习效率的提高]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150923/chi-san-xue-xi-xiao-lu-de-ti-gao/"/>
+    <updated>2015-09-23T16:15:30+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150923/chi-san-xue-xi-xiao-lu-de-ti-gao</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p>随着年龄的增长，社交圈子的复杂化，在日常的工作生活中已经很难像学生时代那样，总是有大块的时间用来专注的做某一件事情，或者学某些东西，因此，<strong>离散时间里的学习效率就值得去重视起来</strong>，并且，离散学习效率的提高与集中时间学习效率提高的方法途径大不相同。</p>
+</blockquote>
+
+<h1 id="section">提前做准备</h1>
+
+<ol>
+  <li>提前给短暂的空闲时间安排点事情，比如：背单词</li>
+  <li>提前心绪不宁的时候安排点的时候安排点事情，比如：背单词</li>
+  <li>保持良好的状态，参见：“如何治疗拖延症”</li>
+  <li>如果发现大脑非常活跃在你不希望的领域上，尝试做些专注且消耗大脑养分的事情，比如：唱首歌</li>
+</ol>
+
+<h1 id="section-1">每天都要放平心态</h1>
+
+<h1 id="section-2">每天都要记住持续学习</h1>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[有准备的人永远有机会]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150923/you-zhun-bei-de-ren-yong-yuan-you-ji-hui/"/>
+    <updated>2015-09-23T16:15:08+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150923/you-zhun-bei-de-ren-yong-yuan-you-ji-hui</id>
+    <content type="html"><![CDATA[<blockquote>
+  <p>写给参加校招的应届毕业生。</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>不要迟到！！！</p>
+  </li>
+  <li>
+    <p>编程题没有思路也要写代码。因为面试要求里面有一条是考察代码编写的能力，代码工整也是考察点之一，另外即使没有思路，异常情况考虑进来总是可以的吧。</p>
+  </li>
+  <li>
+    <p>语言简洁不啰嗦</p>
+  </li>
+  <li>
+    <p>及时提问</p>
+  </li>
+  <li>
+    <p>有准备的人永远有机会</p>
+  </li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[拖延症的治疗方法【from Quora】]]></title>
@@ -539,6 +872,12 @@ Exception Codes: 0x0000000000000000, 0x0000000000000000
       <li>应用占用内存过高（通常UIWebView会出现），推到后台直接被杀死</li>
     </ul>
   </li>
+  <li>(null): unrecognized selector sent to instance 0xblah
+    <ul>
+      <li>一种特殊的找不到selector的crash</li>
+      <li>http://grantech.blogspot.com/2010/12/error-null-unrecognized-selector-sent.html</li>
+    </ul>
+  </li>
 </ul>
 
 <h1 id="llvm">LLVM的使用</h1>
@@ -804,7 +1143,287 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
     <link href="http://blog.oneboxapp.com/blog/20150628/swiftkai-fa-ri-ji/"/>
     <updated>2015-06-28T17:48:09+08:00</updated>
     <id>http://blog.oneboxapp.com/blog/20150628/swiftkai-fa-ri-ji</id>
-    <content type="html"><![CDATA[<h3 id="section">博客站</h3>
+    <content type="html"><![CDATA[<h3 id="enumeration">枚举（Enumeration）</h3>
+<blockquote>
+  <p><a href="http://wiki.jikexueyuan.com/project/swift/chapter2/08_Enumerations.html">枚举（Enumerations） - The Swift Programming Language 中文版 - 极客学院Wiki</a></p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>枚举的定义</p>
+
+    <pre><code> enum CompassPoint {
+     case North
+     case South
+     case East
+     case West
+ }
+</code></pre>
+  </li>
+  <li>
+    <p>枚举的使用</p>
+    <ul>
+      <li>
+        <p>通过已定义枚举变量可以找到其枚举类型，因此在之后的赋值或控制流时可以忽略其枚举类型，直接以 . 开头</p>
+
+        <pre><code>  var direction = CompassPoint.North
+  switch direction {
+  case .North:
+  case .South:
+  ...
+  }
+</code></pre>
+      </li>
+      <li>
+        <p>如果控制流没有枚举出所有枚举值，则需要default语句，否则会报错</p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<!--more-->
+<ol>
+  <li>相关值
+    <ul>
+      <li>
+        <p>即可以定义如下类型的枚举：</p>
+
+        <pre><code>  enum Barcode {
+      case UPCA(Int, Int, Int, Int )
+      case QRCode(String)
+  }
+</code></pre>
+      </li>
+      <li>
+        <p>赋值和使用方式如下：</p>
+
+        <pre><code>  var product = Barcode.UPCA(8, 1111, 2222, 3)
+  product = Barcode.QRCode("ABCDEFG")
+
+  // 控制流
+  switch product {
+  case .UPCA(let numberSystem, let manufacturer, let product, let check):
+  case let .QRCode(productCode):
+  }
+</code></pre>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>原始值的隐式赋值</p>
+
+    <ul>
+      <li>
+        <p>首先定义枚举时可以给枚举值指定原始值</p>
+
+        <pre><code>  enum ASCIIControlCharacter: Character {
+      case Tab = "\t"
+      case LineFeed = "\n"
+      case CarriageReturn = "\r"
+  }
+</code></pre>
+      </li>
+      <li>
+        <p>在使用原始值为整数或者字符串类型的枚举时，Swift会自动赋值。</p>
+        <ul>
+          <li>
+            <p>Int类型隐式赋值为依次递增1，如果第一个值没有赋值，将会被自动置位0</p>
+
+            <pre><code>  enum Planet: Int {
+      // Mercury: 0, Venus: 1 ...
+      case Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune
+  }
+</code></pre>
+          </li>
+          <li>
+            <p>String类型隐式赋值则为该成员的名称</p>
+
+            <pre><code>  enum CompassPoint: String {
+      // North: "North", South: "South" ...
+      case North, South, East, West
+  }
+</code></pre>
+          </li>
+          <li>
+            <p>比如Alamofire里面有一段代码即为隐式赋值：</p>
+
+            <pre><code>  public enum Method: String {
+      case OPTIONS, GET, HEAD, POST, PUT, PATCH, DELETE, TRACE, CONNECT
+  }
+</code></pre>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="section">函数</h3>
+<ol>
+  <li>
+    <p>函数定义</p>
+
+    <pre><code> func sayHello(personName: String) -&gt; String {
+     let greeting = "Hello, " +  personName + "!"
+     return greeting
+ }
+</code></pre>
+  </li>
+  <li>
+    <p>函数名称</p>
+
+    <pre><code> sayHello(_:)
+</code></pre>
+  </li>
+  <li>多重输入参数&amp;多参量参数
+    <ul>
+      <li>
+        <p>多重输入参数，参数类型相同，调用时不需要外部参数名</p>
+
+        <pre><code>  func halfOpenRangeLength(start: Int, end: Int) -&gt; Int {
+      return end - start
+  }
+  print(halfOpenRangeLength(1, 10))
+  // prints "9"
+</code></pre>
+      </li>
+      <li>
+        <p>多参量参数</p>
+
+        <pre><code>  func sayHello(personName: String, alreadyGreeted: String) -&gt; String {
+      if alreadyGreeted {
+          return "say hello again!"
+      } else {
+          return sayHello(personName)
+      }
+  }
+  print(sayHello("Tim", alreadyGreeted: true))
+  // prints "Hello again, Tim!"
+</code></pre>
+      </li>
+      <li>
+        <p>本地参数名称&amp;外部参数名称</p>
+        <ul>
+          <li>函数参数可以有一个本地参数名（用于函数内部实现）和一个外部参数名（用于函数调用）</li>
+          <li>
+            <p>一般来说，第一个参数忽略外部参数名，第二个参数起，外部参数名与其本地参数名相同</p>
+
+            <pre><code>  func someFunction(firstParameterName: Int, secondParameterName: String) {
+      ...
+  }
+  someFunction(1, secondParameterName: "two")
+</code></pre>
+          </li>
+          <li>
+            <p>如果要区分本地参数名和外部参数名，则外部参数名在前，而这以空格分隔。</p>
+
+            <pre><code>  func sayHelloToBoth(to person: String, and anotherPerson: String) {
+      ...
+  }
+  sayHelloToBoth(to: "Tom", and: "Jerry")
+</code></pre>
+          </li>
+          <li>如果指定了外部参数名，则调用时必须使用外部参数名</li>
+          <li>
+            <p><strong>忽略外部参数名</strong>，如果不想为第二个及后续的参数设置外部参数名，可用一个下划线(_)代替</p>
+
+            <pre><code>  func sayHelloToBoth(person: String, _ anotherPerson: String) {
+      ...
+  }
+  sayHelloToBoth("Tom", "Jerry")
+</code></pre>
+          </li>
+          <li>
+            <p>默认参数值，如果给一个参数设置了默认参数值，则调用时可忽略这个参数，将带有默认值的参数放在函数参数列表的最后。这样可以保证在函数调用时，非默认参数的顺序是一致的，同时使得相同的函数在不同情况下调用时显得更为清晰。</p>
+
+            <pre><code>  func someFunction(parameterWithDefault: Int = 12) {
+      // function body goes here
+      // if no arguments are passed to the function call,
+      // value of parameterWithDefault is 12
+  }
+  someFunction(6) // parameterWithDefault is 6
+  someFunction() // parameterWithDefault is 12
+</code></pre>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>返回值
+    <ul>
+      <li>无返回值函数
+        <ul>
+          <li>sayGoodbye(_:)</li>
+          <li>可以省略返回值</li>
+          <li>严格上来说，虽然没有返回值被定义，sayGoodbye(_:) 函数依然返回了值。没有定义返回类型的函数会返回特殊的值，叫 Void。它其实是一个空的元组（tuple），没有任何元素，可以写成()。</li>
+        </ul>
+      </li>
+      <li>多返回值
+        <ul>
+          <li>
+            <p>返回一个元组（注意：这个函数还体现了另一个语法，可变参数）</p>
+
+            <pre><code>  func minMax(numbers: Int...) -&gt; (min: Int, max: Int) {
+      ...
+  }
+
+  if let bounds = minMax(3, 4, 2, 6) {
+      print("min is \(bounds.min), and max is \(bounds.max)")
+  }
+</code></pre>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>举个Alamofire中的函数例子说明：</p>
+
+    <pre><code> public func request(
+     method: Method,
+     _ URLString: URLStringConvertible,
+     parameters: [String: AnyObject]? = nil,
+     encoding: ParameterEncoding = .URL,
+     headers: [String: String]? = nil)
+     -&gt; Request
+ {
+     return Manager.sharedInstance.request(
+         method,
+         URLString,
+         parameters: parameters,
+         encoding: encoding,
+         headers: headers
+     )
+ }
+</code></pre>
+
+    <ul>
+      <li>
+        <p>调用时可以是这样：</p>
+
+        <p>Alamofire.request(.GET, “http://private-f4f5c-onebox1.apiary-mock.com/questions/0”)</p>
+      </li>
+      <li>第一个参数method，默认忽略外部参数名</li>
+      <li>第二个参数URLString，在函数声明时指定了忽略外部参数名</li>
+      <li>第三、四、五个参数都指定了默认值，所以调用时可以直接不传外部参数</li>
+      <li>另外，类似 [String: AnyObject]? 的定义标示参数类型是一个 Key为String类型，值是任意值的字典 或者 nil</li>
+    </ul>
+  </li>
+  <li>notifications
+    <ul>
+      <li><a href="http://natashatherobot.com/ios8-where-to-remove-observer-for-nsnotification-in-swift/">iOS8: Where To Remove Observer for NSNotification in Swift</a></li>
+    </ul>
+  </li>
+  <li>注意 [AnyObject] &amp; Array &amp; NSArray 间的区别</li>
+  <li>selector
+    <ul>
+      <li>单纯用string来标示</li>
+      <li><a href="http://stackoverflow.com/questions/24007650/selector-in-swift">@selector() in Swift? - Stack Overflow</a></li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="section-1">博客站</h3>
 <ol>
   <li><a href="http://swifter.tips/">Swifter - Swift 必备 tips</a></li>
   <li><a href="http://natashatherobot.com/">Natasha The Robot</a></li>
@@ -812,7 +1431,7 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
   <li><a href="https://developer.apple.com/swift/blog/">Swift Blog - Apple Developer</a></li>
 </ol>
 
-<h3 id="section-1">开发技巧</h3>
+<h3 id="section-2">开发技巧</h3>
 <ol>
   <li>Prefer ‘let’</li>
   <li>string interpolation</li>
@@ -832,7 +1451,7 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
   <li>iOS7及以上支持；</li>
 </ol>
 
-<h3 id="section-2">问题记录</h3>
+<h3 id="section-3">问题记录</h3>
 <ol>
   <li>let 如何提高编译效率？</li>
   <li>如何做到 Inferred Typing</li>
@@ -1223,304 +1842,6 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
   </li>
   <li>dispatch queue维护自己的autoreleasepool</li>
 </ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[UIImageView和UIButton拉伸效果的实现]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/"/>
-    <updated>2015-05-27T11:49:22+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian</id>
-    <content type="html"><![CDATA[<p>UIImageView中Image拉伸效果的实现：</p>
-
-<pre><code>UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
-[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
-CGRect frame = strechTest.frame;
-frame.size.width += 100;
-strechTest.frame = frame;
-</code></pre>
-
-<!--more-->
-
-<p>但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。</p>
-
-<p>因此UIButton实现背景拉伸，即图片两端不拉伸中间拉伸的办法有如下两种：</p>
-
-<p>第一种方法很简单而且使用性更广。做法就是直接拉伸想要setBackgroundImage的image，代码如下：</p>
-
-<pre><code>UIImage*image =[UIImage imageNamed:@"image.png"];
-
-image = [image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
-
-image =[image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
-</code></pre>
-
-<p>设置了左端帽之后，rightCapWidth = image.size.width - (image.leftCapWidth + 1); 也就是说图片中间的一像素用来拉伸。垂直方向同上。</p>
-
-<p>设置之后无论把image放到什么控件中都可以自动拉伸了。</p>
-
-<p>第二种方法是在UIButton中加入一个UIImageView，拉伸imageView，然后将button的背景设为clearColor等等。把imageView放入button中，并且sendToBack，得到效果。</p>
-
-<p>代码如下：</p>
-
-<pre><code>//刚才imageView拉伸的代码
-
-UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
-[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
-CGRect frame = strechTest.frame;
-frame.size.width += 100;
-strechTest.frame = frame;
-
-//把imageView放入button中，并设置为back
-
-
-[temp_button addSubview:backgroundImageView];
-[temp_button sendSubviewToBack:backgroundImageView];
-[temp_button setBackgroundColor:[UIColor clearColor]];
-</code></pre>
-
-<p>button不能设置背景图片，这样就可以实现拉伸的图片作为背景并且背景上可以放置title。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[NSURLConnection的同步与异步]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20140627/nsurlconnectionde-tong-bu-yu-yi-bu/"/>
-    <updated>2014-06-27T12:15:00+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20140627/nsurlconnectionde-tong-bu-yu-yi-bu</id>
-    <content type="html"><![CDATA[<p>从这篇文章中收益良多：http://www.cocoabyss.com/foundation/nsurlconnection-synchronous-asynchronous/</p>
-
-<p>写下体会：（时间所限，比较杂乱，见谅！）</p>
-
-<!--more-->
-<hr />
-<p>NSURLConnection的同步发送就不用说了，很简单，上面链接也说了，</p>
-
-<p>异步在iOS5之前都是作为一个非正式的协议出现的，默认initWithRequestxxx方法发送的就是异步请求，然后通过delegate中的方法可以操作，之前我一直错误在发送异步请求的时候也开一个新的线程，看了文章之后才想明白这真的是没有必要，在其他线程跑conn的原因就是为了避免阻塞主UI线程，而现在cocoa使用了delegate帮助你避免了这个问题，所以根本不需要再开一个新的线程去请求，直接请求然后在delegate中handleData就可以了。</p>
-
-<p>而回到对同步conn的使用，同步conn使用我认为是一定要在新线程中，这样避免了阻塞主线程的缺点（如文中所说），但是相比与aSync conn，sync还有其他缺点，如不能在请求同时操作数据，不能cancel等等，所以还是aSync要好用。</p>
-
-<hr />
-
-<p>iOS4之前如果想在新的线程使用异步发送的conn，最好的方法应该就是文中教的trick，而</p>
-
-<p>iOS5之后添加了 NSURLConnectionDataDelegate 把之前非正式协议的一部分拿了过来变成了正是协议（formal protocol），里面包括了数据处理等代理方法，还增加了在线程中发送异步请求的方法：</p>
-
-<pre><code>+ (void)sendAsynchronousRequest:(NSURLRequest *)request
-
-                          queue:(NSOperationQueue*) queue
-
-              completionHandler:(void (^)(NSURLResponse*, NSData*, NSError*)) handler NS_AVAILABLE(10_7, 5_0);
-</code></pre>
-
-<p>这样我认为就不需要像上文作者那样trick了吧？</p>
-
-<p>***)
-另外还加入了NSURLConnectionDownloadDelegate，主要作用就是讲数据直接存入文件中，缓存的时候估计有用吧？</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[关于git分支的使用]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20140627/guan-yu-gitfen-zhi-de-shi-yong/"/>
-    <updated>2014-06-27T11:48:12+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20140627/guan-yu-gitfen-zhi-de-shi-yong</id>
-    <content type="html"><![CDATA[<p>学习记录，不正确的地方望指正！</p>
-
-<!--more-->
-<p>git branch 显示的是本地分支</p>
-
-<p>git pull origin aRemoteBranch</p>
-
-<p>git push origin aRemoteBranch</p>
-
-<p>git commit 是提交到当前的本地分支</p>
-
-<p>git remote显示远程服务器</p>
-
-<p>git remote show aRemote显示指定的远程服务器（origin）上的远程分支</p>
-
-<p>git checkout –track -b aLocalBranch aRemote/aRemoteBranch 创建一个新本地分支追踪远程分支（也可以直接 git checkout aRemoteBranch）</p>
-
-<p>远程分支不可见，只能通过新建本地分支来追踪远程分支，本地分支和远程分支是两个不同的东西，也可以不同名。</p>
-
-<p>checkout的时候会先检查本地分支，如果有则checkout到这个本地分支（不论它track哪个远程分支），如果没有则查看远程分支，如果有同名远程分支则新建一个本地同名分支并追踪（track）远程分支</p>
-
-<p>git branch -d aLocalBranch  删除本地分支</p>
-
-<p>git push ARemote :aRemoteBranch 删除远程分支</p>
-
-<p>-d -&gt; -D 强制删除</p>
-
-<p>vim .git/config</p>
-
-<p>可以查看当前的remote和已经track了remote分支的本地分支</p>
-
-<p>可以建多个本地分支track同一个远程分支，删除本地分支对远程分支没有影响。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[APNs实现小记]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20140627/apnsshi-xian-xiao-ji/"/>
-    <updated>2014-06-27T11:07:51+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20140627/apnsshi-xian-xiao-ji</id>
-    <content type="html"><![CDATA[<blockquote>
-  <p>转自己以前写的博客，很早时候的学习笔记了，不过下面几个连接貌似都失效了。。。囧</p>
-</blockquote>
-
-<p>推荐如下链接，前两个介绍APNs的设置流程，已经很详尽，虽然很详尽但是个人感觉有些晦涩难懂，把简单的流程搞的复杂。我下面的内容是我设置APNs的过：</p>
-
-<!--more-->
-<p>[iPhone消息推送服务实现 - vber的专栏 - 博客频道 - CSDN.NET]</p>
-
-<p>[apple push notification service apple与Python结合推送 - iOS开发讨论区 - Tiny4Cocoa]</p>
-
-<table>
-  <tbody>
-    <tr>
-      <td>[编写push notification之获取device token</td>
-      <td>Marshal’s Blog]</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><a href="http://slj.me/2010/02/iphone-push-notification/">偷窥iPhone Push Notification的幕后 - SLJ.me - 申力军</a></p>
-
-<table>
-  <tbody>
-    <tr>
-      <td>[iPhone的Push(推送通知)功能原理浅析 - iPhone/iPad 进阶讨论区 - 悦Phone论坛 iPhone</td>
-      <td>iPad开发者、苹果开发者]</td>
-    </tr>
-  </tbody>
-</table>
-
-<p> 第一次接触APNs，鼓捣了一下午终于有了点眉目。</p>
-
-<p> 链接1,2的流程介绍都是从最基础的入门级介绍，其实在你开发一款iOS app时，你需要做的是申请开发者帐号，设置Apple ID，生成provisioning file导入到Xcode，而APNs只是在设置Apple ID的时候多选择了一个选项，即Apple ID 的configure页面的 Enable for Apple Push Notification service选项，勾选它，然后根据你的需要生成dev或者release版本的SSL证书（证书生成的过程apple已经给了详尽的提示）。这里要注意的是，勾选了enable for apns之后，其实你的provisioning file已经改变，所以要重新下载新的导入Xcode。</p>
-
-<hr />
-<p>此时，你的app已经支持apns了。</p>
-
-<p> 之后需要做的是两个方面：</p>
-
-<ol>
-  <li>
-    <p>客户端 在appDelegate中编写代码，为了阅读方便就把上面链接中的代码重新贴一次：</p>
-
-    <pre><code> - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {  
-   [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeAlert |    UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound)];  
- }  
- - (void)application:(UIApplication *)app didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {  
-   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"Error in registration. Error: %@", err] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
- }  
- - (void)application:(UIApplication *)app didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {  
-   NSLog(@"devToken=%@",deviceToken);  
-   [self alertNotice:@"" withMSG:[NSString stringWithFormat:@"devToken=%@",deviceToken] cancleButtonTitle:@"Ok" otherButtonTitle:@""];  
- } 
-</code></pre>
-  </li>
-</ol>
-
-<p> 其实就是在appDidFinishLaunch的时候注册（register）apns，然后通过didRegisterForRemoteNotificationsWithDeviceToken得到DeviceToken。</p>
-
-<p>接受服务器消息并改变客户端本地状态（如在app图表显示带数字的小红圈）的代码如下：</p>
-
-<pre><code>	－(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-	
-	    for (id key in userInfo) {
-	        NSLog(@"key: %@, value: %@", key, [userInfo objectForKey:key]);
-	    }    
-	}
-</code></pre>
-
-<p> 到此为止，当你在真机上运行你的app时就会出现：是否允许app显示push notification的提示框。</p>
-
-<ol>
-  <li>服务器端 服务器端可以用PHP，Python等实现，网上也有一些现成的库如开源库APNSWrapper。现在你会发现我理解的思路跟链接1,2的介绍流程稍有不同，同时你会发现我还没有使用Enable for Apple Push Notification service时生成的证书文件，现在回到Apple ID configure页面下载生成的 Development (or Production) Push SSL Certificate 文件，关于这个文件要多说几句：</li>
-</ol>
-
-<blockquote>
-  <p>这个文件的作用是让apple的APNs服务器确认服务器端具有push notification的权限。将这个证书作一定的处理（＊至于是什么处理为了不影响文章的连贯性会在下面介绍），生成一个ck.pem文件（这个名字可以自定义）。</p>
-</blockquote>
-
-<p> 然后就要涉及到APNs的工作机制，我的总结如下：当一个device（苹果设备）启用apns功能（就是通知功能）的时候会和apple的APNs服务器建立TLS连接，APNs服务器根据device的UDID和加密密钥新建一个DeviceToken（它的作用是让服务器端指定device，唯一）返回给device，然后device会把device token给你的app客户端，这时会调用刚才写的didRegisterForRemoteNotificationsWithDeviceToken方法，你可以在这个方法中将device token返回给服务器端。此后，如果服务器端push了一个notification给客户端，需要将这个device token和之前处理的ck.pem文件同时发送给APNs服务器，APNs服务器会验证你的ck.pem文件然后根据device token指定的设备推送消息给客户端）。当客户端接受到push的通知时调用didReceiveRemoteNotification方法，你可以在这个方法中放入你需要的操作。</p>
-
-<blockquote>
-  <p>现在再回到Apple ID configure页面下载生成的 Development (or Production) Push SSL Certificate 文件，对它的处理链接1,2都有介绍，就是：</p>
-</blockquote>
-
-<ol>
-  <li>
-    <p>选择“我的证书”, 选定推送服务证书(Apple Development Push Services*),导出到桌面,保存为Certificates.p12。</p>
-  </li>
-  <li>
-    <p>在终端中运行如下命令:</p>
-
- 	openssl pkcs12 -clcerts -nokeys -out cert.pem -in Certificates.p12<br />
- 	openssl pkcs12 -nocerts -out key.pem -in Certificates.p12<br />
- 	openssl rsa -in key.pem -out key.unencrypted.pem<br />
-    <pre><code> 	cat cert.pem key.unencrypted.pem &gt; ck.pem  
-
- ck.pem文件则是PHP推送消息时所使用的证书文件。
-</code></pre>
-  </li>
-</ol>
-
-<p> 你剩下的任务就是编写服务器端的代码，push notification，这部分只要记住发送device token和证书文件就可以了。</p>
-
-<p>（以上就是我理解学习APNs的过程，许多理解都不深入，所以描述也不准确，包涵～）</p>
-
-<h2 id="section">更新：</h2>
-
-<p><strong>开发中遇到的问题汇总</strong>：</p>
-
-<ol>
-  <li>
-    <p>正常的iPhone刷系统之后，是没有设备证书和密钥的。这就是为什么iPhone会需要连接到 iTunes上进行激活——激活过程中，Apple会分配给每台iPhone独一无二的设备证书(device certificate)和密钥(key)。(如果没有意识到这个会一直收到 “未找到应用程序的”aps-environment” 的权利字符串)</p>
-  </li>
-  <li>
-    <p>如果生成appleID的时候没有enable aps，那么enable之后一定要删掉原来的dev和rc证书重新生成，这样才能保证开启新功能，否则仅仅是刷新这张证书仍然会没有aps，提示（ “未找到应用程序的”aps-environment” 的权利字符串）</p>
-  </li>
-  <li>
-    <p>APNs证书如果是系统证书那么最好拷贝到登陆证书中，这样可以直接导出成p12</p>
-  </li>
-</ol>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Java统计程序运行时间（转）]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20130627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)/"/>
-    <updated>2013-06-27T12:05:57+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20130627/javatong-ji-cheng-xu-yun-xing-shi-jian-(zhuan-)</id>
-    <content type="html"><![CDATA[<p>代码如下：
-第一种是以毫秒为单位计算的。</p>
-
-<pre><code>long startTime = System.currentTimeMillis();    //获取开始时间
-</code></pre>
-
-<!--more-->
-<pre><code>doSomething();    //测试的代码段
-
-long endTime = System.currentTimeMillis();    //获取结束时间
-
-System.out.println("程序运行时间：" + (endTime - startTime) + "ms");    //输出程序运行时间
-</code></pre>
-
-<p>第二种是以纳秒为单位计算的。</p>
-
-<pre><code>long startTime=System.nanoTime();   //获取开始时间  
-
-doSomeThing(); //测试的代码段  
-
-long endTime=System.nanoTime(); //获取结束时间  
-
-System.out.println("程序运行时间： "+(endTime-startTime)+"ns"); 
-</code></pre>
 
 ]]></content>
   </entry>

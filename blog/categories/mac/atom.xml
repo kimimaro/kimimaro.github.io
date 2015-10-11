@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[分类：mac | 402]]></title>
+  <link href="http://blog.oneboxapp.com/blog/categories/mac/atom.xml" rel="self"/>
+  <link href="http://blog.oneboxapp.com/"/>
+  <updated>2015-10-11T23:55:52+08:00</updated>
+  <id>http://blog.oneboxapp.com/</id>
+  <author>
+    <name><![CDATA[Kimimaro]]></name>
+    <email><![CDATA[kimirius@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Mac开发日记]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20151010/mackai-fa-ri-ji/"/>
+    <updated>2015-10-10T00:38:39+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20151010/mackai-fa-ri-ji</id>
+    <content type="html"><![CDATA[<h3 id="nscollectionview">NSCollectionView</h3>
+<ol>
+  <li>通过 collectonViewItem.representedObject 拿到当前item正在展示的model，在其中可以存储id，index等信息</li>
+</ol>
+
+<h3 id="nsarraycontroller">NSArrayController</h3>
+<ol>
+  <li>
+    <p>reload内容</p>
+
+    <pre><code> .rearrangeObjects()
+</code></pre>
+  </li>
+  <li>
+    <p><a href="http://www.jeepshoe.org/629425401.htm">NSCollectionView + NSArrayController 实战 - 教程网</a></p>
+  </li>
+</ol>
+]]></content>
+  </entry>
+  
+</feed>
