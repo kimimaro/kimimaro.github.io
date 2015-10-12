@@ -252,6 +252,10 @@ SIGILL|尝试执行一个非法的、未知的、没有权限的指令
 	- [按Home键切换到后台后会触发libGPUSupportMercury.dylib: gpus_ReturnNotPermittedKillClient导致crash - Clin - 博客园](http://www.cnblogs.com/Clin/p/3405173.html)
 	- 应用占用内存过高（通常UIWebView会出现），推到后台直接被杀死
 
+* (null): unrecognized selector sent to instance 0xblah
+	- 一种特殊的找不到selector的crash
+	- http://grantech.blogspot.com/2010/12/error-null-unrecognized-selector-sent.html
+
 #LLVM的使用
 >顺带记录一下调试过程中查到的一些LLVM实用技巧，后续有机会也都总结出来。
 9. po $exa
