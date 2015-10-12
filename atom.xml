@@ -4,7 +4,7 @@
   <title><![CDATA[402]]></title>
   <link href="http://blog.oneboxapp.com/atom.xml" rel="self"/>
   <link href="http://blog.oneboxapp.com/"/>
-  <updated>2015-10-12T00:21:27+08:00</updated>
+  <updated>2015-10-12T17:05:50+08:00</updated>
   <id>http://blog.oneboxapp.com/</id>
   <author>
     <name><![CDATA[Kimimaro]]></name>
@@ -296,15 +296,6 @@ let tryAgain = anybody as? String	// nil
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Swift?!]]></title>
-    <link href="http://blog.oneboxapp.com/blog/20150923/swift/"/>
-    <updated>2015-09-23T16:15:47+08:00</updated>
-    <id>http://blog.oneboxapp.com/blog/20150923/swift</id>
-    <content type="html"><![CDATA[
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[离散学习效率的提高]]></title>
     <link href="http://blog.oneboxapp.com/blog/20150923/chi-san-xue-xi-xiao-lu-de-ti-gao/"/>
     <updated>2015-09-23T16:15:30+08:00</updated>
@@ -314,7 +305,7 @@ let tryAgain = anybody as? String	// nil
 </blockquote>
 
 <h1 id="section">提前做准备</h1>
-
+<!--more-->
 <ol>
   <li>提前给短暂的空闲时间安排点事情，比如：背单词</li>
   <li>提前心绪不宁的时候安排点的时候安排点事情，比如：背单词</li>
@@ -370,9 +361,9 @@ let tryAgain = anybody as? String	// nil
 
 <p><strong>我将要回答你的问题，但首先允许我花费两分钟时间通过一条卡通蛇来阐述一下人类文明这个事儿。</strong></p>
 
-<p> 人们总是认为自己非常聪明。当然那些伟大的、极聪明的大脑让我们能切开原子、登上月球，然而，这个同样也是愚蠢的大脑让我们直到天黑也没法开始一项工作。</p>
-
-<p> 我们从原始人类进化而来，但是我们从未完全从他们的遗赠中蜕变出来。你认识大脑中那个聪明的、理性的，用于保持人类头脑清醒的部分吧？让我们把他叫做<strong>Albert</strong>，他住在我们的大脑中，而他的邻居，则是一个容易冲动的、幼小的爬行动物，一个叫做<strong>Rex</strong>的家伙。</p>
+<p> 人们总是认为自己非常聪明。当然那些伟大的、极聪明的大脑让我们能切开原子、登上月球，然而，这个同样也是愚蠢的大脑让我们直到天黑也没法开始一项工作。
+<!--more-->
+ 我们从原始人类进化而来，但是我们从未完全从他们的遗赠中蜕变出来。你认识大脑中那个聪明的、理性的，用于保持人类头脑清醒的部分吧？让我们把他叫做<strong>Albert</strong>，他住在我们的大脑中，而他的邻居，则是一个容易冲动的、幼小的爬行动物，一个叫做<strong>Rex</strong>的家伙。</p>
 
 <p><img src="http://7xl7vj.com1.z0.glb.clouddn.com/main-qimg-231e3cf0e3602dbec6620883d2679020.png?imageView/2/w/500/q/90" alt="" /></p>
 
@@ -1854,6 +1845,63 @@ Oliver是Quaro上的知名答主，也是Silktide的创始人，
   <li>dispatch queue维护自己的autoreleasepool</li>
 </ol>
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[UIImageView和UIButton拉伸效果的实现]]></title>
+    <link href="http://blog.oneboxapp.com/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian/"/>
+    <updated>2015-05-27T11:49:22+08:00</updated>
+    <id>http://blog.oneboxapp.com/blog/20150527/uiimageviewhe-uibuttonla-shen-xiao-guo-de-shi-xian</id>
+    <content type="html"><![CDATA[<p>UIImageView中Image拉伸效果的实现：</p>
+
+<pre><code>UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
+[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
+CGRect frame = strechTest.frame;
+frame.size.width += 100;
+strechTest.frame = frame;
+</code></pre>
+
+<!--more-->
+
+<p>但是虽然UIButton和UIImageView都是继承于UIView，但是二者实现方式不同，UIImageView没有subView，它 的content就是image，UIBotton不同，the way it works is a private implementation detail。</p>
+
+<p>因此UIButton实现背景拉伸，即图片两端不拉伸中间拉伸的办法有如下两种：</p>
+
+<p>第一种方法很简单而且使用性更广。做法就是直接拉伸想要setBackgroundImage的image，代码如下：</p>
+
+<pre><code>UIImage*image =[UIImage imageNamed:@"image.png"];
+
+image = [image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+
+image =[image stretchableImageWithLeftCapWidth:floorf(image.size.width/2) topCapHeight:floorf(image.size.height/2)];
+</code></pre>
+
+<p>设置了左端帽之后，rightCapWidth = image.size.width - (image.leftCapWidth + 1); 也就是说图片中间的一像素用来拉伸。垂直方向同上。</p>
+
+<p>设置之后无论把image放到什么控件中都可以自动拉伸了。</p>
+
+<p>第二种方法是在UIButton中加入一个UIImageView，拉伸imageView，然后将button的背景设为clearColor等等。把imageView放入button中，并且sendToBack，得到效果。</p>
+
+<p>代码如下：</p>
+
+<pre><code>//刚才imageView拉伸的代码
+
+UIImageView *strechTest = [[UIImageyiView alloc] initWithImage:[UIImage imageNamed:@"test.png"]];
+[strechTest setContentStretch:CGRectMake(0.5f, 0.5f, 0.f, 0.f)];
+CGRect frame = strechTest.frame;
+frame.size.width += 100;
+strechTest.frame = frame;
+
+//把imageView放入button中，并设置为back
+
+
+[temp_button addSubview:backgroundImageView];
+[temp_button sendSubviewToBack:backgroundImageView];
+[temp_button setBackgroundColor:[UIColor clearColor]];
+</code></pre>
+
+<p>button不能设置背景图片，这样就可以实现拉伸的图片作为背景并且背景上可以放置title。</p>
 ]]></content>
   </entry>
   
